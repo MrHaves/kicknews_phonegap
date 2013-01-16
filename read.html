@@ -1,0 +1,64 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<title>Kicknews</title>
+	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
+	<link rel="stylesheet" href="css/themes/theme.min.css" />
+	<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+	<!-- Article -->
+	<div data-role="page" id="article">
+	    <div data-theme="a" data-role="header" data-position="fixed">
+	    	<a id="back-btn" data-role="button" date-rel="back" data-icon="back" data-iconpos="left" class="ui-btn-left">
+	    		Back
+	    	</a>
+	        <h3>
+	            Kicknews Article
+	        </h3>
+	    </div>
+	    <div data-role="content">
+	    </div>
+
+	    <div data-theme="a" data-role="footer" data-position="fixed">
+	        <div data-role="navbar" data-iconpos="left">
+	            <ul>
+	                <li>
+	                    <a href="read.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                        Read
+	                    </a>
+	                </li>
+	                <li>
+	                    <a href="article.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                        Article
+	                    </a>
+	                </li>
+	                <li>
+	                    <a href="login.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                        Login
+	                    </a>
+	                </li>
+	                <li>
+	                    <a href="settings.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                        Settings
+	                    </a>
+	                </li>
+	            </ul>
+	        </div>
+	    </div>
+
+	</div>
+
+	<script src="js/jquery-latest.min.js"></script>
+	<script src="js/script.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			app.initialize();
+		});
+	</script>
+	<script src="js/jquery.mobile-1.2.0.min.js"></script>
+	<script src="phonegap.js"></script>
+</body>
+</html>
