@@ -1,0 +1,43 @@
+﻿{
+   "id":"home",
+   "name":"Home",
+   "weight":0,
+   "datetime":16272728,
+   "articles":[
+      {
+         "title":"Affaire Mahé : la défense plaide l'humanité des soldats",
+         "id":1,
+         "picture":null,
+         "subhead":"Un fil rouge relie le \"petit gradé\" Ben Youssouf, pilote de blindé, le brigadier Schnier, son alter ego du 4e Régiment de chasseurs, l'adjudant-chef Raugel, chef du peloton, et le colonel Burgaud, chef de corps du 13e Bataillon de chasseurs alpins.",
+         "datetime":"18/12/2012"
+      },
+      {
+         "title":"Affaire Mahé : la défense plaide l'humanité des soldets",
+         "id":2,
+         "picture":null,
+         "subhead":"Un fil rouge relie le \"petit gradé\" Ben Youssouf, pilote de blindé, le brigadier Schnier, son alter ego du 4e Régiment de chasseurs, l'adjudant-chef Raugel, chef du peloton, et le colonel Burgaud, chef de corps du 13e Bataillon de chasseurs alpins.",
+         "datetime":"18/12/2012"
+      },
+      {
+         "title":"Affaire Mahé : la défense plaide l'humanité des soldits",
+         "id":3,
+         "picture":null,
+         "subhead":"Un fil rouge relie le \"petit gradé\" Ben Youssouf, pilote de blindé, le brigadier Schnier, son alter ego du 4e Régiment de chasseurs, l'adjudant-chef Raugel, chef du peloton, et le colonel Burgaud, chef de corps du 13e Bataillon de chasseurs alpins.",
+         "datetime":"18/12/2012"
+      },
+      {
+         "title":"Affaire Mahé : la défense plaide l'humanité des soldots",
+         "id":4,
+         "picture":null,
+         "subhead":"Un fil rouge relie le \"petit gradé\" Ben Youssouf, pilote de blindé, le brigadier Schnier, son alter ego du 4e Régiment de chasseurs, l'adjudant-chef Raugel, chef du peloton, et le colonel Burgaud, chef de corps du 13e Bataillon de chasseurs alpins.",
+         "datetime":"18/12/2012"
+      },
+      {
+         "title":"Affaire Mahé : la défense plaide l'humanité des solduts",
+         "id":5,
+         "picture":null,
+         "subhead":"Un fil rouge relie le \"petit gradé\" Ben Youssouf, pilote de blindé, le brigadier Schnier, son alter ego du 4e Régiment de chasseurs, l'adjudant-chef Raugel, chef du peloton, et le colonel Burgaud, chef de corps du 13e Bataillon de chasseurs alpins.",
+         "datetime":"18/12/2012"
+      }
+   ]
+}
