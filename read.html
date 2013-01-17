@@ -1,7 +1,7 @@
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 	<title>Kicknews</title>
 	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
 	<link rel="stylesheet" href="css/themes/theme.min.css" />
@@ -12,36 +12,37 @@
 	<!-- Article -->
 	<div data-role="page" id="article">
 	    <div data-theme="a" data-role="header" data-position="fixed">
-	    	<a id="back-btn" data-role="button" date-rel="back" data-icon="back" data-iconpos="left" class="ui-btn-left">
-	    		Back
-	    	</a>
 	        <h3>
 	            Kicknews Article
 	        </h3>
+			<a href="#" data-icon="check" data-theme="b" class="refresh_reader ui-btn-right">Full Refresh</a>
+	        <div id="categories_menu"></div>
 	    </div>
+
 	    <div data-role="content">
+
 	    </div>
 
 	    <div data-theme="a" data-role="footer" data-position="fixed">
 	        <div data-role="navbar" data-iconpos="left">
 	            <ul>
 	                <li>
-	                    <a href="read.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                    <a href="read.html" data-ajax="false" data-role="button" class=" ui-btn-active">
 	                        Read
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="article.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                    <a href="article.html" data-ajax="false" data-role="button">
 	                        Article
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="login.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                    <a href="login.html" data-ajax="false" data-role="button">
 	                        Login
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="settings.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                    <a href="settings.html" data-ajax="false" data-role="button">
 	                        Settings
 	                    </a>
 	                </li>
@@ -52,10 +53,12 @@
 	</div>
 
 	<script src="js/jquery-latest.min.js"></script>
+	<script src="js/jquery.json-2.4.min.js"></script>
+	<script src="js/jstorage.min.js"></script>
 	<script src="js/script.js"></script>
 	<script type="text/javascript">
 		$(document).bind("mobileinit", function(){
-			app.initialize();
+			app.initialize('read');
 		});
 	</script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>

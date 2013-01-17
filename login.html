@@ -15,35 +15,34 @@
 	            Kicknews Login
 	        </h3>
 	    </div>
-	    <div data-role="content"><ul data-role="listview" data-divider-theme="a" data-inset="true">
-	            <li data-theme="c">
-	                <a href="#" data-transition="slide">
-	                    Login
-	                </a>
-	            </li>
-	        </ul>
+	    <div data-role="content">
+	    	<form action="" method="post">
+    			<input type="text" name="login_user" id="login_user" placeholder="Login" />
+    			<input type="password" name="login_password" id="login_password" placeholder="Password" />
+    			<input type="submit" value="Log me in" />
+	        </form>
 	    </div>
 
 	    <div data-theme="a" data-role="footer" data-position="fixed">
 	        <div data-role="navbar" data-iconpos="left">
 	            <ul>
 	                <li>
-	                    <a href="read.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                    <a href="read.html" data-role="button" data-ajax="false">
 	                        Read
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="article.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                    <a href="article.html" data-role="button" data-ajax="false">
 	                        Article
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="login.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                    <a href="login.html" data-role="button" data-ajax="false" class=" ui-btn-active">
 	                        Login
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="settings.html" data-role="button" data-transition="fade" data-theme="" data-icon="">
+	                    <a href="settings.html" data-role="button" data-ajax="false">
 	                        Settings
 	                    </a>
 	                </li>
