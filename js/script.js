@@ -4,6 +4,7 @@ function Reader() {
 	if (typeof Reader.initialized == "undefined" ) {
 		// API fecth online via AJAX
 		Reader.prototype.loadOnline = function () {
+			alert("loadOnline Reader");
 			$(this.categories).each(function(i, cat) {
 				cat.loadOnline();
 			});
@@ -11,6 +12,7 @@ function Reader() {
 
 		// Storage fetch
 		Reader.prototype.loadLocal = function() {
+			alert("loadLocal Reader");
 			$(this.categories).each(function(i, cat) {
 				cat.loadLocal();
 			});
@@ -38,8 +40,10 @@ function Reader() {
 
 		Reader.prototype.initialize = function () {
 			this.setListeners();
+			this.refresh();
 
 			$(app.categories).each(function(i, cat) {
+				alert("cat.id : " + cat.id);
 				// Add each category to the navbar
 				var $link = $('<a>', {
 					href: "#read?category="+cat.id,
@@ -62,19 +66,19 @@ function Reader() {
 		Reader.initialized = true;
 	}
 
-	alert('Reader instanciated');
 	this.initialize();
-	alert('Reader loaded');
+	
 }
 
 function Category(){
 	this.id;
 	this.title;
 	this.articles = [];
-	this.fetchURL;
+	this.fetch_url = "offline_api/articles/home.json";
 
 	if (typeof Category.initialized == "undefined" ) {
 		Category.prototype.loadOnline = function () {
+			alert("loadOnline Category");
 			// Fetch 1 category and its articles
 			// @todo : check error like no connexion
 			var articles_ids = [];
@@ -90,7 +94,7 @@ function Category(){
 				success: function(json) {
 					if(json.id) {
 						// update list for given category
-						$(categories).each(function(i, cat) {
+						$(app.categories).each(function(i, cat) {
 							if(cat.id == json.id) {
 								if(json.name)
 									cat.name = json.name;
@@ -195,13 +199,12 @@ var app = {
 	page: "read",
 	last_update: -1,
 
-	categories: ['home'],
-
-
 	settings: {
 		max_article_number: 10,
 		is_logged_in: false
 	},
+
+	categories: ['home'],
 
 	//settings: new Settings();
 
@@ -209,11 +212,13 @@ var app = {
 		// init application
 		// load Settings
 		// fetch config data from storage
+
 		switch(page) {
 			case 'read' : var reader = new Reader(); break;
 			case 'article': Article.find_by_id(article_id).show(); break;
 			case 'write' : var writer = new Writer(); break;
 		}
+
 	},
 
 	is_connected: function () {
@@ -276,11 +281,6 @@ var app = {
 				console.log('Articles updated !');
 			}
 		});
-	},
-
-
-	// fetch api articles
-	fetchApiArticles: function(category) {
 	},
 
 	// Login
