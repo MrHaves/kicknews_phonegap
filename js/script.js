@@ -1,4 +1,5 @@
 function Reader() {
+	this.category = "";
 	this.categories_menu = [];
 	this.categories = [];
 
@@ -32,6 +33,23 @@ function Reader() {
 			this.saveLocal();
 		};
 
+		Reader.prototype.rebuildPage = function () {
+			$('.article').remove();
+
+			// @todo : Sort by weight
+			/*$(this.categories).each(function (i, cat) {
+			// @todo : FIXME : Normally we should loop on $(this.categories)
+			// $(this.categories).each(function (i, cat) {
+				// Add each category to the navbar
+				var $link = $('<a>', {
+					href: "read.html?category="+cat,
+					class: "categoryBtn",
+					text: cat
+				});
+				$link.appendTo('#categories_menu');
+			});*/
+		};
+
 		Reader.prototype.rebuildMenu = function () {
 			this.updateCategoriesMenu();
 			$('.categoryBtn').remove();
@@ -63,14 +81,23 @@ function Reader() {
 			$.jStorage.set('categories_menu', this.categories_menu);
 		};
 
+		/*
+				MAIN for Reader
+		*/
 
-		// Add Home to the pages by default.
-		if (this.categories.size == 0) {
-			this.categories_menu.push("Home");
-		}
+
+		// DEFAULT : Adding home to the pages
+		// @todo : Skip this part
+		this.categories['home'] = new Category();
+		this.categories['home'].id = "home";
+		this.categories['home'].fetch_url = "offline_api/articles/home.json";
+		this.categories['home'].loadOnline();
+		this.category = this.categories['home'].id;
 
 		this.rebuildMenu();
-		var weight = 0;
+
+		
+		/*var weight = 0;
 		var _this = this;
 		$(this.categories_menu).each(function(i, cat_key) {
 			var category = new Category();
@@ -78,10 +105,13 @@ function Reader() {
 			category.weight = ++weight;
 			category.refresh();
 			_this.rebuildMenu();
-		});
+		});*/
 		// Fetch categories name
 		// Call buildCategoriesMenu
 		// Refresh
+
+		// show articles. @todo : Show Category (title + link seleted in menu + show articles)
+		this.categories[this.category].showArticles();
 
 		//this.rebuildCategories();
 		this.setListeners();
@@ -163,6 +193,12 @@ function Category(){
 			this.saveLocal();
 		};
 
+		Category.prototype.showArticles = function () {
+			$(this.articles).each(function (i, art) {
+				art.showItem();
+			});
+		};
+
 		Category.initialized = true;
 	}
 }
@@ -218,6 +254,17 @@ function Article(){
 			this.body = article.body;
 		};
 
+		Article.prototype.showItem = function() {
+			$li = $('<li>');
+			$a = $('<a>', {
+				href: "article.html?id="+this.id,
+				class: "articleBtn",
+				text: this.title
+			});
+			$a.appendTo($li);
+			$li.appendTo('#reader #articles');
+		};
+
 		// ...
 
 		Article.initialized = true;
@@ -258,11 +305,6 @@ var app = {
 	errorOrNoInternet: function() {
 		var message = "Unable to fetch fresh news.";
 		console.log(message);
-	},
-
-
-	// fetch api articles
-	fetchApiArticles: function(category) {
 	},
 
 	// Login
