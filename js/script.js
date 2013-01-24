@@ -93,6 +93,7 @@ function Reader() {
 		this.categories['home'] = new Category();
 		this.categories['home'].id = 'home';
 		this.categories['home'].fetch_url = "offline_api/articles/home.json";
+		this.categories['home'].articles = [];
 		this.categories['home'].loadOnline();
 		this.category = this.categories['home'].id;
 
@@ -112,10 +113,7 @@ function Reader() {
 		// Call buildCategoriesMenu
 		// Refresh
 
-		// show articles. @todo : Show Category (title + link seleted in menu + show articles)
-		console.log(this.categories[this.category]);
-		console.log(this.categories[this.category].fetch_url);
-		this.categories[this.category].showArticles();
+		//@todo : Show Category (title + link seleted in menu + show articles)
 
 		//this.rebuildCategories();
 		this.setListeners();
@@ -127,9 +125,8 @@ function Reader() {
 function Category(){
 	this.id;
 	this.name;
-	this.articles = [];
+	this.articles;
 	this.fetch_url;
-	//this.fetch_url = "offline_api/articles/home.json";
 
 	if (typeof Category.initialized == "undefined" ) {
 		Category.prototype.loadOnline = function () {
@@ -150,40 +147,36 @@ function Category(){
 				success: function(json) {
 					if(json.id) {
 						// update list for given category
-						/*console.log(this);
-						$(this).each(function(i, cat) {
-							//alert("cat.id : " + cat.id);
-							if(cat.id == json.id) {
-								if(json.name)
-									cat.name = json.name;
-								if(json.weight)
-									cat.weight = json.weight;
-								if(json.datetime)
-									cat.datetime = json.datetime;*/
+						if(currentCategory.id == json.id) {
+							// method updateArticles from the category
+							$(json.articles).each(function(i, art) {
+								article = new Article();
+								article.id = art.id;
+								article.title = art.title;
+								article.subhead = art.subhead;
+								article.picture = art.picture;
+								article.datetime = art.datetime;
+								article.author = art.author;
+								currentCategory.articles.push(article);
+							});
+							
+							//save the article previously charged
+							currentCategory.saveLocal();
 
-								// method updateArticles from the category
-								/*$(json.articles).each(function(i, art) {
-									articles[art.id] = new Article();
-									articles[art.id].id = art.id;
-									articles[art.id].title = art.title;
-									articles[art.id].subhead = art.subhead;
-									articles[art.id].picture = art.picture;
-									articles[art.id].datetime = art.datetime;
-									console.log(articles[art.id]);
-								});*/
-								currentCategory.articles = json.articles;
-								//console.log(currentCategory.articles);	
-								// Update page
-								//app.updateHome();
-							//} else { alert("error"); app.errorOrNoInternet(); }
-						//});
-						//app.last_update = Date.now();
+							// show articles
+							currentCategory.showArticles();
+
+						} else { 
+							alert("error"); 
+							app.errorOrNoInternet(); 
+						}
 					}
 				},
 				error: function() {
 					app.errorOrNoInternet();
 				}
 			});
+
 		};
 
 		// Storage fetch
@@ -202,7 +195,11 @@ function Category(){
 
 		// Save in local storage for faster refresh
 		Category.prototype.saveLocal = function() {
-			$.jStorage.set('categories['+this.id+']')
+			$.jStorage.set('categories['+this.id+']', this);
+
+			$(this.articles).each(function (i, art) {
+				art.saveLocal();
+			});
 		};
 
 		// Linked to interface
@@ -215,7 +212,6 @@ function Category(){
 		};
 
 		Category.prototype.showArticles = function () {
-			//alert(this.articles);
 			$(this.articles).each(function (i, art) {
 				art.showItem();
 			});
@@ -243,7 +239,7 @@ function Article(){
 			} else {
 				$('#article .article_img').attr('href', this.picture);
 			}
-			$('#article .article_body').html(this.body);
+			$('#article .article_body').html(this.subhead);
 			$('#article .article_title').text(this.title);
 			$('#article .article_author').text(this.author);
 
@@ -263,24 +259,31 @@ function Article(){
 
 		Article.prototype.loadLocal = function (id) {
 
-			var fakeData = "{\"id\":"+id+", \"title\":\"Titre\", \"author\":\"Jean-Michel\", \"body\":\"<p>Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb. </p><p>Well, the way they make shows is, they make one show. That show's called a pilot. Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows. Some pilots get picked and become television programs. Some don't, become nothing. She starred in one of the ones that became nothing. </p><p>Look, just because I don't be givin' no man a foot massage don't make it right for Marsellus to throw Antwone into a glass motherfuckin' house, fuckin' up the way the nigger talks. Motherfucker do that shit to me, he better paralyze my ass, 'cause I'll kill the motherfucker, know what I'm sayin'? </p><p>You think water moves fast? You should see ice. It moves like it has a mind. Like it knows it killed the world once and got a taste for murder. After the avalanche, it took us a week to climb out. Now, I don't know exactly when we turned on each other, but I know that seven of us survived the slide... and only five made it out. Now we took an oath, that I'm breaking now. We said we'd say it was the snow that killed the other two, but it wasn't. Nature is lethal but it doesn't hold a candle to man. </p><p>Your bones don't break, mine do. That's clear. Your cells react to bacteria and viruses differently than mine. You don't get sick, I do. That's also clear. But for some reason, you and I react the exact same way to water. We swallow it too fast, we choke. We get some in our lungs, we drown. However unreal it may seem, we are connected, you and I. We're on the same curve, just on opposite ends. </p>\"}";
-			$.jStorage.set('articles['+article_id+']', fakeData);
+			// get the current article
+			var article = $.jStorage.get('articles['+id+']');
 
-			// For Debug Use Only
-			var article = $.jStorage.get('articles['+article_id+']');
+			if(article != null) {
+				this.id = article.id;
+				this.title = article.title;
+				this.picture = article.picture;
+				this.author = article.author;
+				this.subhead = article.subhead;
+				this.datetime = article.datetime;
 
-			article = $.parseJSON(article);
-			this.id = article.id;
-			this.title = article.title;
-			this.author = article.author;
-			this.body = article.body;
+				
+			}
+		};
+
+		// Save in local storage for faster refresh
+		Article.prototype.saveLocal = function() {
+			$.jStorage.set('articles['+this.id+']', this);
 		};
 
 		Article.prototype.showItem = function() {
-			alert("showItem : " + this);
 			$li = $('<li>');
 			$a = $('<a>', {
 				href: "article.html?id="+this.id,
+				rel: "external",
 				class: "articleBtn",
 				text: this.title
 			});
@@ -315,7 +318,9 @@ var app = {
 			case 'read' : var reader = new Reader(); break;
 			case 'article':
 				var article = new Article();
-				article.loadLocal(213546);
+				var url_splitted = document.URL.split("=");
+				article.id = url_splitted[1];
+				article.loadLocal(article.id);
 				article.show(); break;
 			case 'write' : var writer = new Writer(); break;
 			default: alert('no page initialized'); break;

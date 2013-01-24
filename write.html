@@ -9,7 +9,7 @@
 </head>
 <body>
 	<!-- Write an article -->
-	<div data-role="page" id="settings">
+	<div data-role="page" id="write">
 	    <div data-theme="a" data-role="header" data-position="fixed">
 	        <h3>
 	            Kicknews Write
@@ -57,7 +57,7 @@
 	<script src="js/script.js"></script>
 	<script type="text/javascript">
 		$(document).bind("mobileinit", function(){
-			app.initialize();
+			app.initialize('write');
 		});
 	</script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>

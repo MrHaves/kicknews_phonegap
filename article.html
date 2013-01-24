@@ -8,11 +8,9 @@
 	<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-	<div data-role="page" id="article">
+	<div data-role="page" id="article" data-add-back-btn="true">
 	    <div data-theme="a" data-role="header" data-position="fixed">
-	    	<a href="read.html" id="back-btn" data-role="button" date-rel="back" data-icon="back" data-iconpos="left" class="ui-btn-left" data-ajax="false">
-	    		Back
-	    	</a>
+			<a href="#" data-role="button" data-rel="back" data-icon="arrow-l">Back</a>
 	        <h3 id="article_id">
 	            Kicknews Article
 	        </h3>
@@ -60,6 +58,7 @@
 	<script src="js/script.js"></script>
 	<script type="text/javascript">
 		$(document).bind("mobileinit", function(){
+			$.mobile.page.prototype.options.backBtnTheme = "previous";
 			app.initialize('article');
 		});
 	</script>
