@@ -1,5 +1,5 @@
 function Reader() {
-	this.category = "";
+	this.current_category;
 	this.categories_menu = [];
 	this.categories = [];
 
@@ -95,7 +95,7 @@ function Reader() {
 		this.categories['home'].fetch_url = "offline_api/articles/home.json";
 		this.categories['home'].articles = [];
 		this.categories['home'].loadOnline();
-		this.category = this.categories['home'].id;
+		this.current_category = this.categories['home'];
 
 		this.rebuildMenu();
 
@@ -119,25 +119,27 @@ function Reader() {
 		this.setListeners();
 		Reader.initialized = true;
 	}
-	
 }
 
 function Category(){
 	this.id;
 	this.name;
-	this.articles;
+	this.articles_ids = [];
+	this.articles = [];
 	this.fetch_url;
+	this.last_update;
 
 	if (typeof Category.initialized == "undefined" ) {
 		Category.prototype.loadOnline = function () {
 			// Fetch 1 category and its articles
-			// @todo : check error like no connexion
+			// @todo : check timestamps
 			var articles_ids = [];
 			$(this.articles).each(function(i, art) {
 				articles_ids.push(art.id);
 			});
-
-			var currentCategory = this;
+			var current_category_id = this.id;
+			var current_category = new Category();
+			var last_update = this.last_update;
 
 			$.ajax(this.fetch_url, {
 				dataType: 'json', // data will be parsed in json automagically
@@ -145,75 +147,94 @@ function Category(){
 				data: articles_ids,
 				cache: false,
 				success: function(json) {
-					if(json.id) {
-						// update list for given category
-						if(currentCategory.id == json.id) {
-							// method updateArticles from the category
-							$(json.articles).each(function(i, art) {
-								article = new Article();
+					// update list for given category
+					if(!!json.id && current_category_id == json.id /*&& json.timestamp >= last_update*/) {
+						var category = new Category();
+						// add current_category.* = *
+						category.id = json.id;
+						category.last_update = json.timestamp;
+
+						$(json.articles).each(function(i, art) {
+							article = new Article();
+							// @todo : check timestamp too (by the server, so we need to send it in the post data too)
+							if(typeof art == "number") {
+								article.loadLocal(art);
+							} else {
 								article.id = art.id;
 								article.title = art.title;
 								article.subhead = art.subhead;
 								article.picture = art.picture;
 								article.datetime = art.datetime;
 								article.author = art.author;
-								currentCategory.articles.push(article);
-							});
-							
-							//save the article previously charged
-							currentCategory.saveLocal();
+							}
+							category.articles.push(article);
+							category.articles_ids.push(article.id);
+						});
 
-							// show articles
-							currentCategory.showArticles();
-
-						} else { 
-							alert("error"); 
-							app.errorOrNoInternet(); 
-						}
+						// show articles
+						category.showArticles();
+						// update local data for category
+						category.saveLocal();
+					} else { 
+						console.log("Error while loading category updates."); 
+						app.errorOrNoInternet();
 					}
 				},
 				error: function() {
 					app.errorOrNoInternet();
 				}
 			});
-
 		};
 
 		// Storage fetch
-		Category.prototype.loadLocal = function() {
-			if (this.id == "home") {
+		Category.prototype.loadLocal = function(id) {
+			/*if (this.id == "home") {
 				this.name = "Home";
 				this.articles = [];
-			} else {
-				var category = $.jStorage.get('categories['+this.id+']');
+			} else {*/
+				var category = $.jStorage.get('categories['+id+']');
 				if(category) {
 					this.name = category.name;
-					this.articles = category.articles;
+					this.articles = [];
+					$(category.articles_ids).each(function(i, article_id) {
+						article = new Article();
+						article.load(article_id);
+						this.articles.push(article);
+						this.articles_ids.push(article.id);
+					});
 				}
-			}
+			//}
+			return this;
 		};
 
 		// Save in local storage for faster refresh
 		Category.prototype.saveLocal = function() {
-			$.jStorage.set('categories['+this.id+']', this);
-
+			category = this;
+			category.articles = null;
+			categories.articles_ids = [];
 			$(this.articles).each(function (i, art) {
-				art.saveLocal();
+				categories.articles_ids[i] = art.id;
+			});
+			$.jStorage.set('categories['+this.id+']', category);
+			$(this.articles).each(function (i, art) {
+				art.save();
 			});
 		};
 
 		// Linked to interface
 		Category.prototype.refresh = function() {
+			// First load the local copy if exists
 			this.loadLocal();
+			// Then try to update local with distant version
 			if(app.is_connected()) {
 				this.loadOnline();
 			}
-			this.saveLocal();
 		};
 
 		Category.prototype.showArticles = function () {
+			category = this;
 			$(this.articles).each(function (i, art) {
-				art.showItem();
+				art.showItem(category);
 			});
 		};
 
@@ -230,21 +251,9 @@ function Article(){
 	var author;
 	var is_read = false;
 	var status = "draft";
+	// @todo : add an array "categories" to avoid deleting articles in all categories if not necessary.
 
 	if(typeof Article.initialized == "undefined") {
-		// Print article in html
-		Article.prototype.show = function () {
-			if(!this.picture) {
-				$('#article .article_img').parent().hide();
-			} else {
-				$('#article .article_img').attr('href', this.picture);
-			}
-			$('#article .article_body').html(this.subhead);
-			$('#article .article_title').text(this.title);
-			$('#article .article_author').text(this.author);
-
-		};
-
 		Article.prototype.refresh = function () {
 
 		};
@@ -257,32 +266,39 @@ function Article(){
 
 		};
 
-		Article.prototype.loadLocal = function (id) {
-
-			// get the current article
-			var article = $.jStorage.get('articles['+id+']');
-
-			if(article != null) {
-				this.id = article.id;
+		Article.prototype.load = function (id) {
+			if(article = $.jStorage.get('articles['+id+']')) {
+				this.id = id;
 				this.title = article.title;
 				this.picture = article.picture;
 				this.author = article.author;
 				this.subhead = article.subhead;
 				this.datetime = article.datetime;
-
-				
 			}
+			return this;
 		};
 
 		// Save in local storage for faster refresh
-		Article.prototype.saveLocal = function() {
+		Article.prototype.save = function() {
 			$.jStorage.set('articles['+this.id+']', this);
 		};
 
-		Article.prototype.showItem = function() {
+		// Print article in html
+		Article.prototype.show = function () {
+			if(!this.picture) {
+				$('#article .article_img').parent().hide();
+			} else {
+				$('#article .article_img').attr('href', this.picture);
+			}
+			$('#article .article_body').html(this.subhead);
+			$('#article .article_title').text(this.title);
+			$('#article .article_author').text(this.author);
+		};
+
+		Article.prototype.showItem = function(category) {
 			$li = $('<li>');
 			$a = $('<a>', {
-				href: "article.html?id="+this.id,
+				href: "article.html?id="+this.id+"&category=" + category.id,
 				rel: "external",
 				class: "articleBtn",
 				text: this.title
@@ -291,14 +307,13 @@ function Article(){
 			$li.appendTo('#reader #articles');
 		};
 
-		// ...
-
 		Article.initialized = true;
 	}
 }
 
 var app = {
 	page: null,
+	user: null,
 	last_update: -1,
 
 	settings: {
@@ -312,17 +327,50 @@ var app = {
 	initialize: function(page) {
 		// init application
 		// load Settings
+		// load User session
 		// fetch config data from storage
 
 		switch(page) {
-			case 'read' : var reader = new Reader(); break;
+			case 'read' :
+				var reader = new Reader();
+				break;
 			case 'article':
+				var index = 0;
 				var article = new Article();
-				var url_splitted = document.URL.split("=");
-				article.id = url_splitted[1];
-				article.loadLocal(article.id);
-				article.show(); break;
-			case 'write' : var writer = new Writer(); break;
+				var category = new Category();
+				article.load($(document).getUrlParam("id"));
+				category.loadLocal($(document).getUrlParam("category"));
+
+				// What is the index of the article in its category ?
+				// @ todo : find better and faster function with break-on-found like "$.inArray(value, array)" which cannot work due to type conflict (we need to check equality of object.id)
+				$(category.articles_ids).each(function(i, article_id) {
+					if(article.id == article_id)
+						index = i;
+				});
+				// Displays it in html
+				article.show();
+
+				// Add events
+				$(document).bind("swiperight", function() {
+					//if(!!(category.articles_ids[index-1]) && category.articles_ids[index-1] >= 0) {
+						index--;
+						article.load(category.articles_ids[index]);
+						article.show();
+					//}
+				});
+				$(document).bind("swipeleft", function() {
+					//if(!!(category.articles_ids[index+1]) && category.articles_ids[index+1] < category.articles_ids.size) {
+						index++;
+						article.load(category.articles_ids[index]);
+						article.show();
+					//}
+				});
+				break;
+			case 'write' :
+				// @todo : Check security issues when done.
+				var writer = new Writer(); break;
+			case 'login' : break;
+			case 'settings' : break;
 			default: alert('no page initialized'); break;
 		}
 
@@ -340,7 +388,6 @@ var app = {
 	/**
 		Articles
 	*/
-
 	loadArticles: function(event) {
 		// load from storage
 		var last_update = app.last_update;
