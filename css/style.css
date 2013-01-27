@@ -1,22 +1,45 @@
 /*custom css for jqueryMobile*/
 
-/* navbar icon */
+/* navbar App icon */
+.nav-glyphish .ui-btn .ui-icon {
+	height:30px;
+	width:30px;
+	border-radius: 0 0 0 0 !important;
+}
+
 .ui-icon-app-home {
-	background: url("icons/53-house.png") no-repeat rgba(0, 0, 0, 0.4) !important;
+	background: url("icons/53-house.png") no-repeat !important;
 }
 
 .ui-icon-app-categories {
-	background: url("icons/33-cabinet.png") no-repeat rgba(0, 0, 0, 0.4) !important;
+	background: url("icons/33-cabinet.png") no-repeat !important;
 }
 
 .ui-icon-app-write {
-	background: url("icons/187-pencil.png") no-repeat rgba(0, 0, 0, 0.4) !important;
+	background: url("icons/187-pencil.png") no-repeat !important;
 }
 
 .ui-icon-app-login {
-	background: url("icons/111-user.png") no-repeat rgba(0, 0, 0, 0.4) !important;
+	background: url("icons/111-user.png") no-repeat !important;
 }
 
 .ui-icon-app-settings {
-	background: url("icons/20-gear2.png") no-repeat rgba(0, 0, 0, 0.4) !important;
+	background: url("icons/20-gear2.png") no-repeat !important;
+}
+
+/* navbar Article icon */
+.ui-icon-app-police {
+	background: url("icons/33-cabinet.png") no-repeat !important;
+}
+
+.ui-icon-app-vote {
+	background: url("icons/81-dashboard.png") no-repeat !important;
+}
+
+.ui-icon-app-comment {
+	background: url("icons/09-chat-2.png") no-repeat !important;
+}
+
+.ui-icon-app-share {
+	background: url("icons/189-plant.png") no-repeat !important;
 }

@@ -337,14 +337,10 @@ var app = {
 			case 'article':
 				var index = 0;
 				var article = new Article();
-				article.id = app.getQuerystring('id');
-				article.loadLocal(article.id);
-				article.show(); break;
-			case 'write' : 
-				var writer = new Writer(); break;
 				var category = new Category();
-				article.load($(document).getUrlParam("id"));
-				category.loadLocal($(document).getUrlParam("category"));
+				article.id = app.getQuerystring('id');
+				article.load(article.id);
+				category.loadLocal(app.getQuerystring('category'));
 
 				// What is the index of the article in its category ?
 				// @ todo : find better and faster function with break-on-found like "$.inArray(value, array)" which cannot work due to type conflict (we need to check equality of object.id)
@@ -370,6 +366,9 @@ var app = {
 						article.show();
 					//}
 				});
+				break;
+			case 'write' : 
+				//var writer = new Writer();
 				break;
 			case 'login' : break;
 			case 'settings' : break;
