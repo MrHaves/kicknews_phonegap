@@ -318,8 +318,7 @@ var app = {
 			case 'read' : var reader = new Reader(); break;
 			case 'article':
 				var article = new Article();
-				var url_splitted = document.URL.split("=");
-				article.id = url_splitted[1];
+				article.id = app.getQuerystring('id');
 				article.loadLocal(article.id);
 				article.show(); break;
 			case 'write' : var writer = new Writer(); break;
@@ -389,6 +388,14 @@ var app = {
 			}
 		});
 	},
+
+	getQuerystring: function(key, default_) {
+       if (default_==null) default_="";
+       key = key.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+       var regex = new RegExp("[\\?&]"+key+"=([^&#]*)");
+       var qs = regex.exec(window.location.href);
+       if(qs == null) return default_; else return qs[1];
+   }
 
 	// Login
 

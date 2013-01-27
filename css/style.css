@@ -1,0 +1,22 @@
+/*custom css for jqueryMobile*/
+
+/* navbar icon */
+.ui-icon-app-home {
+	background: url("icons/53-house.png") no-repeat rgba(0, 0, 0, 0.4) !important;
+}
+
+.ui-icon-app-categories {
+	background: url("icons/33-cabinet.png") no-repeat rgba(0, 0, 0, 0.4) !important;
+}
+
+.ui-icon-app-write {
+	background: url("icons/187-pencil.png") no-repeat rgba(0, 0, 0, 0.4) !important;
+}
+
+.ui-icon-app-login {
+	background: url("icons/111-user.png") no-repeat rgba(0, 0, 0, 0.4) !important;
+}
+
+.ui-icon-app-settings {
+	background: url("icons/20-gear2.png") no-repeat rgba(0, 0, 0, 0.4) !important;
+}
