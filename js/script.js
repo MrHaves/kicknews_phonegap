@@ -211,9 +211,9 @@ function Category(){
 		Category.prototype.saveLocal = function() {
 			category = this;
 			category.articles = null;
-			categories.articles_ids = [];
+			category.articles_ids = [];
 			$(this.articles).each(function (i, art) {
-				categories.articles_ids[i] = art.id;
+				category.articles_ids[i] = art.id;
 			});
 			$.jStorage.set('categories['+this.id+']', category);
 			$(this.articles).each(function (i, art) {
@@ -300,11 +300,25 @@ function Article(){
 			$a = $('<a>', {
 				href: "article.html?id="+this.id+"&category=" + category.id,
 				rel: "external",
-				class: "articleBtn",
-				text: this.title
+				class: "articleBtn"
 			});
+			$h3 = $('<h3>', {
+				text: this.title,
+			});
+			$p = $('<p>', {
+				text: this.subhead
+			});
+			if(!!this.picture) {
+				$img = $('<img>', {
+					src: this.picture
+				});
+				$img.appendTo($a);
+			}
+			$h3.appendTo($a);
+			$p.appendTo($a);
 			$a.appendTo($li);
 			$li.appendTo('#reader #articles');
+			$('#reader #articles').listview('refresh');
 		};
 
 		Article.initialized = true;
