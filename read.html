@@ -1,0 +1,72 @@
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+	<title>Kicknews</title>
+	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
+	<link rel="stylesheet" href="css/themes/theme.min.css" />
+	<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+	<!-- Article -->
+	<div data-role="page" id="reader">
+	    <div data-theme="a" data-role="header" data-position="fixed">
+	        <h3>
+	            Kicknews Article
+	        </h3>
+			<a href="#" data-icon="check" data-theme="a" class="refresh_reader ui-btn-right">Full Refresh</a>
+	        <div id="categories_menu"></div>
+	    </div>
+
+	    <div data-role="content">
+	    	<ul id="articles" data-role="listview" class="ui-listview" data-autodividers="true"></ul>
+	    </div>
+
+	    <div data-role="footer" data-position="fixed" class="nav-glyphish">
+	        <div data-role="navbar">
+	            <ul>
+	                <li>
+	                    <a href="read.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home" class="ui-btn-active">
+	                    	Home
+	                    </a>
+	                </li>
+	                <li>
+	                    <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-categories">
+	                        Catégories
+	                    </a>
+	                </li>
+	                <li>
+	                    <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write">
+	                        Write
+	                    </a>
+	                </li>
+	                <li>
+	                    <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
+	                        Login
+	                    </a>
+	                </li>
+	                <li>
+	                    <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings">
+	                        Settings
+	                    </a>
+	                </li>
+	            </ul>
+	        </div>
+	    </div>
+
+	</div>
+
+	<script src="js/jquery-latest.min.js"></script>
+	<script src="js/jquery.json-2.4.min.js"></script>
+	<script src="js/jstorage.min.js"></script>
+	<script src="js/script.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			app.initialize('read');
+		});
+	</script>
+	<script src="js/jquery.mobile-1.2.0.min.js"></script>
+	<script src="phonegap.js"></script>
+</body>
+</html>
