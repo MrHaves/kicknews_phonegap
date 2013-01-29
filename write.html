@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <title>Kicknews</title>
+    <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
+    <link rel="stylesheet" href="css/themes/theme.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+         <script src="js/cordova-2.2.0.js"></script>
+    <script type="text/javascript">
+    /*      function onLoad(){
+                document.addEventListener("deviceready", onDeviceReady, true);
+            }
+
+            function onDeviceReady(){
+                navigator.notification.alert("PhoneGap is working!!");
+            }*/
+
+        function capturePhoto(){
+            navigator.camera.getPicture(uploadPhoto,uploadFail,{sourceType:1,quality:60});
+        }
+
+        function uploadPhoto(data){
+        // this is where you would send the image file to server
+            cameraPic.src = "data:image/jpeg;base64," + data;
+            // Successful upload to the server
+            navigator.notification.alert(
+                'Your Photo has been uploaded',  // message
+                okay,                           // callback
+                'Photo Uploaded',              // title
+                'OK'                          // buttonName
+            );
+            // upload has failed Fail
+            /*
+            if (failedToUpload){
+            navigator.notification.alert(
+                'Your Photo has failed to upload',
+                failedDismissed,
+                'Photo Not Uploaded',
+                'OK'
+                );
+            }
+            */
+        }
+        function okay(){
+            // Do something
+        }
+        function uploadFail(message) {
+            alert('Failed because: '+message);
+        }
+      </script>
+  </head>
+  <body>
+
+    <!-- Edit article -->
+    <div data-role="page" id="write">
+        <div data-role="content">
+            <h3>
+                Ecrire un article
+            </h3>
+            <div data-role="fieldcontain">
+                <fieldset data-role="controlgroup">
+                    <label for="article_content">
+                    </label>
+                    <textarea name="" id="article_content" placeholder="">
+                    </textarea>
+                </fieldset>
+            </div>
+            <a data-role="button" class="ui-link-inherit" data-transition="slide" href="#page1">
+                Prendre une photo
+            </a>
+            <a data-role="button" data-inline="true" href="#page1">
+                Publier
+            </a>
+            <a data-role="button" data-inline="true" href="#page1">
+                Brouillon
+            </a>
+        </div>
+    </div>
+    <!-- Jquery is needed also for the design -->
+      <script src="js/jquery-latest.min.js"></script>
+      <script src="js/jquery.mobile-1.2.0.min.js"></script>
+  </body>
+</html>
