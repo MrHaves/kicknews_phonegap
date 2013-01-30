@@ -1,71 +1,139 @@
 <html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<title>Kicknews</title>
-	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
-	<link rel="stylesheet" href="css/themes/theme.min.css" />
-	<link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-	<!-- Write an article -->
-	<div data-role="page" id="write">
-	    <div data-theme="a" data-role="header" data-position="fixed">
-	        <h3>
-	            Kicknews Write
-	        </h3>
-	    </div>
-	    <div data-role="content"><ul data-role="listview" data-divider-theme="a" data-inset="true">
-	            <li data-theme="c">
-	                <a href="#" data-transition="slide">
-	                    Write
-	                </a>
-	            </li>
-	        </ul>
-	    </div>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <title>Kicknews</title>
+    <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
+    <link rel="stylesheet" href="css/themes/theme.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="text/javascript">
+    /*      function onLoad(){
+                document.addEventListener("deviceready", onDeviceReady, true);
+            }
 
-	    <div data-role="footer" data-position="fixed" class="nav-glyphish">
-	        <div data-role="navbar">
-	            <ul>
-	                <li>
-	                    <a href="read.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
-	                    	Home
-	                    </a>
-	                </li>
-	                <li>
-	                    <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-categories">
-	                        Catégories
-	                    </a>
-	                </li>
-	                <li>
-	                    <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write" class="ui-btn-active">
-	                        Write
-	                    </a>
-	                </li>
-	                <li>
-	                    <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
-	                        Login
-	                    </a>
-	                </li>
-	                <li>
-	                    <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings">
-	                        Settings
-	                    </a>
-	                </li>
-	            </ul>
-	        </div>
-	    </div>
+            function onDeviceReady(){
+                navigator.notification.alert("PhoneGap is working!!");
+            }*/
 
-	</div>
+        function capturePhoto(){
+            navigator.camera.getPicture(uploadPhoto,uploadFail,{sourceType:1,quality:60});
+        }
 
-	<script src="js/jquery-latest.min.js"></script>
-	<script src="js/script.js"></script>
-	<script type="text/javascript">
-		$(document).bind("mobileinit", function(){
-			app.initialize('write');
-		});
-	</script>
-	<script src="js/jquery.mobile-1.2.0.min.js"></script>
-	<script src="phonegap.js"></script>
-</body>
+        function uploadPhoto(data){
+        // this is where you would send the image file to server
+            cameraPic.src = "data:image/jpeg;base64," + data;
+            // Successful upload to the server
+            navigator.notification.alert(
+                'Your Photo has been uploaded',  // message
+                okay,                           // callback
+                'Photo Uploaded',              // title
+                'OK'                          // buttonName
+            );
+            // upload has failed Fail
+            /*
+            if (failedToUpload){
+            navigator.notification.alert(
+                'Your Photo has failed to upload',
+                failedDismissed,
+                'Photo Not Uploaded',
+                'OK'
+                );
+            }
+            */
+        }
+        function okay(){
+            // Do something
+        }
+        function uploadFail(message) {
+            alert('Failed because: '+message);
+        }
+      </script>
+  </head>
+  <body>
+    <!-- Write an article -->
+    <div data-role="page" id="write">
+        <div data-theme="a" data-role="header" data-position="fixed">
+            <h3>
+                Kicknews Write
+            </h3>
+        </div>
+        <div data-role="content">
+            <ul data-role="listview" data-divider-theme="a" data-inset="true">
+                <li data-theme="c">
+                    <a href="#" data-transition="slide">
+                        Write
+                    </a>
+                </li>
+            </ul>
+            <!-- Field container-->
+            <div data-role="fieldcontain">
+                <fieldset data-role="controlgroup">
+                    <label for="article_content">
+                    </label>
+                    <textarea name="" id="article_content" placeholder="">
+                    </textarea>
+                </fieldset>
+            </div>
+            <!-- Photo -->
+            <div id="camera">
+                <button class="camera-control" onclick="capturePhoto();">Capture Photo</button>
+                <div style="text-align:center;margin:20px;">
+                <img id="cameraPic" src="" style="width:auto;height:120px;"></img>
+            </div>
+            <!--Publish button-->
+            <a data-role="button" data-inline="true" href="#page1">
+                Publier
+            </a>
+            <!-- Draft button -->
+            <a data-role="button" data-inline="true" href="#page1">
+                Brouillon
+            </a>
+    </div>
+        </div>
+
+        <div data-role="footer" data-position="fixed" class="nav-glyphish">
+            <div data-role="navbar">
+                <ul>
+                    <li>
+                        <a href="read.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-categories">
+                            Catégories
+                        </a>
+                    </li>
+                    <li>
+                        <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write" class="ui-btn-active">
+                            Write
+                        </a>
+                    </li>
+                    <li>
+                        <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
+                            Login
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings">
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Jquery is needed also for the design -->
+      <script src="js/jquery-latest.min.js"></script>
+      <script src="js/script.js"></script>
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function(){
+            app.initialize('write');
+        });
+    </script>
+      <script src="js/jquery.mobile-1.2.0.min.js"></script>
+    <script src="js/phonegap.js"></script>
+  </body>
 </html>
