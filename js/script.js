@@ -99,7 +99,6 @@ function Reader() {
 
 		this.rebuildMenu();
 
-		
 		/*var weight = 0;
 		var _this = this;
 		$(this.categories_menu).each(function(i, cat_key) {
@@ -158,7 +157,7 @@ function Category(){
 							article = new Article();
 							// @todo : check timestamp too (by the server, so we need to send it in the post data too)
 							if(typeof art == "number") {
-								article.loadLocal(art);
+								article.load(art);
 							} else {
 								article.id = art.id;
 								article.title = art.title;
@@ -173,6 +172,7 @@ function Category(){
 
 						// show articles
 						category.showArticles();
+						console.log(category);
 						// update local data for category
 						category.saveLocal();
 					} else { 
@@ -318,11 +318,53 @@ function Article(){
 			$p.appendTo($a);
 			$a.appendTo($li);
 			$li.appendTo('#reader #articles');
-			$('#reader #articles').listview('refresh');
+			//$('#reader #articles').listview('refresh');
 		};
 
 		Article.initialized = true;
 	}
+}
+
+function Login(){
+	if(typeof Login.initialized == "undefined") {
+
+		Login.prototype.login = function(){
+
+			var user = $("#login_user").val();
+			var password = $("#login_password").val();
+
+			console.log(password);
+			console.log(user);
+
+			var data = JSON.stringify({
+			    "username": "mrhaves",
+			    "password": "1234"
+			});
+
+			$.ajax({
+			  url: 'http://localhost:8000/api/v1/user/login/',
+			  type: 'POST',
+			  contentType: 'application/json',
+			  data: data,
+			  dataType: 'json',
+			  processData: false,
+			  success: function(json) {
+			  	console.log(json);
+			  },
+			  error: function() {
+			  }
+
+			});
+		}
+
+		Reader.prototype.setListeners = function () {
+			$('#submit').click(this.login());
+		};
+
+		Login.initialized = true;
+
+	}
+//rz9chbw
 }
 
 var app = {
@@ -384,7 +426,10 @@ var app = {
 			case 'write' : 
 				//var writer = new Writer();
 				break;
-			case 'login' : break;
+			case 'login' : 
+				var login = new Login();
+				login.login();
+				break;
 			case 'settings' : break;
 			default: alert('no page initialized'); break;
 		}

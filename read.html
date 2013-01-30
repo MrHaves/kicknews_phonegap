@@ -8,10 +8,15 @@
 	<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+	
 
 	<!-- Article -->
 	<div data-role="page" id="reader">
+		<div data-role="panel" id="myPanel" data-theme="a">
+			<p>TRight options</p>
+		</div>
 	    <div data-theme="a" data-role="header" data-position="fixed">
+	    	<a href="#myPanel" id="buttoPanel" data-role="button" data-position="right" data-reveal="overlay" data-dismissible="true">Show Panel</a>
 	        <h3>
 	            Kicknews Article
 	        </h3>
@@ -19,8 +24,8 @@
 	        <div id="categories_menu"></div>
 	    </div>
 
-	    <div data-role="content">
-	    	<ul id="articles" data-role="listview" class="ui-listview" data-autodividers="true"></ul>
+	    <div data-role="content" id="content">
+		    <ul id="articles" data-role="listview" class="ui-listview" data-autodividers="true"></ul>
 	    </div>
 
 	    <div data-role="footer" data-position="fixed" class="nav-glyphish">
@@ -62,11 +67,20 @@
 	<script src="js/jstorage.min.js"></script>
 	<script src="js/script.js"></script>
 	<script type="text/javascript">
+
 		$(document).bind("mobileinit", function(){
-			app.initialize('read');
+	-		app.initialize('read');
 		});
+
 	</script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>
+	<!--<script type="text/javascript">
+		$("#buttoPanel").click(function(){
+			$( "#panel1" ).panel( "open" );
+
+		});
+	</script>-->
 	<script src="phonegap.js"></script>
+
 </body>
 </html>

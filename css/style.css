@@ -43,3 +43,19 @@
 .ui-icon-app-share {
 	background: url("icons/189-plant.png") no-repeat !important;
 }
+
+/* popupPanel */
+#popupPanel-popup {
+    left: 0 !important;
+    right: auto !important;
+}
+#popupPanel {
+    width: 200px;
+    border: 1px solid #000;
+    border-left: none;
+    background: rgba(0,0,0,.8);
+    margin: -1px 0;
+}
+#popupPanel .ui-btn {
+    margin: 2em 15px;
+}
