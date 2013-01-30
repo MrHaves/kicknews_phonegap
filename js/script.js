@@ -328,43 +328,38 @@ function Article(){
 function Login(){
 	if(typeof Login.initialized == "undefined") {
 
-		Login.prototype.login = function(){
+		Login.prototype.setListeners = function () {
+			$('#loginForm').submit(function() {
+				var user = $("#login_user").val();
+				var password = $("#login_password").val();
 
-			var user = $("#login_user").val();
-			var password = $("#login_password").val();
+				
+				var data = JSON.stringify({
+				    "username": user,
+				    "password": password
+				});
 
-			console.log(password);
-			console.log(user);
-
-			var data = JSON.stringify({
-			    "username": "mrhaves",
-			    "password": "1234"
+				$.ajax({
+				  url: 'http://localhost:8000/api/v1/user/login/',
+				  type: 'POST',
+				  contentType: 'application/json',
+				  data: data,
+				  dataType: 'json',
+				  processData: false,
+				  success: function(json) {
+				  	console.info(json);
+				  },
+				  error: function(ts) {
+				  	console.debug(ts.status);
+				  }
+				});
 			});
-
-			$.ajax({
-			  url: 'http://localhost:8000/api/v1/user/login/',
-			  type: 'POST',
-			  contentType: 'application/json',
-			  data: data,
-			  dataType: 'json',
-			  processData: false,
-			  success: function(json) {
-			  	console.log(json);
-			  },
-			  error: function() {
-			  }
-
-			});
-		}
-
-		Reader.prototype.setListeners = function () {
-			$('#submit').click(this.login());
 		};
 
 		Login.initialized = true;
 
 	}
-//rz9chbw
+	this.setListeners();
 }
 
 var app = {
@@ -428,7 +423,6 @@ var app = {
 				break;
 			case 'login' : 
 				var login = new Login();
-				login.login();
 				break;
 			case 'settings' : break;
 			default: alert('no page initialized'); break;
