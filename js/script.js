@@ -347,6 +347,15 @@ function Login(){
 				  processData: false,
 				  success: function(json) {
 				  	console.info(json);
+				  	$.jStorage.set('api_key', json.member.api_key);
+				  	$.jStorage.set('autoShare', json.member.autoShare);
+				  	$.jStorage.set('facebook', json.member.facebook);
+				  	$.jStorage.set('geoloc', json.member.geoloc);
+				  	$.jStorage.set('gplus', json.member.gplus);
+				  	$.jStorage.set('id', json.member.id);
+				  	$.jStorage.set('pays', json.member.pays);
+				  	$.jStorage.set('twitter', json.member.twitter);
+				  	$.jStorage.set('ville', json.member.ville);
 				  },
 				  error: function(ts) {
 				  	console.debug(ts.status);
@@ -358,7 +367,79 @@ function Login(){
 		Login.initialized = true;
 
 	}
+
 	this.setListeners();
+
+}
+
+function Register(){
+	if(typeof Register.initialized == "undefined") {
+
+		Register.prototype.setListeners = function () {
+			$('#registerForm').submit(function() {
+				var user = $("#register_user").val();
+				var email = $("#register_mail").val();
+				var password1 = $("#register_password").val();
+				var password2 = $("#register_password_confirm").val();
+				
+				var data = JSON.stringify({
+				    "username": user,
+				    "email": email,
+				    "password1": password1,
+				    "password2": password2
+				});
+
+				$.ajax({
+				  url: 'http://localhost:8000/api/v1/user/register/',
+				  type: 'POST',
+				  contentType: 'application/json',
+				  data: data,
+				  dataType: 'json',
+				  processData: false,
+				  success: function(json) {
+				  	console.info(json);
+				  },
+				  error: function(ts) {
+				  	console.debug(ts.status);
+				  }
+				});
+			});
+		};
+
+		Register.initialized = true;
+
+	}
+
+	this.setListeners();
+
+}
+
+function Settings(){
+	if(typeof Settings.initialized == "undefined") {
+
+		Settings.prototype.loadLocal = function () {
+			$('#flip-1').slider(); 
+			$('#flip-2').slider(); 
+			$('#selectmenu1').selectmenu(); 
+
+			if ($.jStorage.get('autoShare') == true){
+				$('#flip-1').val('on').slider('refresh');
+			}
+			if ($.jStorage.get('geoloc') == true){
+				$('#flip-2').val('on').slider('refresh');
+			}
+
+			//@TODO: change select value from jStorage('nbArticles')
+			//$('#selectmenu1').val($.jStorage.get('nbArticles')).selectmenu("refresh");
+			//$('#selectmenu1').val('option3').selectmenu("refresh");
+
+		}
+
+		Settings.initialized = true;
+	}
+
+	this.loadLocal();
+
 }
 
 var app = {
@@ -371,8 +452,6 @@ var app = {
 	},
 
 	categories: ['home'],
-
-	//settings: new Settings();
 
 	initialize: function(page) {
 		// init application
@@ -423,7 +502,9 @@ var app = {
 			case 'login' : 
 				var login = new Login();
 				break;
-			case 'settings' : break;
+			case 'settings' :
+				var settings = new Settings();
+				break;
 			default: alert('no page initialized'); break;
 		}
 

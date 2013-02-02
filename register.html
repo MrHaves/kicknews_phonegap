@@ -8,43 +8,22 @@
 	<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-	<!-- Settings -->
-	<div data-role="page" id="settings">
-
+	<!-- Login -->
+	<div data-role="page" id="login">
 	    <div data-theme="a" data-role="header" data-position="fixed">
 	        <h3>
-	            Kicknews Settings
+	            Kicknews Login
 	        </h3>
 	    </div>
-
 	    <div data-role="content">
-
-			<div data-role="fieldcontain">
-				<label for="flip-1">Auto share :</label>
-				<select name="flip-1" id="flip-1" data-role="slider">
-					<option value="off">Off</option>
-					<option value="on">On</option>
-				</select> 
-			</div>
-
-			<div data-role="fieldcontain">
-				<label for="flip-1">Géolocalisation :</label>
-				<select name="flip-1" id="flip-2" data-role="slider">
-					<option value="off">Off</option>
-					<option value="on">On</option>
-				</select> 
-			</div>	
-
-			<div data-role="fieldcontain">
-				<label for="selectmenu1" >Nombre d'articles par page</label>
-				<select name="selectmenu1" id="selectmenu1">
-					<option value="option1">10</option>
-					<option value="option2">15</option>
-					<option value="option3">20</option>
-				</select>
-			</div>   
-
-		</div>
+	    	<form id="registerForm" action="#" method="post">
+    			<input type="text" name="register_user" id="register_user" placeholder="Nom d'utilisateur" />
+    			<input type="text" name="register_mail" id="register_mail" placeholder="Email" />
+    			<input type="password" name="register_password" id="register_password" placeholder="Mot de passe" />
+    			<input type="password" name="register_password_confirm" id="register_password_confirm" placeholder="Confirmation du mot de passe" />
+    			<input type="submit" id="submit" value="S'enregistrer" />
+	        </form>
+	    </div>
 
 	    <div data-role="footer" data-position="fixed" class="nav-glyphish">
 	        <div data-role="navbar">
@@ -65,12 +44,12 @@
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
+	                    <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login" class="ui-btn-active">
 	                        Login
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings" class="ui-btn-active">
+	                    <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings">
 	                        Settings
 	                    </a>
 	                </li>
@@ -87,10 +66,10 @@
 	<script src="js/script.js"></script>
 	<script type="text/javascript">
 		$(document).bind("mobileinit", function(){
-			app.initialize('settings');
+			app.initialize('login');
 		});
 	</script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>
-	<script src="phonegap.js"></script>
+	<script src="js/phonegap.js"></script>
 </body>
 </html>
