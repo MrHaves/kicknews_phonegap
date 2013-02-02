@@ -332,7 +332,6 @@ function Login(){
 			$('#loginForm').submit(function() {
 				var user = $("#login_user").val();
 				var password = $("#login_password").val();
-
 				
 				var data = JSON.stringify({
 				    "username": user,
