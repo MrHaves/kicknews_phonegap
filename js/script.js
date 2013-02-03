@@ -1,7 +1,11 @@
+/*
+	API connexion configuration
+*/
+
 // Development
 var api_paths = {
 	settings : "",
-	home : "http://localhost:8000/api/v1/category/1/?format=json", // don't forget the last / here to avoid the 301 http response code and useless request
+	home : "http://localhost:8000/api/v1/category/1/?format=json", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	login : "http://localhost:8000/api/v1/user/login",
 	register : "http://localhost:8000/api/v1/user/register",
 	logout : "http://localhost:8000/api/v1/user/logout",
@@ -16,6 +20,11 @@ var api_paths = {
 	register : "http://localhost:8000/api/v1/user/register",
 	logout : "http://localhost:8000/api/v1/user/logout",
 };*/
+
+
+/*
+	Reader application will show a list of articles and categories in tabs and manage the interactions and updates	
+*/
 
 function Reader() {
 	this.current_category;
@@ -139,6 +148,12 @@ function Reader() {
 	}
 }
 
+
+/*
+	Custom objects used in the application and the reader : Category and Article.
+*/
+
+// Defines behavior and data of each category
 function Category(){
 	this.id; // eg "home"
 	this.name; // eg "Accueil"
@@ -264,6 +279,7 @@ function Category(){
 	}
 }
 
+// Definition of an article
 function Article(){
 	var id;
 	var title = "";
@@ -352,6 +368,7 @@ function Article(){
 	}
 }
 
+// Definition of an user
 function User() {
 	var username = "anonymous";
 	var email = null;
@@ -460,12 +477,10 @@ function User() {
 	this.setListeners();
 }
 
-
+// Specific application for updating and syncing settings
 function Settings(){
 	if(typeof Settings.initialized == "undefined") {
-
 		Settings.prototype.loadLocal = function () {
-
 			$('#flip-1').slider(); 
 			$('#flip-2').slider(); 
 			$('#selectmenu1').selectmenu(); 
@@ -476,19 +491,19 @@ function Settings(){
 			if ($.jStorage.get('geoloc') == true){
 				$('#flip-2').val('on').slider('refresh');
 			}
-
 			//@TODO: change select value from jStorage('nbArticles')
 			//$('#selectmenu1').val($.jStorage.get('nbArticles')).selectmenu("refresh");
 			//$('#selectmenu1').val('option3').selectmenu("refresh");
-
 		}
-
 		Settings.initialized = true;
 	}
-
 	this.loadLocal();
-
 }
+
+
+/*
+	Definition of the application, used in every pages, and interfacing the different applications (Reader, Settings, ...) and objects (User, Article, ...)
+*/
 
 var app = {
 	// @todo : Add a function to erase jStoraged data.
@@ -517,9 +532,9 @@ var app = {
 				var index = 0;
 				var article = new Article();
 				var category = new Category();
-				article.id = app.getQuerystring('id');
+				article.id = getQuerystring('id');
 				article.load(article.id);
-				category.loadLocal(app.getQuerystring('category'));
+				category.loadLocal(getQuerystring('category'));
 
 				// What is the index of the article in its category ?
 				// @ todo : find better and faster function with break-on-found like "$.inArray(value, array)" which cannot work due to type conflict (we need to check equality of object.id)
@@ -562,77 +577,26 @@ var app = {
 
 	},
 
+	// @todo: should be use ton ensure Internet connexion
 	is_connected: function () {
 		return true;
 	},
 	
+	// Returns an error
+	// @todo : Show message in a little notification bar.
 	errorOrNoInternet: function() {
 		var message = "Unable to fetch fresh news.";
 		console.log(message);
 	},
-
-	/**
-		Articles
-	*/
-	loadArticles: function(event) {
-		// load from storage
-		var last_update = app.last_update;
-		// fetch category by category
-		$(categories).each(function(i, cat) {
-			// fetch from server, sending the current list of articles for limiting the weight of the data sent back ?
-			app.fetchApiArticles(cat);
-		});
-	},
-
-	// @todo : RM if not used
-	updateHome: function() {
-		$(categories).each(function(i, cat) {
-			if(app.nextCategory == cat.id) {
-				// clear the list
-				$('#articles').empty();
-				// Update the title
-				$('#app_title').text("Kicknews: " + cat.name);
-				// Add the articles
-				if(cat.articles.length == 0) {
-					var $li = $('<li>');
-					var $link = $('<a>', {
-						href: "#",
-						class: "fetchBtn",
-						text: "Fetch !"
-					});
-
-					$link.attr("data-transition", "slide");
-					$li.attr("data-theme", "c");
-					$link.appendTo($li);
-					$li.appendTo('#articles');
-
-					app.setListeners();
-				} else {
-					$(cat.articles).each(function(i, article) {
-						var $element = $('<li class="article" data-theme="c"><a href="#" data-transition="slide" class="article_title">' + article.title + '</a></li>');
-						$element.hide();
-						$element.appendTo('#articles');
-						$element.show();
-					});
-				}
-				
-				app.last_update = Date.now();
-				app.currentCategory = app.nextCategory;
-				$('#articles').listview('refresh');
-				console.log('Articles updated !');
-			}
-		});
-	},
-
-	getQuerystring: function(key, default_) {
-       if (default_==null) default_="";
-       key = key.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
-       var regex = new RegExp("[\\?&]"+key+"=([^&#]*)");
-       var qs = regex.exec(window.location.href);
-       if(qs == null) return default_; else return qs[1];
-   }
-
-	// Login
-
-	// Settings
 };
+
+/* Utility functions */
+
+// Returns the GET parameters read from the URL.
+var getQuerystring = function(key, default_) {
+	if (default_==null) default_="";
+	key = key.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+	var regex = new RegExp("[\\?&]"+key+"=([^&#]*)");
+	var qs = regex.exec(window.location.href);
+	if(qs == null) return default_; else return qs[1];
+}
