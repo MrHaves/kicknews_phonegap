@@ -418,6 +418,7 @@ function Settings(){
 	if(typeof Settings.initialized == "undefined") {
 
 		Settings.prototype.loadLocal = function () {
+
 			$('#flip-1').slider(); 
 			$('#flip-2').slider(); 
 			$('#selectmenu1').selectmenu(); 
@@ -501,6 +502,9 @@ var app = {
 				break;
 			case 'login' : 
 				var login = new Login();
+				break;
+			case 'register' : 
+				var register = new Register();
 				break;
 			case 'settings' :
 				var settings = new Settings();
