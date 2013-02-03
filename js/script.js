@@ -353,7 +353,7 @@ function User() {
 	if (typeof User.initialized == "undefined") {
 		User.prototype.register = function(username, mail, password) {
 			var data = JSON.stringify({
-				"username": user,
+				"username": username,
 				"email": email,
 				"password": password,
 			});
