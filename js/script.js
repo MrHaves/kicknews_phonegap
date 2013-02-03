@@ -1,7 +1,7 @@
 // Development
 var api_paths = {
 	settings : "",
-	category : "http://localhost:8000/api/v1/category/1",
+	home : "http://localhost:8000/api/v1/category/1/?format=json", // don't forget the last / here to avoid the 301 http response code and useless request
 	login : "http://localhost:8000/api/v1/user/login",
 	register : "http://localhost:8000/api/v1/user/register",
 	logout : "http://localhost:8000/api/v1/user/logout",
@@ -111,7 +111,7 @@ function Reader() {
 		// @todo : Skip this part
 		this.categories['home'] = new Category();
 		this.categories['home'].id = 'home';
-		this.categories['home'].fetch_url = api_paths.fetch_category;
+		this.categories['home'].fetch_url = api_paths.home;
 		this.categories['home'].articles = [];
 		this.categories['home'].loadOnline();
 		this.current_category = this.categories['home'];
@@ -166,10 +166,10 @@ function Category(){
 				cache: false,
 				success: function(json) {
 					// update list for given category
-					if(!!json.id && current_category_id == json.id /*&& json.timestamp >= last_update*/) {
+					if(!!json.name && current_category_id == json.name /*&& json.timestamp >= last_update*/) {
 						var category = new Category();
 						// add current_category.* = *
-						category.id = json.id;
+						category.id = json.name; // @todo : Fix naming conventions for human-readable title (translated) and fixed id/name
 						category.last_update = json.timestamp;
 
 						$(json.articles).each(function(i, art) {
@@ -180,11 +180,14 @@ function Category(){
 							} else {
 								article.id = art.id;
 								article.title = art.title;
-								article.subhead = art.subhead;
+								article.text = art.text;
+								article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
 								article.picture = art.picture;
 								article.datetime = art.datetime;
 								article.author = art.author;
 							}
+
+							alert("RECEIVED:\n"+JSON.stringify(json)+"\n\nINTERPRETED:\n"+article.debug());
 							category.articles.push(article);
 							category.articles_ids.push(article.id);
 						});
@@ -263,16 +266,21 @@ function Category(){
 
 function Article(){
 	var id;
-	var title;
-	var subhead;
+	var title = "";
+	var subhead = "";
 	var picture;
 	var datetime;
 	var author;
+	var text = "";
 	var is_read = false;
 	var status = "draft";
 	// @todo : add an array "categories" to avoid deleting articles in all categories if not necessary.
 
 	if(typeof Article.initialized == "undefined") {
+		Article.prototype.debug = function() {
+			return " id: "+this.id+"\n title: "+this.title+"\n subhead: "+this.subhead+"\n picture: "+this.picture+"\n datetime: "+this.datetime+"\n author: "+this.author+"\n is_read: "+this.is_read+"\n status: "+this.status;
+		};
+
 		Article.prototype.refresh = function () {
 
 		};
@@ -482,6 +490,7 @@ function Settings(){
 }
 
 var app = {
+	// @todo : Add a function to erase jStoraged data.
 	page: null,
 	user: null,
 	current_user: new User(), // ensure anonymous user by default.
