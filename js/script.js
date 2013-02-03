@@ -1,3 +1,22 @@
+// Development
+var api_paths = {
+	settings : "",
+	category : "http://localhost:8000/api/v1/category/1",
+	login : "http://localhost:8000/api/v1/user/login",
+	register : "http://localhost:8000/api/v1/user/register",
+	logout : "http://localhost:8000/api/v1/user/logout",
+};
+
+// Production
+// @todo : use ssl if possible. (check alwaysdata)
+/*var api_paths = {
+	settings : "",
+	category : "http://localhost:8000/api/v1/category/home",
+	login : "http://localhost:8000/api/v1/user/login",
+	register : "http://localhost:8000/api/v1/user/register",
+	logout : "http://localhost:8000/api/v1/user/logout",
+};*/
+
 function Reader() {
 	this.current_category;
 	this.categories_menu = [];
@@ -92,7 +111,7 @@ function Reader() {
 		// @todo : Skip this part
 		this.categories['home'] = new Category();
 		this.categories['home'].id = 'home';
-		this.categories['home'].fetch_url = "offline_api/articles/home.json";
+		this.categories['home'].fetch_url = api_paths.fetch_category;
 		this.categories['home'].articles = [];
 		this.categories['home'].loadOnline();
 		this.current_category = this.categories['home'];
@@ -121,8 +140,8 @@ function Reader() {
 }
 
 function Category(){
-	this.id;
-	this.name;
+	this.id; // eg "home"
+	this.name; // eg "Accueil"
 	this.articles_ids = [];
 	this.articles = [];
 	this.fetch_url;
@@ -325,94 +344,114 @@ function Article(){
 	}
 }
 
-function Login(){
-	if(typeof Login.initialized == "undefined") {
+function User() {
+	var username = "anonymous";
+	var email = null;
+	var geoloc = [];
+	var session_id = null;
 
-		Login.prototype.setListeners = function () {
-			$('#loginForm').submit(function() {
-				var user = $("#login_user").val();
-				var password = $("#login_password").val();
-				
-				var data = JSON.stringify({
-				    "username": user,
-				    "password": password
-				});
-
-				$.ajax({
-				  url: 'http://localhost:8000/api/v1/user/login/',
-				  type: 'POST',
-				  contentType: 'application/json',
-				  data: data,
-				  dataType: 'json',
-				  processData: false,
-				  success: function(json) {
-				  	console.info(json);
-				  	$.jStorage.set('api_key', json.member.api_key);
-				  	$.jStorage.set('autoShare', json.member.autoShare);
-				  	$.jStorage.set('facebook', json.member.facebook);
-				  	$.jStorage.set('geoloc', json.member.geoloc);
-				  	$.jStorage.set('gplus', json.member.gplus);
-				  	$.jStorage.set('id', json.member.id);
-				  	$.jStorage.set('pays', json.member.pays);
-				  	$.jStorage.set('twitter', json.member.twitter);
-				  	$.jStorage.set('ville', json.member.ville);
-				  },
-				  error: function(ts) {
-				  	console.debug(ts.status);
-				  }
-				});
+	if (typeof User.initialized == "undefined") {
+		User.prototype.register = function(username, mail, password) {
+			var data = JSON.stringify({
+				"username": username,
+				"email": email,
+				"password": password,
+			});
+			$.ajax({
+				url: api_paths.register,
+				type: 'POST',
+				contentType: 'application/json',
+				data: data,
+				dataType: 'json',
+				processData: false,
+				success: function(json) {
+					console.info(json);
+					// login (add username, email, infos ... to current object User) ?
+				},
+				error: function(ts) {
+					console.debug(ts.status);
+					// @todo : ensure anonymous
+				}
 			});
 		};
 
-		Login.initialized = true;
+		// Performs connexion with username or email (login) and password.
+		// @todo : ensure security
+		User.prototype.login = function(login, password) {
+			var data = JSON.stringify({
+				"login": login, // login is either username or email
+				"password": password
+			});
 
-	}
+			$.ajax({
+				url: api_paths.login,
+				type: 'POST',
+				contentType: 'application/json',
+				data: data,
+				dataType: 'json',
+				processData: false,
+				success: function(json) {
+					console.info(json);
+					// @ todo : build user and save user instead
+					// @ todo : Translate "pays" and "ville". "id" should instead be sessid to prevent account spoofing
+					$.jStorage.set('api_key', json.member.api_key);
+					$.jStorage.set('autoShare', json.member.autoShare);
+					$.jStorage.set('facebook', json.member.facebook);
+					$.jStorage.set('geoloc', json.member.geoloc);
+					$.jStorage.set('gplus', json.member.gplus);
+					$.jStorage.set('id', json.member.id);
+					$.jStorage.set('pays', json.member.pays);
+					$.jStorage.set('twitter', json.member.twitter);
+					$.jStorage.set('ville', json.member.ville);
+				},
+				error: function(ts) {
+					console.debug(ts.status);
+				}
+			});
 
-	this.setListeners();
+			//@todo : reload settings ?
+		};
 
-}
+		// Performs logout and ensure 
+		User.prototype.logout = function() {
+			// Destroy online session and cookies
+			$.get(api_paths.logout);
+			// Update current_user
+			app.current_user = new User();
+		};
+		
+		User.prototype.is_logged_in = function() {
+			return (this.session_id == null);
+		};
 
-function Register(){
-	if(typeof Register.initialized == "undefined") {
+		// @move listeners in app since the current_user is there.
+		User.prototype.setListeners = function() {
+			$('#loginForm').submit(function() {
+				var user = $("#login_user").val();
+				var password = $("#login_password").val();
+				app.current_user.login(user, password);
+			});
 
-		Register.prototype.setListeners = function () {
 			$('#registerForm').submit(function() {
 				var user = $("#register_user").val();
 				var email = $("#register_mail").val();
 				var password1 = $("#register_password").val();
 				var password2 = $("#register_password_confirm").val();
-				
-				var data = JSON.stringify({
-				    "username": user,
-				    "email": email,
-				    "password1": password1,
-				    "password2": password2
-				});
-
-				$.ajax({
-				  url: 'http://localhost:8000/api/v1/user/register/',
-				  type: 'POST',
-				  contentType: 'application/json',
-				  data: data,
-				  dataType: 'json',
-				  processData: false,
-				  success: function(json) {
-				  	console.info(json);
-				  },
-				  error: function(ts) {
-				  	console.debug(ts.status);
-				  }
-				});
+				if (password1 == password2) {
+					app.current_user.register(user, mail, password);
+				}
 			});
-		};
 
-		Register.initialized = true;
+			// @todo : add logout
+		}
 
+
+		User.initialized = true;
 	}
 
 	this.setListeners();
-
 }
+
 
 function Settings(){
 	if(typeof Settings.initialized == "undefined") {
@@ -446,6 +485,7 @@ function Settings(){
 var app = {
 	page: null,
 	user: null,
+	current_user: new User(), // ensure anonymous user by default.
 	last_update: -1,
 
 	settings: {
@@ -456,8 +496,8 @@ var app = {
 
 	initialize: function(page) {
 		// init application
+		// load User session from storage
 		// load Settings
-		// load User session
 		// fetch config data from storage
 
 		switch(page) {
@@ -500,8 +540,7 @@ var app = {
 			case 'write' : 
 				//var writer = new Writer();
 				break;
-			case 'login' : 
-				var login = new Login();
+			case 'login' :
 				break;
 			case 'register' : 
 				var register = new Register();
@@ -536,6 +575,7 @@ var app = {
 		});
 	},
 
+	// @todo : RM if not used
 	updateHome: function() {
 		$(categories).each(function(i, cat) {
 			if(app.nextCategory == cat.id) {
