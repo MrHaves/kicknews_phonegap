@@ -115,7 +115,6 @@ function Reader() {
 				MAIN for Reader
 		*/
 
-
 		// DEFAULT : Adding home to the pages
 		// @todo : Skip this part
 		this.categories['home'] = new Category();
@@ -376,7 +375,7 @@ function User() {
 	var session_id = null;
 
 	if (typeof User.initialized == "undefined") {
-		User.prototype.register = function(username, mail, password) {
+		User.prototype.register = function(username, email, password) {
 			var data = JSON.stringify({
 				"username": username,
 				"email": email,
@@ -404,7 +403,7 @@ function User() {
 		// @todo : ensure security
 		User.prototype.login = function(login, password) {
 			var data = JSON.stringify({
-				"login": login, // login is either username or email
+				"username": login, // login is either username or email // @todo : make login
 				"password": password
 			});
 
@@ -430,6 +429,7 @@ function User() {
 					$.jStorage.set('ville', json.member.ville);
 				},
 				error: function(ts) {
+					alert(ts.status);
 					console.debug(ts.status);
 				}
 			});
