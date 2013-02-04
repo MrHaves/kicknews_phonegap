@@ -6,8 +6,30 @@
 	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
 	<link rel="stylesheet" href="css/themes/theme.min.css" />
 	<link rel="stylesheet" href="css/style.css" />
+  <script type="text/javascript">
+      function onLoad(){
+            document.addEventListener("deviceready", onDeviceReady, true);
+        }
+
+    function onDeviceReady(){
+	    //    navigator.notification.alert("PhoneGap is working!!");
+	    var selectElmt = document.getElementById('flip-1');
+	    if(selectElmt.selectedIndex==1) {
+	    navigator.geolocation.getCurrentPosition(onGeoSuccess, onError);
+	  	}
+    }
+
+    //callback of geolocalisation btn
+    function onGeoSuccess(){
+   		var element = document.getElementById('geolocalisation');
+   		element.innerHTML = 'Latitude: ' + position.coords.latitude + '<br/>' + 'Altitude: '+ position.coords.longitude;
+    }
+    function onError(error) {
+    	alert('code: '+ error.code + '\n' + 'message: ' + error.message + '\n');
+    }
+  </script>
 </head>
-<body>
+<body onload="onLoad();">
 	<!-- Settings -->
 	<div data-role="page" id="settings">
 
@@ -33,6 +55,7 @@
 					<option value="off">Off</option>
 					<option value="on">On</option>
 				</select> 
+				<p id="geolocalisation">Geolocalisation en cours</p>
 			</div>	
 
 			<div data-role="fieldcontain">
@@ -91,6 +114,6 @@
 		});
 	</script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>
-	<script src="phonegap.js"></script>
+	<script src="js/phonegap.js"></script>
 </body>
 </html>
