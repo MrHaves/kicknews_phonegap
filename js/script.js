@@ -378,7 +378,7 @@ function User() {
 		// Save current user in storage.
 		User.prototype.save = function() {
 			// @todo : do not save each properties of the user separately in storage, but only one current_user object.
-		}:
+		};
 
 		// Load current user from storage if exists.
 		User.prototype.load = function() {
@@ -386,7 +386,7 @@ function User() {
 		};
 
 		// Register user distantly using API
-		User.prototype.register = function(username, mail, password1, password2) {
+		User.prototype.register = function(username, email, password1, password2) {
 			var data = JSON.stringify({
 				"username": username,
 				"email": email,
@@ -402,7 +402,9 @@ function User() {
 				processData: false,
 				success: function(json) {
 					console.info(json);
-					// login (add username, email, infos ... to current object User) ?
+					if(json.success) {
+						// @todo: add username, email, infos ... to current object User
+					}
 				},
 				error: function(ts) {
 					console.debug(ts.status);
@@ -426,17 +428,19 @@ function User() {
 				dataType: 'json',
 				success: function(json) {
 					console.info(json);
-					// @ todo : build user and save user instead
-					// @ todo : Translate "pays" and "ville". "id" should instead be sessid to prevent account spoofing
-					$.jStorage.set('api_key', json.member.api_key);
-					$.jStorage.set('autoShare', json.member.autoShare);
-					$.jStorage.set('facebook', json.member.facebook);
-					$.jStorage.set('geoloc', json.member.geoloc);
-					$.jStorage.set('gplus', json.member.gplus);
-					$.jStorage.set('id', json.member.id);
-					$.jStorage.set('pays', json.member.pays);
-					$.jStorage.set('twitter', json.member.twitter);
-					$.jStorage.set('ville', json.member.ville);
+					if(json.success) {
+						// @ todo : build user and save user instead
+						// @ todo : Translate "pays" and "ville". "id" should instead be sessid to prevent account spoofing
+						$.jStorage.set('api_key', json.member.api_key);
+						$.jStorage.set('autoShare', json.member.autoShare);
+						$.jStorage.set('facebook', json.member.facebook);
+						$.jStorage.set('geoloc', json.member.geoloc);
+						$.jStorage.set('gplus', json.member.gplus);
+						$.jStorage.set('id', json.member.id);
+						$.jStorage.set('pays', json.member.pays);
+						$.jStorage.set('twitter', json.member.twitter);
+						$.jStorage.set('ville', json.member.ville);
+					}
 				},
 				error: function(ts) {
 					console.debug(ts.status);
@@ -462,7 +466,6 @@ function User() {
 
 		// @move listeners in app since the current_user is there.
 		User.prototype.setListeners = function() {
-			alert("setListeners");
 			$('#loginForm').submit(function() {
 				var user = $("#login_user").val();
 				var password = $("#login_password").val();
