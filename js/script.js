@@ -351,11 +351,13 @@ function User() {
 	var session_id = null;
 
 	if (typeof User.initialized == "undefined") {
-		User.prototype.register = function(username, mail, password) {
+		User.prototype.register = function(username, mail, password1, password2) {
+
 			var data = JSON.stringify({
 				"username": username,
 				"email": email,
-				"password": password,
+				"password1": password1,
+				"password2": password2,
 			});
 			$.ajax({
 				url: api_paths.register,
@@ -426,6 +428,7 @@ function User() {
 
 		// @move listeners in app since the current_user is there.
 		User.prototype.setListeners = function() {
+			alert("setListeners");
 			$('#loginForm').submit(function() {
 				var user = $("#login_user").val();
 				var password = $("#login_password").val();
@@ -434,11 +437,11 @@ function User() {
 
 			$('#registerForm').submit(function() {
 				var user = $("#register_user").val();
-				var email = $("#register_mail").val();
+				var mail = $("#register_mail").val();
 				var password1 = $("#register_password").val();
 				var password2 = $("#register_password_confirm").val();
 				if (password1 == password2) {
-					app.current_user.register(user, mail, password);
+					app.current_user.register(user, mail, password1, password2);
 				}
 			});
 
@@ -543,7 +546,6 @@ var app = {
 			case 'login' :
 				break;
 			case 'register' : 
-				var register = new Register();
 				break;
 			case 'settings' :
 				var settings = new Settings();
