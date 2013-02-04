@@ -5,10 +5,10 @@
 // Development
 var api_paths = {
 	settings : "",
-	home : "http://localhost:8000/api/v1/category/1/?format=json", // don't forget the last "/"" here to avoid the 301 http response code and useless request
-	login : "http://localhost:8000/api/v1/user/login",
-	register : "http://localhost:8000/api/v1/user/register",
-	logout : "http://localhost:8000/api/v1/user/logout",
+	home : "http://localhost:8000/api/v1/category/1/?format=json",
+	login : "http://localhost:8000/api/v1/user/login/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
+	register : "http://localhost:8000/api/v1/user/register/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
+	logout : "http://localhost:8000/api/v1/user/logout/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 };
 
 // Production
@@ -375,6 +375,17 @@ function User() {
 	var session_id = null;
 
 	if (typeof User.initialized == "undefined") {
+		// Save current user in storage.
+		User.prototype.save = function() {
+			// @todo : do not save each properties of the user separately in storage, but only one current_user object.
+		}:
+
+		// Load current user from storage if exists.
+		User.prototype.load = function() {
+
+		};
+
+		// Register user distantly using API
 		User.prototype.register = function(username, mail, password1, password2) {
 			var data = JSON.stringify({
 				"username": username,
@@ -400,21 +411,19 @@ function User() {
 			});
 		};
 
-		// Performs connexion with username or email (login) and password.
+		// login with username or email (login) and password distantly via API.
 		// @todo : ensure security
-		User.prototype.login = function(login, password) {
+		User.prototype.login = function(login, pwd) {
 			var data = JSON.stringify({
-				"username": login, // login is either username or email // @todo : make login
-				"password": password
+				"username": ''+login, // login is either username or email // @todo : make login
+				"password": ''+pwd
 			});
-
 			$.ajax({
 				url: api_paths.login,
-				type: 'POST',
+				type: "post",
 				contentType: 'application/json',
 				data: data,
 				dataType: 'json',
-				processData: false,
 				success: function(json) {
 					console.info(json);
 					// @ todo : build user and save user instead
@@ -430,8 +439,9 @@ function User() {
 					$.jStorage.set('ville', json.member.ville);
 				},
 				error: function(ts) {
-					alert(ts.status);
 					console.debug(ts.status);
+					app.errorOrNoInternet();
+					app.resetForms();
 				}
 			});
 
@@ -457,6 +467,7 @@ function User() {
 				var user = $("#login_user").val();
 				var password = $("#login_password").val();
 				app.current_user.login(user, password);
+				return false;
 			});
 
 			$('#registerForm').submit(function() {
@@ -467,6 +478,7 @@ function User() {
 				if (password1 == password2) {
 					app.current_user.register(user, mail, password1, password2);
 				}
+				return false;
 			});
 
 			// @todo : add logout
@@ -588,6 +600,10 @@ var app = {
 	errorOrNoInternet: function() {
 		var message = "Unable to fetch fresh news.";
 		console.log(message);
+	},
+
+	resetForms: function() {
+		$('form').empty();
 	},
 };
 
