@@ -378,7 +378,7 @@ function User() {
 		// Save current user in storage.
 		User.prototype.save = function() {
 			// @todo : do not save each properties of the user separately in storage, but only one current_user object.
-		}:
+		};
 
 		// Load current user from storage if exists.
 		User.prototype.load = function() {
@@ -389,9 +389,9 @@ function User() {
 		User.prototype.register = function(username, mail, password1, password2) {
 			var data = JSON.stringify({
 				"username": username,
-				"email": email,
+				"email": mail,
 				"password1": password1,
-				"password2": password2,
+				"password2": password2
 			});
 			$.ajax({
 				url: api_paths.register,
@@ -402,7 +402,6 @@ function User() {
 				processData: false,
 				success: function(json) {
 					console.info(json);
-					// login (add username, email, infos ... to current object User) ?
 				},
 				error: function(ts) {
 					console.debug(ts.status);
@@ -462,7 +461,6 @@ function User() {
 
 		// @move listeners in app since the current_user is there.
 		User.prototype.setListeners = function() {
-			alert("setListeners");
 			$('#loginForm').submit(function() {
 				var user = $("#login_user").val();
 				var password = $("#login_password").val();
@@ -475,9 +473,7 @@ function User() {
 				var mail = $("#register_mail").val();
 				var password1 = $("#register_password").val();
 				var password2 = $("#register_password_confirm").val();
-				if (password1 == password2) {
-					app.current_user.register(user, mail, password1, password2);
-				}
+				app.current_user.register(user, mail, password1, password2);
 				return false;
 			});
 
