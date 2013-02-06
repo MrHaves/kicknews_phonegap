@@ -389,9 +389,9 @@ function User() {
 		User.prototype.register = function(username, email, password1, password2) {
 			var data = JSON.stringify({
 				"username": username,
-				"email": email,
+				"email": mail,
 				"password1": password1,
-				"password2": password2,
+				"password2": password2
 			});
 			$.ajax({
 				url: api_paths.register,
@@ -478,9 +478,7 @@ function User() {
 				var mail = $("#register_mail").val();
 				var password1 = $("#register_password").val();
 				var password2 = $("#register_password_confirm").val();
-				if (password1 == password2) {
-					app.current_user.register(user, mail, password1, password2);
-				}
+				app.current_user.register(user, mail, password1, password2);
 				return false;
 			});
 
