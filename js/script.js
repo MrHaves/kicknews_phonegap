@@ -455,7 +455,7 @@ function User() {
 		// Performs logout and ensure 
 		User.prototype.logout = function() {
 			// Destroy online session and cookies
-			$.get(api_paths.logout);
+			$.get(api_paths.logout, {'api_key': $.jStorage.get('api_key'), 'format': 'json'});
 			// Update current_user
 			app.current_user = new User();
 		};
@@ -582,6 +582,9 @@ var app = {
 			case 'login' :
 				break;
 			case 'register' : 
+				break;
+			case 'logout' :
+				app.current_user.logout();
 				break;
 			case 'settings' :
 				var settings = new Settings();
