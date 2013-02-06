@@ -408,7 +408,7 @@ function User() {
 				},
 				error: function(ts) {
 					console.debug(ts.status);
-					// @todo : ensure anonymous
+					// @todo : ensure anonymous ?
 				}
 			});
 		};
