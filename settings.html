@@ -6,21 +6,26 @@
 	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
 	<link rel="stylesheet" href="css/themes/theme.min.css" />
 	<link rel="stylesheet" href="css/style.css" />
+	<script src="js/phonegap.js"></script>
 	<script type="text/javascript">
 
 		function init() {
     	document.addEventListener("deviceready", onDeviceReady, false);
 		}
+		//test Function about the run of Phonegap
     function onDeviceReady(){
-	    alert("PhoneGap is working!!");
-	    var selectElmt = document.getElementById('flip-1');
-	    //if(selectElmt.selectedIndex==1) {
-	    	navigator.geolocation.getCurrentPosition(onGeoSuccess, onError);
-	  	//}
+	    //alert("PhoneGap is working on settings!!");
     }
 
+    //If Geoloc btn is 'on', set the geolocalisation
+    function setGeoloc(Objet) {
+    	if (Objet.value=="on") {
+	    	navigator.geolocation.getCurrentPosition(onGeoSuccess, onError);
+    	}
+    }
     //callback of geolocalisation btn
-    function onGeoSuccess(){
+    function onGeoSuccess(position){
+    	//navigator.notification.alert("navigator alert settings");
    		var element = document.getElementById('geolocalisation');
    		element.innerHTML = 'Latitude: ' + position.coords.latitude + '<br/>' + 'Altitude: '+ position.coords.longitude;
     }
@@ -40,7 +45,9 @@
 	    </div>
 
 	    <div data-role="content">
-	    	
+	    --Geolocalisation--
+				<p id="geolocalisation"></p>
+		--
 			<div data-role="fieldcontain">
 				<label for="flip-1">Auto share :</label>
 				<select name="flip-1" id="flip-1" data-role="slider">
@@ -51,11 +58,11 @@
 
 			<div data-role="fieldcontain">
 				<label for="flip-1">Géolocalisation :</label>
-				<select name="flip-1" id="flip-2" data-role="slider">
+				<select name="flip-1" id="flip-2" data-role="slider"  onchange="setGeoloc(this)">
 					<option value="off">Off</option>
 					<option value="on">On</option>
 				</select> 
-				<div id="geolocalisation"></div>
+
 			</div>	
 
 			<div data-role="fieldcontain">
@@ -114,6 +121,6 @@
         });
     </script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>
-	<script src="js/phonegap.js"></script>
+
 </body>
 </html>

@@ -6,19 +6,21 @@
     <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
     <link rel="stylesheet" href="css/themes/theme.min.css" />
     <link rel="stylesheet" href="css/style.css" />
+    <script src="js/phonegap.js"></script>
     <script type="text/javascript">
-    /*      function onLoad(){
-                document.addEventListener("deviceready", onDeviceReady, true);
+          function onLoad(){
+                document.addEventListener("deviceready", onDeviceReady, false);
             }
 
             function onDeviceReady(){
-                navigator.notification.alert("PhoneGap is working!!");
-            }*/
-        //callback on capturePhoto btn
+                alert("PhoneGap is working on write !!");
+            }
+
         function capturePhoto(){
+         navigator.notification.alert("yah iw ll take picture");
             navigator.camera.getPicture(uploadPhoto,uploadFail,{sourceType:1,quality:60});
         }
-        //If capture success
+
         function uploadPhoto(data){
         // this is where you would send the image file to server
             cameraPic.src = "data:image/jpeg;base64," + data;
@@ -29,17 +31,27 @@
                 'Photo Uploaded',              // title
                 'OK'                          // buttonName
             );
+            // upload has failed Fail
+            /*
+            if (failedToUpload){
+            navigator.notification.alert(
+                'Your Photo has failed to upload',
+                failedDismissed,
+                'Photo Not Uploaded',
+                'OK'
+                );
+            }
+            */
         }
-        //If upload success
         function okay(){
+            // Do something
         }
-        //If upload fails
         function uploadFail(message) {
             alert('Failed because: '+message);
         }
       </script>
   </head>
-  <body>
+  <body onload="onLoad()">
     <!-- Write an article -->
     <div data-role="page" id="write">
         <div data-theme="a" data-role="header" data-position="fixed">
@@ -85,7 +97,7 @@
             <div data-role="navbar">
                 <ul>
                     <li>
-                        <a href="index.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
+                        <a href="read.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
                             Home
                         </a>
                     </li>
@@ -116,16 +128,13 @@
     </div>
 
     <!-- Jquery is needed also for the design -->
-    <script src="js/jquery-latest.min.js"></script>
-    <script src="js/jquery.json-2.4.min.js"></script>
-    <script src="js/jstorage.min.js"></script>
-    <script src="js/script.js"></script>
+      <script src="js/jquery-latest.min.js"></script>
+      <script src="js/script.js"></script>
     <script type="text/javascript">
         $(document).bind("mobileinit", function(){
             app.initialize('write');
         });
     </script>
       <script src="js/jquery.mobile-1.2.0.min.js"></script>
-    <script src="js/phonegap.js"></script>
   </body>
 </html>
