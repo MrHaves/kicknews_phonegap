@@ -6,17 +6,17 @@
 	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
 	<link rel="stylesheet" href="css/themes/theme.min.css" />
 	<link rel="stylesheet" href="css/style.css" />
-  <script type="text/javascript">
-      function onLoad(){
-            document.addEventListener("deviceready", onDeviceReady, true);
-        }
+	<script type="text/javascript">
 
+		function init() {
+    	document.addEventListener("deviceready", onDeviceReady, false);
+		}
     function onDeviceReady(){
-	    //    navigator.notification.alert("PhoneGap is working!!");
+	    alert("PhoneGap is working!!");
 	    var selectElmt = document.getElementById('flip-1');
-	    if(selectElmt.selectedIndex==1) {
-	    navigator.geolocation.getCurrentPosition(onGeoSuccess, onError);
-	  	}
+	    //if(selectElmt.selectedIndex==1) {
+	    	navigator.geolocation.getCurrentPosition(onGeoSuccess, onError);
+	  	//}
     }
 
     //callback of geolocalisation btn
@@ -27,9 +27,9 @@
     function onError(error) {
     	alert('code: '+ error.code + '\n' + 'message: ' + error.message + '\n');
     }
-  </script>
+	</script>
 </head>
-<body onload="onLoad();">
+<body onload="onDeviceReady()">
 	<!-- Settings -->
 	<div data-role="page" id="settings">
 
@@ -55,7 +55,7 @@
 					<option value="off">Off</option>
 					<option value="on">On</option>
 				</select> 
-				<p id="geolocalisation">Geolocalisation en cours</p>
+				<div id="geolocalisation"></div>
 			</div>	
 
 			<div data-role="fieldcontain">
@@ -108,11 +108,11 @@
 	<script src="js/jquery.json-2.4.min.js"></script>
 	<script src="js/jstorage.min.js"></script>
 	<script src="js/script.js"></script>
-	<script type="text/javascript">
-		$(document).bind("mobileinit", function(){
-			app.initialize('settings');
-		});
-	</script>
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function(){
+            app.initialize('write');
+        });
+    </script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>
 	<script src="js/phonegap.js"></script>
 </body>
