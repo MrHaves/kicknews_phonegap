@@ -1,40 +1,35 @@
 <html>
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<title>Kicknews</title>
 	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
 	<link rel="stylesheet" href="css/themes/theme.min.css" />
 	<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-	
-
-	<!-- Article -->
-	<div data-role="page" id="reader">
-		<div data-role="panel" id="mypanel">
-			<a>oeil</a>
-		</div><!-- /panel -->
-
-		<div class="ui-panel-content-wrap ui-responsive">
+	<!-- Login -->
+	<div data-role="page" id="login">
 	    <div data-theme="a" data-role="header" data-position="fixed">
-	    	<a href="#mypanel" data-rel="panel">Open panel</a>
 	        <h3>
-	            Kicknews Article
+	            Kicknews Login
 	        </h3>
-			<a href="#" data-icon="check" data-theme="a" class="refresh_reader ui-btn-right">Full Refresh</a>
-	        <div id="categories_menu"></div>
 	    </div>
+	    <div data-role="content">
+	    	<form id="loginForm" action="#" method="post">
+    			<input type="text" name="login_user" id="login_user" placeholder="Login" />
+    			<input type="password" name="login_password" id="login_password" placeholder="Password" />
+    			<input type="submit" id="submit" value="Log me in" />
+	        </form>
 
-	    <div data-role="content" id="content">
-		    <ul id="articles" data-role="listview" class="ui-listview" data-autodividers="true"></ul>
+	        <a href="register.html" data-theme="a" data-role="button" data-ajax="false">Créer un compte</a>
 	    </div>
 
 	    <div data-role="footer" data-position="fixed" class="nav-glyphish">
 	        <div data-role="navbar">
 	            <ul>
 	                <li>
-	                    <a href="read.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home" class="ui-btn-active">
+	                    <a href="index.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
 	                    	Home
 	                    </a>
 	                </li>
@@ -49,7 +44,7 @@
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
+	                    <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login" class="ui-btn-active">
 	                        Login
 	                    </a>
 	                </li>
@@ -62,6 +57,7 @@
 	        </div>
 	    </div>
 
+
 	</div>
 
 	<script src="js/jquery-latest.min.js"></script>
@@ -69,14 +65,11 @@
 	<script src="js/jstorage.min.js"></script>
 	<script src="js/script.js"></script>
 	<script type="text/javascript">
-
 		$(document).bind("mobileinit", function(){
-			app.initialize('read');
+			app.initialize('logout');
 		});
-
 	</script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>
 	<script src="js/phonegap.js"></script>
-
 </body>
 </html>
