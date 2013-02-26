@@ -9,6 +9,7 @@ var api_paths = {
 	login : "http://localhost:8000/api/v1/user/login/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	register : "http://localhost:8000/api/v1/user/register/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	logout : "http://localhost:8000/api/v1/user/logout/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
+	writecomment : "http://localhost:8000/api/v1/comment/",
 };
 
 // Production
@@ -34,7 +35,6 @@ function Reader() {
 	if (typeof Reader.initialized == "undefined" ) {
 		// API fecth online via AJAX
 		Reader.prototype.loadOnline = function () {
-			alert("loadOnline Reader");
 			$(this.categories).each(function(i, cat) {
 				cat.loadOnline();
 			});
@@ -42,7 +42,6 @@ function Reader() {
 
 		// Storage fetch
 		Reader.prototype.loadLocal = function() {
-			alert("loadLocal Reader");
 			$(this.categories).each(function(i, cat) {
 				cat.loadLocal();
 			});
@@ -115,14 +114,16 @@ function Reader() {
 				MAIN for Reader
 		*/
 
+		this.loadOnline();
+
 		// DEFAULT : Adding home to the pages
 		// @todo : Skip this part
-		this.categories['home'] = new Category();
-		this.categories['home'].id = 'home';
-		this.categories['home'].fetch_url = api_paths.home;
-		this.categories['home'].articles = [];
-		this.categories['home'].loadOnline();
-		this.current_category = this.categories['home'];
+		this.categories['économie'] = new Category();
+		this.categories['économie'].id = 'économie';
+		this.categories['économie'].fetch_url = api_paths.home;
+		this.categories['économie'].articles = [];
+		this.categories['économie'].loadOnline();
+		this.current_category = this.categories['économie'];
 
 		this.rebuildMenu();
 
@@ -180,7 +181,7 @@ function Category(){
 				cache: false,
 				success: function(json) {
 					// update list for given category
-					if(!!json.name && current_category_id == json.name /*&& json.timestamp >= last_update*/) {
+					if(json.name && current_category_id == json.name /*&& json.timestamp >= last_update*/) {
 						var category = new Category();
 						// add current_category.* = *
 						category.id = json.name; // @todo : Fix naming conventions for human-readable title (translated) and fixed id/name
@@ -201,9 +202,9 @@ function Category(){
 								article.author = art.author;
 							}
 
-							alert("RECEIVED:\n"+JSON.stringify(json)+"\n\nINTERPRETED:\n"+article.debug());
 							category.articles.push(article);
 							category.articles_ids.push(article.id);
+							article.save(article.id);
 						});
 
 						// show articles
@@ -347,7 +348,7 @@ function Article(){
 			$h3 = $('<h3>', {
 				text: this.title,
 			});
-			$p = $('<p>', {
+			$div = $('<div>', {
 				text: this.subhead
 			});
 			if(!!this.picture) {
@@ -357,10 +358,10 @@ function Article(){
 				$img.appendTo($a);
 			}
 			$h3.appendTo($a);
-			$p.appendTo($a);
+			//$div.appendTo($a);
 			$a.appendTo($li);
 			$li.appendTo('#reader #articles');
-			//$('#reader #articles').listview('refresh');
+			$('#reader #articles').listview('refresh');
 		};
 
 		Article.initialized = true;
@@ -428,7 +429,10 @@ function User() {
 				},
 				error: function(ts) {
 					console.debug(ts.status);
-					// @todo : ensure anonymous ?
+					var error = jQuery.parseJSON(ts.responseText);
+					if(error.reason == "passwords don't match") {
+						$('p.error').text("Les mots de passe ne correspondent pas");
+					}
 				}
 			});
 		};
@@ -464,12 +468,19 @@ function User() {
 						app.current_user.city = json.member.ville;
 
 						app.current_user.save();
+
+						window.location.replace("read.html");
 					}
 				},
 				error: function(ts) {
-					console.debug(ts.status);
-					app.errorOrNoInternet();
-					app.resetForms();
+					console.debug(ts.responseText);
+					var error = jQuery.parseJSON(ts.responseText);
+					if(error.reason == "incorrect") {
+						$('p.error').text("Le nom d'utilisateur ou le mot de passe est incorrect");
+					}
+
+					$("#login_user").val('');
+					$("#login_password").val('');
 				}
 			});
 
@@ -600,6 +611,34 @@ var app = {
 						article.load(category.articles_ids[index]);
 						article.show();
 					//}
+				});
+				break;
+			case 'write-comment' : 
+				$("#writeComment").submit(function(){
+					var text = $("#comment").val();
+					var data = JSON.stringify({
+						"text": text,
+						"article_id": article.id,
+						"user_id": app.current_user.id
+					});
+
+					$.ajax({
+						url: api_paths.writecomment,
+						type: 'POST',
+						contentType: 'application/json',
+						data: data,
+						dataType: 'json',
+						processData: false,
+						success: function(json) {
+							console.info(json);
+							if(json.success) {
+								//@TODO
+							}
+						},
+						error: function(ts) {
+
+						}
+					});				
 				});
 				break;
 			case 'write' : 

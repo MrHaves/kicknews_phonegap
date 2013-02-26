@@ -2,7 +2,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1"> 
-  <title>Kicknews</title>
+  <title>Bottlenews</title>
   <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
   <link rel="stylesheet" href="css/themes/theme.min.css" />
   <link rel="stylesheet" href="css/style.css" />
@@ -40,52 +40,41 @@
 
       <div data-theme="a" data-role="header" data-position="fixed">
           <h3>
-              Kicknews Settings
+              Bottlenews
           </h3>
       </div>
 
       <div data-role="content">
-      --Geolocalisation--
+        <!--Geolocalisation-->
         <p id="geolocalisation"></p>
-    --
-      <div data-role="fieldcontain">
-        <label for="flip-1">Auto share :</label>
-        <select name="flip-1" id="flip-1" data-role="slider">
-          <option value="off">Off</option>
-          <option value="on">On</option>
-        </select> 
+
+        <div data-role="fieldcontain">
+          <label for="flip-1">Auto share :</label>
+          <select name="flip-1" id="flip-1" data-role="slider">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select> 
+        </div>
+
+        <div data-role="fieldcontain">
+          <label for="flip-2">Géolocalisation :</label>
+          <select name="flip-2" id="flip-2" data-role="slider"  onchange="setGeoloc(this)">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select> 
+
+        </div>  
+
+        <div data-role="fieldcontain">
+          <label for="selectmenu1" >Nombre d'articles par page</label>
+          <select name="selectmenu1" id="selectmenu1">
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </div>  
       </div>
 
-      <div data-role="fieldcontain">
-        <label for="flip-1">Géolocalisation :</label>
-        <select name="flip-1" id="flip-2" data-role="slider"  onchange="setGeoloc(this)">
-          <option value="off">Off</option>
-          <option value="on">On</option>
-        </select> 
-
-      </div>  
-
-      <div data-role="fieldcontain">
-        <label for="selectmenu1" >Nombre d'articles par page</label>
-        <select name="selectmenu1" id="selectmenu1">
-          <option value="option1">10</option>
-          <option value="option2">15</option>
-          <option value="option3">20</option>
-        </select>
-      </div>   
-
-<<<<<<< Updated upstream
-    </div>
-=======
-			<div data-role="fieldcontain">
-				<label for="selectmenu1" >Nombre d'articles par page</label>
-				<select name="selectmenu1" id="selectmenu1">
-					<option value="10">10</option>
-					<option value="15">15</option>
-					<option value="20">20</option>
-				</select>
-			</div>   
->>>>>>> Stashed changes
 
       <div data-role="footer" data-position="fixed" class="nav-glyphish">
           <div data-role="navbar">
@@ -132,6 +121,7 @@
         });
     </script>
   <script src="js/jquery.mobile-1.2.0.min.js"></script>
+  <script src="js/phonegap.js"></script>
 
 </body>
 </html>
