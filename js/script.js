@@ -371,13 +371,20 @@ function Article(){
 function User() {
 	var username = "anonymous";
 	var email = null;
-	var geoloc = [];
-	var session_id = null;
+	var api_key = null;
+	var auto_share;
+	var geoloc;
+	var max_article_number;
+	var facebook;
+	var gplus;
+	var twitter;
+	var country;
+	var city;
 
 	if (typeof User.initialized == "undefined") {
 		// Save current user in storage.
 		User.prototype.save = function() {
-			// @todo : do not save each properties of the user separately in storage, but only one current_user object.
+			$.jStorage.set('current_user', this);
 		};
 
 		// Load current user from storage if exists.
@@ -386,13 +393,14 @@ function User() {
 		};
 
 		// Register user distantly using API
-		User.prototype.register = function(username, email, password1, password2) {
+		User.prototype.register = function(username, mail, password1, password2) {
 			var data = JSON.stringify({
 				"username": username,
 				"email": mail,
 				"password1": password1,
 				"password2": password2
 			});
+
 			$.ajax({
 				url: api_paths.register,
 				type: 'POST',
@@ -403,7 +411,19 @@ function User() {
 				success: function(json) {
 					console.info(json);
 					if(json.success) {
-						// @todo: add username, email, infos ... to current object User
+						//add username, api_key and other infos to current object User
+						app.current_user.username = username;
+						app.current_user.api_key = json.member.api_key;
+						app.current_user.auto_share = json.member.autoShare;
+						app.current_user.geoloc = json.member.geoloc;
+						app.current_user.max_article_number = json.member.maxArticle;
+						app.current_user.facebook = json.member.facebook;
+						app.current_user.gplus = json.member.gplus;
+						app.current_user.twitter = json.member.twitter;
+						app.current_user.country = json.member.pays;
+						app.current_user.city = json.member.ville;
+
+						app.current_user.save();
 					}
 				},
 				error: function(ts) {
@@ -420,6 +440,7 @@ function User() {
 				"username": ''+login, // login is either username or email // @todo : make login
 				"password": ''+pwd
 			});
+
 			$.ajax({
 				url: api_paths.login,
 				type: "post",
@@ -429,17 +450,20 @@ function User() {
 				success: function(json) {
 					console.info(json);
 					if(json.success) {
-						// @ todo : build user and save user instead
-						// @ todo : Translate "pays" and "ville". "id" should instead be sessid to prevent account spoofing
-						$.jStorage.set('api_key', json.member.api_key);
-						$.jStorage.set('autoShare', json.member.autoShare);
-						$.jStorage.set('facebook', json.member.facebook);
-						$.jStorage.set('geoloc', json.member.geoloc);
-						$.jStorage.set('gplus', json.member.gplus);
-						$.jStorage.set('id', json.member.id);
-						$.jStorage.set('pays', json.member.pays);
-						$.jStorage.set('twitter', json.member.twitter);
-						$.jStorage.set('ville', json.member.ville);
+						// @ todo : Translate "pays" and "ville".
+						// add username, api_key and other infos to current object User
+						app.current_user.username = username;
+						app.current_user.api_key = json.member.api_key;
+						app.current_user.auto_share = json.member.autoShare;
+						app.current_user.geoloc = json.member.geoloc;
+						app.current_user.max_article_number = json.member.maxArticle;
+						app.current_user.facebook = json.member.facebook;
+						app.current_user.gplus = json.member.gplus;
+						app.current_user.twitter = json.member.twitter;
+						app.current_user.country = json.member.pays;
+						app.current_user.city = json.member.ville;
+
+						app.current_user.save();
 					}
 				},
 				error: function(ts) {
@@ -454,14 +478,18 @@ function User() {
 
 		// Performs logout and ensure 
 		User.prototype.logout = function() {
-			// Destroy online session and cookies
-			$.get(api_paths.logout, {'api_key': $.jStorage.get('api_key'), 'format': 'json'});
+			// get the api_key of the current user
+			api_key = $.jStorage.get('current_user').api_key;
+			// logout the current user
+			$.get(api_paths.logout, {'api_key': api_key, 'format': 'json'});
+			// flush info about the current user
+			$.jStorage.deleteKey('current_user');
 			// Update current_user
 			app.current_user = new User();
 		};
 		
 		User.prototype.is_logged_in = function() {
-			return (this.session_id == null);
+			return (this.api_key == null);
 		};
 
 		// @move listeners in app since the current_user is there.
@@ -482,7 +510,6 @@ function User() {
 				return false;
 			});
 
-			// @todo : add logout
 		}
 
 
@@ -500,15 +527,14 @@ function Settings(){
 			$('#flip-2').slider(); 
 			$('#selectmenu1').selectmenu(); 
 
-			if ($.jStorage.get('autoShare') == true){
+			if ($.jStorage.get('current_user').auto_share == true){
 				$('#flip-1').val('on').slider('refresh');
 			}
-			if ($.jStorage.get('geoloc') == true){
+			if ($.jStorage.get('current_user').geoloc == true){
 				$('#flip-2').val('on').slider('refresh');
 			}
-			//@TODO: change select value from jStorage('nbArticles')
-			//$('#selectmenu1').val($.jStorage.get('nbArticles')).selectmenu("refresh");
-			//$('#selectmenu1').val('option3').selectmenu("refresh");
+			// change select value from max_article_number
+			$('#selectmenu1').val($.jStorage.get('current_user').max_article_number).selectmenu("refresh");
 		}
 		Settings.initialized = true;
 	}
