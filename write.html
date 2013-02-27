@@ -6,18 +6,17 @@
     <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
     <link rel="stylesheet" href="css/themes/theme.min.css" />
     <link rel="stylesheet" href="css/style.css" />
-    <script src="js/phonegap.js"></script>
+         <script src="js/cordova-2.2.0.js"></script>
     <script type="text/javascript">
-          function onLoad(){
-                document.addEventListener("deviceready", onDeviceReady, false);
+    /*      function onLoad(){
+                document.addEventListener("deviceready", onDeviceReady, true);
             }
 
             function onDeviceReady(){
-                alert("PhoneGap is working on write !!");
-            }
+                navigator.notification.alert("PhoneGap is working!!");
+            }*/
 
         function capturePhoto(){
-         navigator.notification.alert("yah iw ll take picture");
             navigator.camera.getPicture(uploadPhoto,uploadFail,{sourceType:1,quality:60});
         }
 
@@ -51,23 +50,14 @@
         }
       </script>
   </head>
-  <body onload="onLoad()">
-    <!-- Write an article -->
+  <body>
+
+    <!-- Edit article -->
     <div data-role="page" id="write">
-        <div data-theme="a" data-role="header" data-position="fixed">
-            <h3>
-                Kicknews Write
-            </h3>
-        </div>
         <div data-role="content">
-            <ul data-role="listview" data-divider-theme="a" data-inset="true">
-                <li data-theme="c">
-                    <a href="#" data-transition="slide">
-                        Write
-                    </a>
-                </li>
-            </ul>
-            <!-- Field container-->
+            <h3>
+                Ecrire un article
+            </h3>
             <div data-role="fieldcontain">
                 <fieldset data-role="controlgroup">
                     <label for="article_content">
@@ -76,65 +66,19 @@
                     </textarea>
                 </fieldset>
             </div>
-            <!-- Photo -->
-            <div id="camera">
-                <button class="camera-control" onclick="capturePhoto();">Capture Photo</button>
-                <div style="text-align:center;margin:20px;">
-                <img id="cameraPic" src="" style="width:auto;height:120px;"></img>
-            </div>
-            <!--Publish button-->
+            <a data-role="button" class="ui-link-inherit" data-transition="slide" href="#page1">
+                Prendre une photo
+            </a>
             <a data-role="button" data-inline="true" href="#page1">
                 Publier
             </a>
-            <!-- Draft button -->
             <a data-role="button" data-inline="true" href="#page1">
                 Brouillon
             </a>
-    </div>
         </div>
-
-        <div data-role="footer" data-position="fixed" class="nav-glyphish">
-            <div data-role="navbar">
-                <ul>
-                    <li>
-                        <a href="read.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
-                            Home
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-categories">
-                            Catégories
-                        </a>
-                    </li>
-                    <li>
-                        <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write" class="ui-btn-active">
-                            Write
-                        </a>
-                    </li>
-                    <li>
-                        <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
-                            Login
-                        </a>
-                    </li>
-                    <li>
-                        <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings">
-                            Settings
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
     </div>
-
     <!-- Jquery is needed also for the design -->
       <script src="js/jquery-latest.min.js"></script>
-      <script src="js/script.js"></script>
-    <script type="text/javascript">
-        $(document).bind("mobileinit", function(){
-            app.initialize('write');
-        });
-    </script>
       <script src="js/jquery.mobile-1.2.0.min.js"></script>
   </body>
 </html>
