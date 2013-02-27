@@ -9,6 +9,7 @@ var api_paths = {
 	login : "http://localhost:8000/api/v1/user/login/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	register : "http://localhost:8000/api/v1/user/register/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	logout : "http://localhost:8000/api/v1/user/logout/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
+	writecomment : "http://localhost:8000/api/v1/comment/",
 };
 
 // Production
@@ -34,7 +35,6 @@ function Reader() {
 	if (typeof Reader.initialized == "undefined" ) {
 		// API fecth online via AJAX
 		Reader.prototype.loadOnline = function () {
-			alert("loadOnline Reader");
 			$(this.categories).each(function(i, cat) {
 				cat.loadOnline();
 			});
@@ -42,7 +42,6 @@ function Reader() {
 
 		// Storage fetch
 		Reader.prototype.loadLocal = function() {
-			alert("loadLocal Reader");
 			$(this.categories).each(function(i, cat) {
 				cat.loadLocal();
 			});
@@ -115,14 +114,16 @@ function Reader() {
 				MAIN for Reader
 		*/
 
+		this.loadOnline();
+
 		// DEFAULT : Adding home to the pages
 		// @todo : Skip this part
-		this.categories['home'] = new Category();
-		this.categories['home'].id = 'home';
-		this.categories['home'].fetch_url = api_paths.home;
-		this.categories['home'].articles = [];
-		this.categories['home'].loadOnline();
-		this.current_category = this.categories['home'];
+		this.categories['économie'] = new Category();
+		this.categories['économie'].id = 'économie';
+		this.categories['économie'].fetch_url = api_paths.home;
+		this.categories['économie'].articles = [];
+		this.categories['économie'].loadOnline();
+		this.current_category = this.categories['économie'];
 
 		this.rebuildMenu();
 
@@ -180,7 +181,7 @@ function Category(){
 				cache: false,
 				success: function(json) {
 					// update list for given category
-					if(!!json.name && current_category_id == json.name /*&& json.timestamp >= last_update*/) {
+					if(json.name && current_category_id == json.name /*&& json.timestamp >= last_update*/) {
 						var category = new Category();
 						// add current_category.* = *
 						category.id = json.name; // @todo : Fix naming conventions for human-readable title (translated) and fixed id/name
@@ -201,9 +202,9 @@ function Category(){
 								article.author = art.author;
 							}
 
-							alert("RECEIVED:\n"+JSON.stringify(json)+"\n\nINTERPRETED:\n"+article.debug());
 							category.articles.push(article);
 							category.articles_ids.push(article.id);
+							article.save(article.id);
 						});
 
 						// show articles
@@ -347,7 +348,7 @@ function Article(){
 			$h3 = $('<h3>', {
 				text: this.title,
 			});
-			$p = $('<p>', {
+			$div = $('<div>', {
 				text: this.subhead
 			});
 			if(!!this.picture) {
@@ -357,10 +358,10 @@ function Article(){
 				$img.appendTo($a);
 			}
 			$h3.appendTo($a);
-			$p.appendTo($a);
+			//$div.appendTo($a);
 			$a.appendTo($li);
 			$li.appendTo('#reader #articles');
-			//$('#reader #articles').listview('refresh');
+			$('#reader #articles').listview('refresh');
 		};
 
 		Article.initialized = true;
@@ -371,13 +372,20 @@ function Article(){
 function User() {
 	var username = "anonymous";
 	var email = null;
-	var geoloc = [];
-	var session_id = null;
+	var api_key = null;
+	var auto_share;
+	var geoloc;
+	var max_article_number;
+	var facebook;
+	var gplus;
+	var twitter;
+	var country;
+	var city;
 
 	if (typeof User.initialized == "undefined") {
 		// Save current user in storage.
 		User.prototype.save = function() {
-			// @todo : do not save each properties of the user separately in storage, but only one current_user object.
+			$.jStorage.set('current_user', this);
 		};
 
 		// Load current user from storage if exists.
@@ -386,13 +394,14 @@ function User() {
 		};
 
 		// Register user distantly using API
-		User.prototype.register = function(username, email, password1, password2) {
+		User.prototype.register = function(username, mail, password1, password2) {
 			var data = JSON.stringify({
 				"username": username,
 				"email": mail,
 				"password1": password1,
 				"password2": password2
 			});
+
 			$.ajax({
 				url: api_paths.register,
 				type: 'POST',
@@ -403,12 +412,27 @@ function User() {
 				success: function(json) {
 					console.info(json);
 					if(json.success) {
-						// @todo: add username, email, infos ... to current object User
+						//add username, api_key and other infos to current object User
+						app.current_user.username = username;
+						app.current_user.api_key = json.member.api_key;
+						app.current_user.auto_share = json.member.autoShare;
+						app.current_user.geoloc = json.member.geoloc;
+						app.current_user.max_article_number = json.member.maxArticle;
+						app.current_user.facebook = json.member.facebook;
+						app.current_user.gplus = json.member.gplus;
+						app.current_user.twitter = json.member.twitter;
+						app.current_user.country = json.member.pays;
+						app.current_user.city = json.member.ville;
+
+						app.current_user.save();
 					}
 				},
 				error: function(ts) {
 					console.debug(ts.status);
-					// @todo : ensure anonymous ?
+					var error = jQuery.parseJSON(ts.responseText);
+					if(error.reason == "passwords don't match") {
+						$('p.error').text("Les mots de passe ne correspondent pas");
+					}
 				}
 			});
 		};
@@ -420,6 +444,7 @@ function User() {
 				"username": ''+login, // login is either username or email // @todo : make login
 				"password": ''+pwd
 			});
+
 			$.ajax({
 				url: api_paths.login,
 				type: "post",
@@ -429,23 +454,33 @@ function User() {
 				success: function(json) {
 					console.info(json);
 					if(json.success) {
-						// @ todo : build user and save user instead
-						// @ todo : Translate "pays" and "ville". "id" should instead be sessid to prevent account spoofing
-						$.jStorage.set('api_key', json.member.api_key);
-						$.jStorage.set('autoShare', json.member.autoShare);
-						$.jStorage.set('facebook', json.member.facebook);
-						$.jStorage.set('geoloc', json.member.geoloc);
-						$.jStorage.set('gplus', json.member.gplus);
-						$.jStorage.set('id', json.member.id);
-						$.jStorage.set('pays', json.member.pays);
-						$.jStorage.set('twitter', json.member.twitter);
-						$.jStorage.set('ville', json.member.ville);
+						// @ todo : Translate "pays" and "ville".
+						// add username, api_key and other infos to current object User
+						app.current_user.username = username;
+						app.current_user.api_key = json.member.api_key;
+						app.current_user.auto_share = json.member.autoShare;
+						app.current_user.geoloc = json.member.geoloc;
+						app.current_user.max_article_number = json.member.maxArticle;
+						app.current_user.facebook = json.member.facebook;
+						app.current_user.gplus = json.member.gplus;
+						app.current_user.twitter = json.member.twitter;
+						app.current_user.country = json.member.pays;
+						app.current_user.city = json.member.ville;
+
+						app.current_user.save();
+
+						window.location.replace("read.html");
 					}
 				},
 				error: function(ts) {
-					console.debug(ts.status);
-					app.errorOrNoInternet();
-					app.resetForms();
+					console.debug(ts.responseText);
+					var error = jQuery.parseJSON(ts.responseText);
+					if(error.reason == "incorrect") {
+						$('p.error').text("Le nom d'utilisateur ou le mot de passe est incorrect");
+					}
+
+					$("#login_user").val('');
+					$("#login_password").val('');
 				}
 			});
 
@@ -454,14 +489,18 @@ function User() {
 
 		// Performs logout and ensure 
 		User.prototype.logout = function() {
-			// Destroy online session and cookies
-			$.get(api_paths.logout, {'api_key': $.jStorage.get('api_key'), 'format': 'json'});
+			// get the api_key of the current user
+			api_key = $.jStorage.get('current_user').api_key;
+			// logout the current user
+			$.get(api_paths.logout, {'api_key': api_key, 'format': 'json'});
+			// flush info about the current user
+			$.jStorage.deleteKey('current_user');
 			// Update current_user
 			app.current_user = new User();
 		};
 		
 		User.prototype.is_logged_in = function() {
-			return (this.session_id == null);
+			return (this.api_key == null);
 		};
 
 		// @move listeners in app since the current_user is there.
@@ -482,7 +521,6 @@ function User() {
 				return false;
 			});
 
-			// @todo : add logout
 		}
 
 
@@ -500,15 +538,14 @@ function Settings(){
 			$('#flip-2').slider(); 
 			$('#selectmenu1').selectmenu(); 
 
-			if ($.jStorage.get('autoShare') == true){
+			if ($.jStorage.get('current_user').auto_share == true){
 				$('#flip-1').val('on').slider('refresh');
 			}
-			if ($.jStorage.get('geoloc') == true){
+			if ($.jStorage.get('current_user').geoloc == true){
 				$('#flip-2').val('on').slider('refresh');
 			}
-			//@TODO: change select value from jStorage('nbArticles')
-			//$('#selectmenu1').val($.jStorage.get('nbArticles')).selectmenu("refresh");
-			//$('#selectmenu1').val('option3').selectmenu("refresh");
+			// change select value from max_article_number
+			$('#selectmenu1').val($.jStorage.get('current_user').max_article_number).selectmenu("refresh");
 		}
 		Settings.initialized = true;
 	}
@@ -574,6 +611,34 @@ var app = {
 						article.load(category.articles_ids[index]);
 						article.show();
 					//}
+				});
+				break;
+			case 'write-comment' : 
+				$("#writeComment").submit(function(){
+					var text = $("#comment").val();
+					var data = JSON.stringify({
+						"text": text,
+						"article_id": article.id,
+						"user_id": app.current_user.id
+					});
+
+					$.ajax({
+						url: api_paths.writecomment,
+						type: 'POST',
+						contentType: 'application/json',
+						data: data,
+						dataType: 'json',
+						processData: false,
+						success: function(json) {
+							console.info(json);
+							if(json.success) {
+								//@TODO
+							}
+						},
+						error: function(ts) {
+
+						}
+					});				
 				});
 				break;
 			case 'write' : 

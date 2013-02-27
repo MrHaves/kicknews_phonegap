@@ -1,115 +1,114 @@
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<title>Kicknews</title>
-	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
-	<link rel="stylesheet" href="css/themes/theme.min.css" />
-	<link rel="stylesheet" href="css/style.css" />
-	<script src="js/phonegap.js"></script>
-	<script type="text/javascript">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <title>Bottlenews</title>
+  <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
+  <link rel="stylesheet" href="css/themes/theme.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/phonegap.js"></script>
+  <script type="text/javascript">
 
-		function init() {
-    	document.addEventListener("deviceready", onDeviceReady, false);
-		}
-		//test Function about the run of Phonegap
+    function init() {
+      document.addEventListener("deviceready", onDeviceReady, false);
+    }
+    //test Function about the run of Phonegap
     function onDeviceReady(){
-	    //alert("PhoneGap is working on settings!!");
+      //alert("PhoneGap is working on settings!!");
     }
 
     //If Geoloc btn is 'on', set the geolocalisation
     function setGeoloc(Objet) {
-    	if (Objet.value=="on") {
-	    	navigator.geolocation.getCurrentPosition(onGeoSuccess, onError);
-    	}
+      if (Objet.value=="on") {
+        navigator.geolocation.getCurrentPosition(onGeoSuccess, onError);
+      }
     }
     //callback of geolocalisation btn
     function onGeoSuccess(position){
-    	//navigator.notification.alert("navigator alert settings");
-   		var element = document.getElementById('geolocalisation');
-   		element.innerHTML = 'Latitude: ' + position.coords.latitude + '<br/>' + 'Altitude: '+ position.coords.longitude;
+      //navigator.notification.alert("navigator alert settings");
+      var element = document.getElementById('geolocalisation');
+      element.innerHTML = 'Latitude: ' + position.coords.latitude + '<br/>' + 'Altitude: '+ position.coords.longitude;
     }
     function onError(error) {
-    	alert('code: '+ error.code + '\n' + 'message: ' + error.message + '\n');
+      alert('code: '+ error.code + '\n' + 'message: ' + error.message + '\n');
     }
-	</script>
+  </script>
 </head>
 <body onload="onDeviceReady()">
-	<!-- Settings -->
-	<div data-role="page" id="settings">
+  <!-- Settings -->
+  <div data-role="page" id="settings">
 
-	    <div data-theme="a" data-role="header" data-position="fixed">
-	        <h3>
-	            Kicknews Settings
-	        </h3>
-	    </div>
+      <div data-theme="a" data-role="header" data-position="fixed">
+          <h3>
+              Bottlenews
+          </h3>
+      </div>
 
-	    <div data-role="content">
-	    --Geolocalisation--
-				<p id="geolocalisation"></p>
-		--
-			<div data-role="fieldcontain">
-				<label for="flip-1">Auto share :</label>
-				<select name="flip-1" id="flip-1" data-role="slider">
-					<option value="off">Off</option>
-					<option value="on">On</option>
-				</select> 
-			</div>
+      <div data-role="content">
+        <!--Geolocalisation-->
+        <p id="geolocalisation"></p>
 
-			<div data-role="fieldcontain">
-				<label for="flip-1">Géolocalisation :</label>
-				<select name="flip-1" id="flip-2" data-role="slider"  onchange="setGeoloc(this)">
-					<option value="off">Off</option>
-					<option value="on">On</option>
-				</select> 
+        <div data-role="fieldcontain">
+          <label for="flip-1">Auto share :</label>
+          <select name="flip-1" id="flip-1" data-role="slider">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select> 
+        </div>
 
-			</div>	
+        <div data-role="fieldcontain">
+          <label for="flip-2">Géolocalisation :</label>
+          <select name="flip-2" id="flip-2" data-role="slider"  onchange="setGeoloc(this)">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select> 
+        </div>  
 
-			<div data-role="fieldcontain">
-				<label for="selectmenu1" >Nombre d'articles par page</label>
-				<select name="selectmenu1" id="selectmenu1">
-					<option value="option1">10</option>
-					<option value="option2">15</option>
-					<option value="option3">20</option>
-				</select>
-			</div>   
-
-		</div>
-
-	    <div data-role="footer" data-position="fixed" class="nav-glyphish">
-	        <div data-role="navbar">
-	            <ul>
-	                <li>
-	                    <a href="index.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
-	                    	Home
-	                    </a>
-	                </li>
-	                <li>
-	                    <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-categories">
-	                        Catégories
-	                    </a>
-	                </li>
-	                <li>
-	                    <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write">
-	                        Write
-	                    </a>
-	                </li>
-	                <li>
-	                    <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
-	                        Login
-	                    </a>
-	                </li>
-	                <li>
-	                    <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings" class="ui-btn-active">
-	                        Settings
-	                    </a>
-	                </li>
-	            </ul>
-	        </div>
-	    </div>
+        <div data-role="fieldcontain">
+          <label for="selectmenu1" >Nombre d'articles par page</label>
+          <select name="selectmenu1" id="selectmenu1">
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </div>  
+      </div>
 
 
-	</div>
+      <div data-role="footer" data-position="fixed" class="nav-glyphish">
+          <div data-role="navbar">
+              <ul>
+                  <li>
+                      <a href="index.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
+                        Home
+                      </a>
+                  </li>
+                  <li>
+                      <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-categories">
+                          Catégories
+                      </a>
+                  </li>
+                  <li>
+                      <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write">
+                          Write
+                      </a>
+                  </li>
+                  <li>
+                      <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
+                          Login
+                      </a>
+                  </li>
+                  <li>
+                      <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings" class="ui-btn-active">
+                          Settings
+                      </a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+
+
+  </div>
 
 	<script src="js/jquery-latest.min.js"></script>
 	<script src="js/jquery.json-2.4.min.js"></script>
