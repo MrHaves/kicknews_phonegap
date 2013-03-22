@@ -586,6 +586,17 @@ function Settings(){
 	this.loadLocal();
 }
 
+function updateFont(fontSize){
+	var currentFontSize = parseInt(fontSize.replace(/px/, ""));
+	if(currentFontSize == 23){
+		fontSize = 14;
+	}else{
+		fontSize = currentFontSize + 3;
+		console.log(fontSize);
+	}		
+	return fontSize;
+}
+
 
 /*
 	Definition of the application, used in every pages, and interfacing the different applications (Reader, Settings, ...) and objects (User, Article, ...)
@@ -675,6 +686,16 @@ var app = {
 						article.show();
 					//}
 				});
+
+				$("#police").click(function(){
+					var size = $("#article.ui-page").css("font-size");
+					console.log('size : ' + size);
+					var newSize = updateFont(size);
+					console.log('Augmente la taille !');
+					$("#article.ui-page").css("font-size", newSize + "px");
+					console.log('newsize : ' + $("#article").css('font-size'));
+				});
+
 				break;
 			case 'write-comment' : 
 				$("#writeComment").submit(function(){
