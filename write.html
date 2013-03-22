@@ -5,24 +5,30 @@
     <title>Bottlenews</title>
     <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
     <link rel="stylesheet" href="css/themes/theme.min.css" />
-    <link rel="stylesheet" href="css/style.css" />
-         <script src="js/cordova-2.2.0.js"></script>
+    <link rel="stylesheet" href="css/style.css" />    <script src="js/phonegap.js"></script>
     <script type="text/javascript">
-    /*      function onLoad(){
-                document.addEventListener("deviceready", onDeviceReady, true);
-            }
+        function onLoad(){
+            document.addEventListener("deviceready", onDeviceReady, true);
+        }
 
-            function onDeviceReady(){
-                navigator.notification.alert("PhoneGap is working!!");
-            }*/
+        function onDeviceReady(){
+            pictureSource=navigator.camera.PictureSourceType;
+            destinationType=navigator.camera.DestinationType;
+        }
 
         function capturePhoto(){
-            navigator.camera.getPicture(uploadPhoto,uploadFail,{sourceType:1,quality:60});
+            navigator.camera.getPicture(uploadPhoto,uploadFail,{quality:50,destinationType: Camera.DestinationType.DATA_URL});
         }
 
         function uploadPhoto(data){
         // this is where you would send the image file to server
-            cameraPic.src = "data:image/jpeg;base64," + data;
+            var image = document.getElementById('cameraPic');
+            image.style.display = 'block';
+            image.src = "data:image/jpeg;base64," + data;
+
+            //Storage photo into local storage
+            $.jStorage.set('picture',data);
+
             // Successful upload to the server
             navigator.notification.alert(
                 'Your Photo has been uploaded',  // message
@@ -30,55 +36,114 @@
                 'Photo Uploaded',              // title
                 'OK'                          // buttonName
             );
-            // upload has failed Fail
-            /*
-            if (failedToUpload){
-            navigator.notification.alert(
-                'Your Photo has failed to upload',
-                failedDismissed,
-                'Photo Not Uploaded',
-                'OK'
-                );
-            }
-            */
         }
+
         function okay(){
-            // Do something
         }
+
         function uploadFail(message) {
             alert('Failed because: '+message);
         }
+
       </script>
   </head>
-  <body>
-
+  <body onload="onLoad()">
     <!-- Edit article -->
     <div data-role="page" id="write">
-        <div data-role="content">
+        <div data-theme="a" data-role="header" data-position="fixed">
             <h3>
                 Bottlenews
             </h3>
-            <div data-role="fieldcontain">
-                <fieldset data-role="controlgroup">
-                    <label for="article_content">
-                    </label>
-                    <textarea name="" id="article_content" placeholder="">
-                    </textarea>
-                </fieldset>
-            </div>
-            <a data-role="button" class="ui-link-inherit" data-transition="slide" href="#page1">
-                Prendre une photo
-            </a>
-            <a data-role="button" data-inline="true" href="#page1">
-                Publier
-            </a>
-            <a data-role="button" data-inline="true" href="#page1">
-                Brouillon
-            </a>
         </div>
+        <div data-role="content">
+            <form id="writeform" action="" method="post">
+                <ul data-role="listview" data-divider-theme="a" data-inset="true">
+                    <li data-theme="c">
+                        <a href="#" data-transition="slide">
+                            Write
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Title container-->
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="article_title">Titre
+                        </label>
+                        <input type="text" name="title" id="article_title" placeholder="">
+                    </fieldset>
+                </div>
+
+                <!-- Text Area container-->
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="article_content">Corps du message
+                        </label>
+                        <textarea name="content" id="article_content" placeholder="">
+                        </textarea>
+                    </fieldset>
+                </div>
+                
+                <!-- Photo -->
+                <div id="camera">
+                    <button class="camera-control" onclick="capturePhoto();">Capture Photo</button>
+                    <div style="text-align:center;margin:20px;">
+                        <img id="cameraPic" src="" style="width:auto;height:120px;" src=""/>
+                    </div>
+                </div>
+                <!--Publish button-->
+
+                <a data-role="button" data-inline="true" href="#page1" onclick="sendArticle();">
+                    Publier
+                </a>
+                <a data-role="button" data-inline="true" href="#page1">
+                    Brouillon
+                </a>
+            </form>
+        </div>
+
+        <div data-role="footer" data-position="fixed" class="nav-glyphish">
+            <div data-role="navbar">
+                <ul>
+                    <li>
+                        <a href="read.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-categories">
+                            Catégories
+                        </a>
+                    </li>
+                    <li>
+                        <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write" class="ui-btn-active">
+                            Write
+                        </a>
+                    </li>
+                    <li>
+                        <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
+                            Login
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings">
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div><!-- end footer -->
     </div>
     <!-- Jquery is needed also for the design -->
       <script src="js/jquery-latest.min.js"></script>
+
+      <script src="js/script.js"></script>
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function(){
+            app.initialize('write');
+        });
+    </script>
       <script src="js/jquery.mobile-1.2.0.min.js"></script>
+    <script src="js/jquery.json-2.4.min.js"></script>
   </body>
 </html>

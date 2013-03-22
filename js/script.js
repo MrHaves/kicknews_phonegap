@@ -11,6 +11,7 @@ var api_paths = {
 	logout : "http://localhost:8000/api/v1/user/logout/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	writecomment : "http://localhost:8000/api/v1/comment/",
 	categories : "http://localhost:8000/api/v1/category/?format=json",
+	postarticle : "http://localhost:8000/api/v1/articles/post_article"
 };
 
 // Production
@@ -722,7 +723,38 @@ var app = {
 				});
 				break;
 			case 'write' : 
-				//var writer = new Writer();
+        $('#writeform').submit(function(event){
+            event.preventDefault();
+
+            var article_title = $("article_title").val();
+            var article_content = $("article_content").val();
+            var picture = $.jStorage.get('picture');
+
+            var data = JSON.stringify({
+                "title" : article_title,
+                "member_Id": app.current_user.id,
+                "text" : article_content,
+                "media" : picture
+            });
+
+            $.ajax({
+                url: api_paths.postarticle,
+                type:"POST", 
+                contentType: 'application/json',
+                data: data, 
+                dataType: 'json',
+                processData: false,
+                success: function(json) {
+                    console.info(json);
+                    if(json.success) {
+                        //@TODO
+                    }
+                },
+                error: function(ts) {
+
+                }
+            });
+        });
 				break;
 			case 'login' :
 				break;
