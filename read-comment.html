@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <title>Bottlenews</title>
+    <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
+    <link rel="stylesheet" href="css/themes/theme.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <!-- Write an article -->
+    <div data-role="page" id="write">
+        <div data-theme="a" data-role="header" data-position="fixed">
+            <a href="#" data-role="button" data-rel="back" data-icon="arrow-l">Back</a>
+            <h3>
+                Bottlenews
+            </h3>
+        </div>
+        <div data-role="content">
+            <div id="comments">
+                <ul data-role="listview" data-inset="true">
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="footer" data-position="fixed" class="nav-glyphish">
+            <div data-role="navbar">
+                <ul>
+                    <li>
+                        <a href="index.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-police">
+                            Police
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-vote">
+                            Voter
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-comment" class="ui-btn-active">
+                            Commenter
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-share">
+                            Partager
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Jquery is needed also for the design -->
+    <script src="js/jquery-latest.min.js"></script>
+    <script src="js/jquery.json-2.4.min.js"></script>
+    <script src="js/jstorage.min.js"></script>
+    <script src="js/script.js"></script>
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function(){
+            app.initialize('read-comment');
+        });
+    </script>
+      <script src="js/jquery.mobile-1.2.0.min.js"></script>
+    <script src="js/phonegap.js"></script>
+  </body>
+</html>
