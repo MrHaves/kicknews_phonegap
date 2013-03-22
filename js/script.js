@@ -5,11 +5,12 @@
 // Development
 var api_paths = {
 	settings : "",
-	home : "http://localhost:8000/api/v1/category/1/?format=json",
+	//home : "http://localhost:8000/api/v1/category/1/?format=json",
 	login : "http://localhost:8000/api/v1/user/login/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	register : "http://localhost:8000/api/v1/user/register/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	logout : "http://localhost:8000/api/v1/user/logout/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	writecomment : "http://localhost:8000/api/v1/comment/",
+	categories : "http://localhost:8000/api/v1/category/?format=json",
 };
 
 // Production
@@ -29,15 +30,63 @@ var api_paths = {
 
 function Reader() {
 	this.current_category;
-	this.categories_menu = [];
 	this.categories = [];
 
 	if (typeof Reader.initialized == "undefined" ) {
+
+		Reader.prototype.pushCategory = function (category) {
+			this.categories.push(category);
+		}
+
 		// API fecth online via AJAX
 		Reader.prototype.loadOnline = function () {
-			$(this.categories).each(function(i, cat) {
-				cat.loadOnline();
+
+			var that = this;
+
+			$.ajax(api_paths.categories, {
+				dataType: 'json', // data will be parsed in json automagically
+				type: "GET",
+				cache: false,
+				success: function(json) {
+					category = null;
+					$(json.objects).each(function(i, cat) {
+						
+						category = new Category();
+						category.articles = [];
+						category.articles_ids = [];
+						
+						category.id = cat.name;
+						category.name = cat.name;
+						category.fetch_url = "http://localhost:8000/api/v1/category/?format=json&name="+cat.name;
+
+						article = null;
+						$(cat.articles).each(function(i, art) {
+
+							article = new Article();
+							article.id = art.id;
+							article.title = art.title;
+							article.text = art.text;
+							article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
+							article.picture = art.picture;
+							article.datetime = art.datetime;
+							article.author = art.author;
+
+							category.articles.push(article);
+							category.articles_ids.push(article.id);
+						});
+
+						app.reader.pushCategory(category);
+						category.saveLocal();
+						category.showArticles();
+					});
+
+					that.rebuildMenu();
+				},
+				error: function() {
+					app.errorOrNoInternet();
+				}
 			});
+
 		};
 
 		// Storage fetch
@@ -84,15 +133,14 @@ function Reader() {
 			$('.categoryBtn').remove();
 
 			// @todo : Sort by weight
-			$(this.categories_menu).each(function (i, cat) {
-			// @todo : FIXME : Normally we should loop on $(this.categories)
-			// $(this.categories).each(function (i, cat) {
+			$(this.categories).each(function (i, cat) {
 				// Add each category to the navbar
 				var $link = $('<a>', {
-					href: "read.html?category="+cat,
+					href: "read.html?category="+cat.name,
 					class: "categoryBtn",
-					text: cat
+					text: cat.name,
 				});
+				$link.attr('data-ajax', 'false');
 				$link.appendTo('#categories_menu');
 			});
 		};
@@ -103,11 +151,10 @@ function Reader() {
 
 		// Update the list of categories
 		Reader.prototype.updateCategoriesMenu = function () {
-			this.categories_menu = ['Home']; // @todo : Init with a parameter from the settings loaded with the app (app.settings.categories_menu ?)
-			if(this.categories_menu.size == 0) {
-				this.categories_menu = $.jStorage.get('categories_menu');
+			if(this.categories.size == 0) {
+				this.categories = $.jStorage.get('categories');
 			}
-			$.jStorage.set('categories_menu', this.categories_menu);
+			$.jStorage.set('categories', this.categories);
 		};
 
 		/*
@@ -115,17 +162,6 @@ function Reader() {
 		*/
 
 		this.loadOnline();
-
-		// DEFAULT : Adding home to the pages
-		// @todo : Skip this part
-		this.categories['économie'] = new Category();
-		this.categories['économie'].id = 'économie';
-		this.categories['économie'].fetch_url = api_paths.home;
-		this.categories['économie'].articles = [];
-		this.categories['économie'].loadOnline();
-		this.current_category = this.categories['économie'];
-
-		this.rebuildMenu();
 
 		/*var weight = 0;
 		var _this = this;
@@ -170,9 +206,9 @@ function Category(){
 			$(this.articles).each(function(i, art) {
 				articles_ids.push(art.id);
 			});
-			var current_category_id = this.id;
+
 			var current_category = new Category();
-			var last_update = this.last_update;
+			var that = this;
 
 			$.ajax(this.fetch_url, {
 				dataType: 'json', // data will be parsed in json automagically
@@ -181,11 +217,12 @@ function Category(){
 				cache: false,
 				success: function(json) {
 					// update list for given category
-					if(json.name && current_category_id == json.name /*&& json.timestamp >= last_update*/) {
-						var category = new Category();
+					json = json.objects[0];
+					if(json.name && that.id == json.name /*&& json.timestamp >= last_update*/) {
 						// add current_category.* = *
-						category.id = json.name; // @todo : Fix naming conventions for human-readable title (translated) and fixed id/name
-						category.last_update = json.timestamp;
+						that.id = json.name; // @todo : Fix naming conventions for human-readable title (translated) and fixed id/name
+						that.last_update = json.timestamp;
+						//console.log(that);
 
 						$(json.articles).each(function(i, art) {
 							article = new Article();
@@ -202,16 +239,16 @@ function Category(){
 								article.author = art.author;
 							}
 
-							category.articles.push(article);
-							category.articles_ids.push(article.id);
+							that.articles.push(article);
+							that.articles_ids.push(article.id);
+
 							article.save(article.id);
 						});
 
 						// show articles
-						category.showArticles();
-						console.log(category);
+						that.showArticles();
 						// update local data for category
-						category.saveLocal();
+						that.saveLocal();
 					} else { 
 						console.log("Error while loading category updates."); 
 						app.errorOrNoInternet();
@@ -246,16 +283,12 @@ function Category(){
 
 		// Save in local storage for faster refresh
 		Category.prototype.saveLocal = function() {
-			category = this;
-			category.articles = null;
-			category.articles_ids = [];
-			$(this.articles).each(function (i, art) {
-				category.articles_ids[i] = art.id;
-			});
-			$.jStorage.set('categories['+this.id+']', category);
+			//@TODO : if category already saved test 
 			$(this.articles).each(function (i, art) {
 				art.save();
 			});
+
+			$.jStorage.set('categories['+this.id+']', this);
 		};
 
 		// Linked to interface
@@ -293,6 +326,8 @@ function Article(){
 	// @todo : add an array "categories" to avoid deleting articles in all categories if not necessary.
 
 	if(typeof Article.initialized == "undefined") {
+		Article.initialized = true;
+
 		Article.prototype.debug = function() {
 			return " id: "+this.id+"\n title: "+this.title+"\n subhead: "+this.subhead+"\n picture: "+this.picture+"\n datetime: "+this.datetime+"\n author: "+this.author+"\n is_read: "+this.is_read+"\n status: "+this.status;
 		};
@@ -361,10 +396,10 @@ function Article(){
 			//$div.appendTo($a);
 			$a.appendTo($li);
 			$li.appendTo('#reader #articles');
-			$('#reader #articles').listview('refresh');
+
+			$('#reader #articles:visible').listview('refresh');
 		};
 
-		Article.initialized = true;
 	}
 }
 
@@ -523,7 +558,6 @@ function User() {
 
 		}
 
-
 		User.initialized = true;
 	}
 
@@ -552,6 +586,16 @@ function Settings(){
 	this.loadLocal();
 }
 
+function updateFont(fontSize){
+	var currentFontSize = parseInt(fontSize.replace(/px/, ""));
+	if(currentFontSize == 23){
+		fontSize = 14;
+	}else{
+		fontSize = currentFontSize + 3;
+	}		
+	return fontSize;
+}
+
 
 /*
 	Definition of the application, used in every pages, and interfacing the different applications (Reader, Settings, ...) and objects (User, Article, ...)
@@ -578,7 +622,36 @@ var app = {
 
 		switch(page) {
 			case 'read' :
-				var reader = new Reader();
+				if(getQuerystring('category') == "") {
+					this.reader = new Reader();
+				}
+				else {
+					var current_cat = new Category();
+					var current_cat_name = decodeURIComponent(getQuerystring('category'));
+					var cat = $.jStorage.get('categories['+ current_cat_name +']');
+
+					current_cat.id = cat.id;
+					current_cat.name = cat.name;
+					current_cat.fetch_url = cat.fetch_url;
+
+					article = null;
+					$(cat.articles).each(function(i, art) {
+
+						article = new Article();
+						article.id = art.id;
+						article.title = art.title;
+						article.text = art.text;
+						article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
+						article.picture = art.picture;
+						article.datetime = art.datetime;
+						article.author = art.author;
+
+						current_cat.articles.push(article);
+						current_cat.articles_ids.push(article.id);
+					});
+
+					current_cat.showArticles();
+				}
 				break;
 			case 'article':
 				var index = 0;
@@ -586,7 +659,7 @@ var app = {
 				var category = new Category();
 				article.id = getQuerystring('id');
 				article.load(article.id);
-				category.loadLocal(getQuerystring('category'));
+				category.loadLocal(article.id);
 
 				// What is the index of the article in its category ?
 				// @ todo : find better and faster function with break-on-found like "$.inArray(value, array)" which cannot work due to type conflict (we need to check equality of object.id)
@@ -612,14 +685,21 @@ var app = {
 						article.show();
 					//}
 				});
+
+				$("#police").click(function(){
+					var size = $("#article.ui-page").css("font-size");
+					var newSize = updateFont(size);
+					$("#article.ui-page").css("font-size", newSize + "px");
+				});
+
 				break;
 			case 'write-comment' : 
 				$("#writeComment").submit(function(){
 					var text = $("#comment").val();
 					var data = JSON.stringify({
 						"text": text,
-						"article_id": article.id,
-						"user_id": app.current_user.id
+						"article_Id": article.id,
+						"member_Id": app.current_user.id
 					});
 
 					$.ajax({
