@@ -48,31 +48,35 @@
         <!--Geolocalisation-->
         <p id="geolocalisation"></p>
 
-        <div data-role="fieldcontain">
-          <label for="flip-1">Auto share :</label>
-          <select name="flip-1" id="flip-1" data-role="slider">
-            <option value="off">Off</option>
-            <option value="on">On</option>
-          </select> 
-        </div>
+        <form id="settingsForm" action="#" method="post">
+          <div data-role="fieldcontain">
+            <label for="flip-1">Auto share :</label>
+            <select name="flip-1" id="flip-1" data-role="slider">
+              <option value="off">Off</option>
+              <option value="on">On</option>
+            </select> 
+          </div>
 
-        <div data-role="fieldcontain">
-          <label for="flip-2">Géolocalisation :</label>
-          <select name="flip-2" id="flip-2" data-role="slider"  onchange="setGeoloc(this)">
-            <option value="off">Off</option>
-            <option value="on">On</option>
-          </select> 
+          <div data-role="fieldcontain">
+            <label for="flip-2">Géolocalisation :</label>
+            <select name="flip-2" id="flip-2" data-role="slider"  onchange="setGeoloc(this)">
+              <option value="off">Off</option>
+              <option value="on">On</option>
+            </select> 
 
-        </div>  
+          </div>  
 
-        <div data-role="fieldcontain">
-          <label for="selectmenu1" >Nombre d'articles par page</label>
-          <select name="selectmenu1" id="selectmenu1">
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
-          </select>
-        </div>  
+          <div data-role="fieldcontain">
+            <label for="selectmenu1" >Nombre d'articles par page</label>
+            <select name="selectmenu1" id="selectmenu1">
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+            </select>
+          </div> 
+
+          <input type="submit" id="submit" value="Sauvegarder" /> 
+        </form>
       </div>
 
 
@@ -117,7 +121,7 @@
   <script src="js/script.js"></script>
     <script type="text/javascript">
         $(document).bind("mobileinit", function(){
-            app.initialize('write');
+            app.initialize('settings');
         });
     </script>
   <script src="js/jquery.mobile-1.2.0.min.js"></script>
