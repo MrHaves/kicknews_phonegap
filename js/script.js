@@ -592,7 +592,6 @@ function updateFont(fontSize){
 		fontSize = 14;
 	}else{
 		fontSize = currentFontSize + 3;
-		console.log(fontSize);
 	}		
 	return fontSize;
 }
@@ -689,11 +688,8 @@ var app = {
 
 				$("#police").click(function(){
 					var size = $("#article.ui-page").css("font-size");
-					console.log('size : ' + size);
 					var newSize = updateFont(size);
-					console.log('Augmente la taille !');
 					$("#article.ui-page").css("font-size", newSize + "px");
-					console.log('newsize : ' + $("#article").css('font-size'));
 				});
 
 				break;
