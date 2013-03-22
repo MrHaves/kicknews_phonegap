@@ -649,7 +649,7 @@ var app = {
 				var category = new Category();
 				article.id = getQuerystring('id');
 				article.load(article.id);
-				category.loadLocal(getQuerystring('category'));
+				category.loadLocal(article.id);
 
 				// What is the index of the article in its category ?
 				// @ todo : find better and faster function with break-on-found like "$.inArray(value, array)" which cannot work due to type conflict (we need to check equality of object.id)
