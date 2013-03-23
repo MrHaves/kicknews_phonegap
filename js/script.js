@@ -652,6 +652,7 @@ var app = {
 
 					current_cat.showArticles();
 				}
+
 				break;
 			case 'article':
 				var index = 0;

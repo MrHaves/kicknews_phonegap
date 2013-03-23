@@ -3,22 +3,50 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 	<title>Bottlenews</title>
-	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
+	<!--<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />-->
+	<link rel="stylesheet" href="css/jquery.mobile-1.3.0.min.css" />
 	<link rel="stylesheet" href="css/themes/theme.min.css" />
 	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="css/panel.css" />
+	<!--<script src="js/jquery-latest.min.js"></script>-->
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/jquery.json-2.4.min.js"></script>
+	<script src="js/jstorage.min.js"></script>
+	<script src="js/script.js"></script>	
+	<!--<script src="js/jquery.mobile-1.2.0.min.js"></script>-->
+	<script src="js/jquery.mobile-1.3.0.min.js"></script>
+	<script src="js/phonegap.js"></script>
+	<script type="text/javascript">
+		$(document).bind("ready", function(){
+			app.initialize('read');
+		});
+
+	</script>
 </head>
 <body>
 	
 
 	<!-- Article -->
-	<div data-role="page" id="reader">
+	<div data-role="page" id="reader" data-theme="d">
+
+		<div data-role="panel" id="left-panel" data-theme="a" display="reveal">
+	        <ul data-role="listview" data-theme="a">
+	            <li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
+	        </ul>
+	        <div data-role="collapsible" data-inset="false" data-iconpos="right" data-theme="a" data-content-theme="a">
+	          <h3>Categories</h3>
+	            <ul id="categories_menu" data-role="listview">
+              	</ul>
+	        </div><!-- /collapsible -->
+    	</div><!-- /panel -->
 
 	    <div data-theme="a" data-role="header" data-position="fixed">
-	        <h3>
+	        <h3>	        	
 	            Bottlenews
 	        </h3>
-			<a href="#" data-icon="check" data-theme="a" class="refresh_reader ui-btn-right">Full Refresh</a>
-	        <div id="categories_menu"></div>
+			<a href="#" data-icon="check" data-theme="a" class="refresh_reader ui-btn-right">Full Refresh</a>			
+			<a href="#left-panel" data-role="button" data-theme="a" data-inline="true" data-mini="true" data-shadow="false" class="refresh_reader ui-btn-left">Catégories</a>
+	        <!--<div id="categories_menu"></div>-->
 	    </div>
 
 	    <div data-role="content" id="content">
@@ -59,18 +87,6 @@
 	    </div>
 
 	</div>
-
-	<script src="js/jquery-latest.min.js"></script>
-	<script src="js/jquery.json-2.4.min.js"></script>
-	<script src="js/jstorage.min.js"></script>
-	<script src="js/script.js"></script>
-	<script src="js/jquery.mobile-1.2.0.min.js"></script>
-	<script type="text/javascript">
-		$(document).bind("ready", function(){
-			app.initialize('read');
-		});
-	</script>
-	<script src="js/phonegap.js"></script>
 
 </body>
 </html>
