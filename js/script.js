@@ -9,20 +9,15 @@ var api_paths = {
 	login : "http://localhost:8000/api/v1/user/login/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	register : "http://localhost:8000/api/v1/user/register/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	logout : "http://localhost:8000/api/v1/user/logout/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
-	writecomment : "http://localhost:8000/api/v1/comment/",
+	comment : "http://localhost:8000/api/v1/comment/?format=json",
+	writecomment : "http://localhost:8000/api/v1/comment/post_comment/",
 	categories : "http://localhost:8000/api/v1/category/?format=json",
+	postarticle : "http://localhost:8000/api/v1/articles/post_article"
+	preferences : "http://localhost:8000/api/v1/preferences/?format=json",
 };
 
 // Production
 // @todo : use ssl if possible. (check alwaysdata)
-/*var api_paths = {
-	settings : "",
-	category : "http://localhost:8000/api/v1/category/home",
-	login : "http://localhost:8000/api/v1/user/login",
-	register : "http://localhost:8000/api/v1/user/register",
-	logout : "http://localhost:8000/api/v1/user/logout",
-};*/
-
 
 /*
 	Reader application will show a list of articles and categories in tabs and manage the interactions and updates	
@@ -48,6 +43,7 @@ function Reader() {
 				type: "GET",
 				cache: false,
 				success: function(json) {
+					
 					category = null;
 					$(json.objects).each(function(i, cat) {
 						
@@ -75,10 +71,12 @@ function Reader() {
 							category.articles_ids.push(article.id);
 						});
 
+						console.log(category);
 						app.reader.pushCategory(category);
 						category.saveLocal();
 						category.showArticles();
 					});
+
 
 					that.rebuildMenu();
 				},
@@ -371,6 +369,22 @@ function Article(){
 			$('#article .article_body').html(this.subhead);
 			$('#article .article_title').text(this.title);
 			$('#article .article_author').text(this.author);
+
+			var $link_write = $('<a>', {
+					href: "write-comment.html?id="+this.id,
+					text: "Ecrire un commentaire",
+			});
+			$link_write.attr('data-ajax', 'false');
+			$link_write.attr('data-role', 'button');
+			$link_write.appendTo('#comment');
+
+			var $link_read = $('<a>', {
+					href: "read-comment.html?id="+this.id,
+					text: "Lire les commentaires",
+			});
+			$link_read.attr('data-ajax', 'false');
+			$link_read.attr('data-role', 'button');
+			$link_read.appendTo('#comment');
 		};
 
 		Article.prototype.showItem = function(category) {
@@ -448,6 +462,7 @@ function User() {
 					console.info(json);
 					if(json.success) {
 						//add username, api_key and other infos to current object User
+						app.current_user.id = json.member.id;
 						app.current_user.username = username;
 						app.current_user.api_key = json.member.api_key;
 						app.current_user.auto_share = json.member.autoShare;
@@ -482,7 +497,7 @@ function User() {
 
 			$.ajax({
 				url: api_paths.login,
-				type: "post",
+				type: "POST",
 				contentType: 'application/json',
 				data: data,
 				dataType: 'json',
@@ -491,6 +506,7 @@ function User() {
 					if(json.success) {
 						// @ todo : Translate "pays" and "ville".
 						// add username, api_key and other infos to current object User
+						app.current_user.id = json.member.id;
 						app.current_user.username = username;
 						app.current_user.api_key = json.member.api_key;
 						app.current_user.auto_share = json.member.autoShare;
@@ -504,7 +520,7 @@ function User() {
 
 						app.current_user.save();
 
-						window.location.replace("read.html");
+						window.location.replace("settings.html");
 					}
 				},
 				error: function(ts) {
@@ -581,9 +597,44 @@ function Settings(){
 			// change select value from max_article_number
 			$('#selectmenu1').val($.jStorage.get('current_user').max_article_number).selectmenu("refresh");
 		}
+
+		Settings.prototype.setListeners = function () {
+			$('#settingsForm').submit(function() {
+
+				var autoShare = $("#flip-1").val();
+				var geoloc = $("#flip-2").val();
+				var maxArticle = $("#selectmenu1").val();
+
+				var data = JSON.stringify({
+					"autoShare": autoShare, // login is either username or email // @todo : make login
+					"geoloc": geoloc,
+					"maxArticle": maxArticle
+				});
+
+				//@TODO : send preferences to server
+				/*$.ajax({
+					url: api_paths.preferences,
+					type: 'POST',
+					contentType: 'application/json',
+					data: data,
+					dataType: 'json',
+					success: function(json) {
+						console.info(json);
+					},
+					error: function(ts) {
+
+					}
+				});	*/
+
+				return false;
+			});
+		};
+
 		Settings.initialized = true;
 	}
+
 	this.loadLocal();
+	this.setListeners();
 }
 
 function updateFont(fontSize){
@@ -671,6 +722,28 @@ var app = {
 				// Displays it in html
 				article.show();
 
+				var nb_comment = 0;
+				$.ajax(api_paths.comment,{
+					dataType: 'json', // data will be parsed in json automagically
+					type: "GET",
+					cache: false,
+					success: function(json) {
+						$(json.objects).each(function(i, comment) {
+
+							var article_id = getQuerystring('id');
+							if(comment.articleId.id == parseInt(article_id)){
+								++nb_comment;
+							};
+
+							$('#nb_comment').text(nb_comment);
+
+						});	
+					},
+					error: function(ts) {
+					}
+				});
+
+
 				// Add events
 				$(document).bind("swiperight", function() {
 					//if(!!(category.articles_ids[index-1]) && category.articles_ids[index-1] >= 0) {
@@ -696,11 +769,14 @@ var app = {
 				break;
 			case 'write-comment' : 
 				$("#writeComment").submit(function(){
+					var article_id = getQuerystring('id');
+					var current_user = $.jStorage.get('current_user');
+
 					var text = $("#comment").val();
 					var data = JSON.stringify({
 						"text": text,
-						"article_Id": article.id,
-						"member_Id": app.current_user.id
+						"articleId": parseInt(article_id),
+						"memberId": current_user.id
 					});
 
 					$.ajax({
@@ -709,21 +785,91 @@ var app = {
 						contentType: 'application/json',
 						data: data,
 						dataType: 'json',
-						processData: false,
 						success: function(json) {
 							console.info(json);
-							if(json.success) {
-								//@TODO
-							}
 						},
 						error: function(ts) {
 
 						}
-					});				
+					});	
+
 				});
 				break;
+			case 'read-comment' : 
+				$.ajax(api_paths.comment,{
+					dataType: 'json', // data will be parsed in json automagically
+					type: "GET",
+					cache: false,
+					success: function(json) {
+						console.log(json);
+
+						$(json.objects).each(function(i, comment) {
+							console.log(comment);
+
+							var article_id = getQuerystring('id');
+
+							if(comment.articleId.id == parseInt(article_id)){
+								$li = $('<li>');
+								$p1 = $('<p>', {
+									text: comment.date,
+									class: 'ui-li-aside',
+								});
+								$h3 = $('<h3>', {
+									text: comment.username,
+								});
+								$p2 = $('<p>', {
+									text: comment.text,
+								});
+								$p1.appendTo($li);
+								$h3.appendTo($li);
+								$p2.appendTo($li);
+								$li.appendTo('#comments ul');
+							};
+						});
+
+						$('#comments ul:visible').listview('refresh');
+
+					},
+					error: function(ts) {
+
+					}
+				});	
+				break;
 			case 'write' : 
-				//var writer = new Writer();
+        $('#writeform').submit(function(event){
+            event.preventDefault();
+
+            var article_title = $("article_title").val();
+            var article_content = $("article_content").val();
+            var picture = $.jStorage.get('picture');
+
+            var data = JSON.stringify({
+                "title" : article_title,
+                "member_Id": app.current_user.id,
+                "text" : article_content,
+                "media" : picture
+            });
+
+            $.ajax({
+                url: api_paths.postarticle,
+                type:"POST", 
+                contentType: 'application/json',
+                data: data, 
+                dataType: 'json',
+                processData: false,
+                success: function(json) {
+                    console.info(json);
+                    if(json.success) {
+                        //@TODO
+                    }
+                },
+                error: function(ts) {
+
+                }
+            });
+        });
+				break;
+			case 'share' :
 				break;
 			case 'login' :
 				break;
