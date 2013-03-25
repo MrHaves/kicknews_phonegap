@@ -12,7 +12,7 @@ var api_paths = {
 	comment : "http://localhost:8000/api/v1/comment/?format=json",
 	writecomment : "http://localhost:8000/api/v1/comment/post_comment/",
 	categories : "http://localhost:8000/api/v1/category/?format=json",
-	postarticle : "http://localhost:8000/api/v1/articles/post_article"
+	postarticle : "http://localhost:8000/api/v1/articles/post_article",
 	preferences : "http://localhost:8000/api/v1/preferences/?format=json",
 };
 
