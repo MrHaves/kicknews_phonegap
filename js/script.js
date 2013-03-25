@@ -12,7 +12,7 @@ var api_paths = {
 	comment : "http://localhost:8000/api/v1/comment/?format=json",
 	writecomment : "http://localhost:8000/api/v1/comment/post_comment/",
 	categories : "http://localhost:8000/api/v1/category/?format=json",
-	postarticle : "http://localhost:8000/api/v1/articles/post_article"
+	postarticle : "http://localhost:8000/api/v1/articles/post_article/",
 	preferences : "http://localhost:8000/api/v1/preferences/?format=json",
 };
 
@@ -835,35 +835,34 @@ var app = {
 				});	
 				break;
 			case 'write' : 
+        //console.log('page rechargée');
         $('#writeform').submit(function(event){
-            event.preventDefault();
-
-            var article_title = $("article_title").val();
-            var article_content = $("article_content").val();
+            //event.preventDefault();
+						var current_user = $.jStorage.get('current_user');
+            var article_title = $("#article_title").val();
+            var article_content = $("#article_content").val();
             var picture = $.jStorage.get('picture');
 
             var data = JSON.stringify({
                 "title" : article_title,
-                "member_Id": app.current_user.id,
+                "memberId": current_user.id,
                 "text" : article_content,
                 "media" : picture
             });
 
+            //console.log(data);
+            //Need to add the category data
             $.ajax({
                 url: api_paths.postarticle,
                 type:"POST", 
                 contentType: 'application/json',
                 data: data, 
                 dataType: 'json',
-                processData: false,
                 success: function(json) {
                     console.info(json);
-                    if(json.success) {
-                        //@TODO
-                    }
                 },
                 error: function(ts) {
-
+									console.log('erreur');
                 }
             });
         });

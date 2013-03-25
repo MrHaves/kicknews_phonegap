@@ -5,11 +5,17 @@
     <title>Bottlenews</title>
     <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
     <link rel="stylesheet" href="css/themes/theme.min.css" />
-    <link rel="stylesheet" href="css/style.css" />    <script src="js/phonegap.js"></script>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/jquery-latest.min.js"></script>   
+    <script src="js/phonegap.js"></script>
+    <script src="js/jquery.json-2.4.min.js"></script>
+    <script src="js/jstorage.min.js"></script>
     <script type="text/javascript">
-        function onLoad(){
-            document.addEventListener("deviceready", onDeviceReady, true);
-        }
+        document.addEventListener("deviceready", onDeviceReady, true);
+
+/******
+                ADD CATEGORY SELECT
+*****/
 
         function onDeviceReady(){
             pictureSource=navigator.camera.PictureSourceType;
@@ -17,7 +23,9 @@
         }
 
         function capturePhoto(){
-            navigator.camera.getPicture(uploadPhoto,uploadFail,{quality:50,destinationType: Camera.DestinationType.DATA_URL});
+            //navigator.camera.getPicture(uploadPhoto,uploadFail,{quality:50,destinationType: Camera.DestinationType.DATA_URL});
+            var dataJSON =  "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";
+            $.jStorage.set('picture',dataJSON);   
         }
 
         function uploadPhoto(data){
@@ -27,7 +35,8 @@
             image.src = "data:image/jpeg;base64," + data;
 
             //Storage photo into local storage
-            $.jStorage.set('picture',data);
+            //$.jStorage.set('picture','nopnop');
+
 
             // Successful upload to the server
             navigator.notification.alert(
@@ -44,10 +53,15 @@
         function uploadFail(message) {
             alert('Failed because: '+message);
         }
+        //TEST Function to save on jstorage
+        /**function save() {
+            var dataJSON =  'nipnipnip';
+            $.jStorage.set('picture',dataJSON);   
+        }**/
 
       </script>
   </head>
-  <body onload="onLoad()">
+  <body>
     <!-- Edit article -->
     <div data-role="page" id="write">
         <div data-theme="a" data-role="header" data-position="fixed">
@@ -56,7 +70,7 @@
             </h3>
         </div>
         <div data-role="content">
-            <form id="writeform" action="" method="post">
+            <form id="writeform" action="#" method="post">
                 <ul data-role="listview" data-divider-theme="a" data-inset="true">
                     <li data-theme="c">
                         <a href="#" data-transition="slide">
@@ -66,36 +80,27 @@
                 </ul>
 
                 <!-- Title container-->
-                <div data-role="fieldcontain">
-                    <fieldset data-role="controlgroup">
-                        <label for="article_title">Titre
-                        </label>
-                        <input type="text" name="title" id="article_title" placeholder="">
-                    </fieldset>
-                </div>
+                <label for="article_title">Titre
+                </label>
+                <input type="text" name="title" id="article_title" placeholder="">
 
                 <!-- Text Area container-->
-                <div data-role="fieldcontain">
-                    <fieldset data-role="controlgroup">
-                        <label for="article_content">Corps du message
-                        </label>
-                        <textarea name="content" id="article_content" placeholder="">
-                        </textarea>
-                    </fieldset>
-                </div>
+                <label for="article_content">Corps du message
+                </label>
+                <textarea name="content" id="article_content" placeholder="">
+                </textarea>
                 
                 <!-- Photo -->
                 <div id="camera">
-                    <button class="camera-control" onclick="capturePhoto();">Capture Photo</button>
+                    <a  data-role="button" class="camera-control" onclick="capturePhoto();" href="#">Capture Photo</a>
                     <div style="text-align:center;margin:20px;">
                         <img id="cameraPic" src="" style="width:auto;height:120px;" src=""/>
                     </div>
                 </div>
-                <!--Publish button-->
 
-                <a data-role="button" data-inline="true" href="#page1" onclick="sendArticle();">
-                    Publier
-                </a>
+                <!--Publish button-->
+                <input type="submit" id="submit" value="Publier" />
+
                 <a data-role="button" data-inline="true" href="#page1">
                     Brouillon
                 </a>
@@ -135,15 +140,13 @@
         </div><!-- end footer -->
     </div>
     <!-- Jquery is needed also for the design -->
-      <script src="js/jquery-latest.min.js"></script>
 
-      <script src="js/script.js"></script>
-    <script type="text/javascript">
-        $(document).bind("mobileinit", function(){
-            app.initialize('write');
-        });
-    </script>
-      <script src="js/jquery.mobile-1.2.0.min.js"></script>
-    <script src="js/jquery.json-2.4.min.js"></script>
+        <script src="js/script.js"></script>
+        <script type="text/javascript">
+            $(document).bind("mobileinit", function(){
+                app.initialize('write');
+            });
+        </script>
+        <script src="js/jquery.mobile-1.2.0.min.js"></script>
   </body>
 </html>
