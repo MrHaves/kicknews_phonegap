@@ -777,6 +777,8 @@ var app = {
 					var size = $("#article.ui-page").css("font-size");
 					var newSize = updateFont(size);
 					$("#article.ui-page").css("font-size", newSize + "px");
+					$('#popupBasic').css("font-size", "14px");
+					$('#popupBasic2').css("font-size", "14px");
 				});
 
 				break;
