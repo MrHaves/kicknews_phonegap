@@ -315,7 +315,7 @@ function Article(){
 	var id;
 	var title = "";
 	var subhead = "";
-	var picture;
+	var picture = "";
 	var datetime;
 	var author;
 	var text = "";
@@ -363,13 +363,14 @@ function Article(){
 		Article.prototype.show = function (id) {
 			var article = $.jStorage.get('articles['+id+']');
 			console.log(article.picture);
-			if(article.picture == null) {	
-				console.log("!this.picture");
-				$('#article .article_img').parent().hide();
-			} else {
-				console.log("picture");
-				$('#article img').attr('src', article.picture);
+			if(!!article.picture) {	
+				var $img = $('<img>', {
+					src: "http://localhost:8000/media/"+article.picture,
+					alt: article.title,
+				});
+				$img.appendTo('#img-article');
 			}
+
 			$('#article .article_body').html(article.subhead);
 			$('#article .article_title').text(article.title);
 			$('#article .article_author').text(article.author);
@@ -392,6 +393,9 @@ function Article(){
 		};
 
 		Article.prototype.showItem = function(category) {
+
+			var article = $.jStorage.get('articles['+this.id+']');
+
 			$li = $('<li>');
 			$a = $('<a>', {
 				href: "article.html?id="+this.id+"&category=" + category.id,
@@ -404,9 +408,10 @@ function Article(){
 			$div = $('<div>', {
 				text: this.subhead
 			});
-			if(!!this.picture) {
+
+			if(!!article.picture) { 
 				$img = $('<img>', {
-					src: "http://localhost:8000/media/"+this.picture
+					src: "http://localhost:8000/media/"+article.picture
 				});
 				$img.appendTo($a);
 			}
@@ -605,8 +610,6 @@ function Settings(){
 		Settings.prototype.setListeners = function () {
 			$('#settingsForm').submit(function() {
 
-				console.log("submit");
-
 				var autoShare = $("#flip-1").val();
 				var geoloc = $("#flip-2").val();
 				var maxArticle = $("#selectmenu1").val();
@@ -651,7 +654,7 @@ function updateFont(fontSize){
 	var currentFontSize = parseInt(fontSize.replace(/px/, ""));
 	if(currentFontSize == 23){
 		fontSize = 14;
-	}else{
+	} else {
 		fontSize = currentFontSize + 3;
 	}		
 	return fontSize;
@@ -705,7 +708,7 @@ var app = {
 						article.title = art.title;
 						article.text = art.text;
 						article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
-						article.picture = art.picture;
+						article.picture = art.media;
 						article.datetime = art.datetime;
 						article.author = art.author;
 
@@ -715,6 +718,9 @@ var app = {
 
 					current_cat.showArticles();
 					this.reader.rebuildMenu();
+
+					$('#header h3').text("Bottlenews - " + current_cat_name);
+
 				}
 
 				break;
