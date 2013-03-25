@@ -3,17 +3,13 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<title>Bottlenews</title>
-	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
+	<link rel="stylesheet" href="css/jquery.mobile-1.3.0.min.css" />
 	<link rel="stylesheet" href="css/themes/theme.min.css" />
 	<link rel="stylesheet" href="css/jsShare.css" type="text/css" />
 	<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 	<div data-role="page" id="article" data-add-back-btn="true">
-		
-		<div data-role="popup" id="popupBasic">
-			<p>This is a completely basic popup, no options set.<p>
-		</div>
 
 	    <div data-theme="a" data-role="header" data-position="fixed">
 			<a href="#" data-role="button" data-rel="back" data-icon="arrow-l">Back</a>
@@ -22,8 +18,25 @@
 	        </h3>
 	    </div>
 	    <div data-role="content">
-            <div id="buttons-expanded">
+			<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="popupBasic">
+				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+				<p id="buttons-expanded"></p>
+			</div>
+            <div data-role="popup" data-overlay-theme="a" data-position-to="window" id="popupBasic2">
+            	<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+            	<p>Ici sont les votes.</p>
             </div>
+            <div id="article">
+				<div style="width:100%; height:100px; position:relative; background-color:#fbfbfb; border:1px solid #b8b8b8;">
+					<img src="http://codiqa.com/static/images/v2/image.png" alt="image" style="position:absolute; top:50%; left:50%; margin-left:-16px; margin-top:-18px" class="article_img" />
+				</div>
+		    	<h2 class="article_title">n/a</h2><span> by </span><em class="article_author">n/a</em>
+				<p class="article_body">n/a</p>
+			</div>
+			<hr/>
+			<div id="comment">
+				<h3>Commentaires (<span id="nb_comment"></span>)</h3>
+			</div>
 	    </div>
 
 	    <div data-role="footer" data-position="fixed" class="nav-glyphish">
@@ -40,7 +53,7 @@
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-vote">
+	                    <a href="#popupBasic2" data-transition="pop" data-rel="popup" data-theme="a" data-role="button" data-icon="app-vote">
 	                        Voter
 	                    </a>
 	                </li>
@@ -50,7 +63,7 @@
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="#popupBasic" data-theme="a" data-ajax="false" data-role="button" data-rel="popup" data-icon="app-share">
+	                    <a href="#popupBasic" data-transition="pop" data-rel="popup" data-theme="a" data-role="button" data-icon="app-share">
 	                        Partager
 	                    </a>
 	                </li>
@@ -60,7 +73,7 @@
 
 	</div>
 
-	<script src="js/jquery-latest.min.js"></script>
+	<script src="js/jquery-1.9.1.min.js"></script>
 	<script src="js/jquery.json-2.4.min.js"></script>
 	<script src="js/jstorage.min.js"></script>
 	<script src="js/jquery.geturlparam.min.js"></script>
@@ -74,10 +87,11 @@
     </script>
 	<script type="text/javascript">
 		$(document).bind("mobileinit", function(){
+			$.mobile.page.prototype.options.backBtnTheme = "previous";
 			app.initialize('share');
 		});
 	</script>
-	<script src="js/jquery.mobile-1.2.0.min.js"></script>
+	<script src="js/jquery.mobile-1.3.0.min.js"></script>
 	<script src="phonegap.js"></script>
 </body>
 </html>
