@@ -5,6 +5,7 @@
 	<title>Bottlenews</title>
 	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
 	<link rel="stylesheet" href="css/themes/theme.min.css" />
+	<link rel="stylesheet" href="css/jsShare.css" type="text/css" />
 	<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -21,17 +22,8 @@
 	        </h3>
 	    </div>
 	    <div data-role="content">
-	    	<div id="article">
-				<div style="width:100%; height:100px; position:relative; background-color:#fbfbfb; border:1px solid #b8b8b8;">
-					<img src="http://codiqa.com/static/images/v2/image.png" alt="image" style="position:absolute; top:50%; left:50%; margin-left:-16px; margin-top:-18px" class="article_img" />
-				</div>
-		    	<h2 class="article_title">n/a</h2><span> by </span><em class="article_author">n/a</em>
-				<p class="article_body">n/a</p>
-			</div>
-			<hr/>
-			<div id="comment">
-				<h3>Commentaires (<span id="nb_comment"></span>)</h3>
-			</div>
+            <div id="buttons-expanded">
+            </div>
 	    </div>
 
 	    <div data-role="footer" data-position="fixed" class="nav-glyphish">
@@ -43,7 +35,7 @@
 	                    </a>
 	                </li>
 	                <li>
-	                    <a id="police" href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-police">
+	                    <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-police">
 	                        Police
 	                    </a>
 	                </li>
@@ -53,12 +45,12 @@
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="#comment" data-theme="a" data-ajax="false" data-role="button" data-icon="app-comment">
+	                    <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-comment">
 	                        Commenter
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="share.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-share">
+	                    <a href="#popupBasic" data-theme="a" data-ajax="false" data-role="button" data-rel="popup" data-icon="app-share">
 	                        Partager
 	                    </a>
 	                </li>
@@ -72,11 +64,17 @@
 	<script src="js/jquery.json-2.4.min.js"></script>
 	<script src="js/jstorage.min.js"></script>
 	<script src="js/jquery.geturlparam.min.js"></script>
+    <script src="js/jsShare.js"></script>
 	<script src="js/script.js"></script>
 	<script type="text/javascript">
+        $(document).ready(function() {
+            $('#buttons').jsShare({ maxwidth: 360 });
+            $('#buttons-expanded').jsShare({ initialdisplay: 'expanded', maxwidth: 360 });
+        });
+    </script>
+	<script type="text/javascript">
 		$(document).bind("mobileinit", function(){
-			$.mobile.page.prototype.options.backBtnTheme = "previous";
-			app.initialize('article');
+			app.initialize('share');
 		});
 	</script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>
