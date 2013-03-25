@@ -4,8 +4,6 @@
 
 // Development
 var api_paths = {
-	settings : "",
-	//home : "http://localhost:8000/api/v1/category/1/?format=json",
 	login : "http://localhost:8000/api/v1/user/login/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	register : "http://localhost:8000/api/v1/user/register/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
 	logout : "http://localhost:8000/api/v1/user/logout/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
@@ -14,6 +12,7 @@ var api_paths = {
 	categories : "http://localhost:8000/api/v1/category/?format=json",
 	postarticle : "http://localhost:8000/api/v1/articles/post_article/",
 	preferences : "http://localhost:8000/api/v1/preferences/?format=json",
+	settings : "http://localhost:8000/api/v1/user/save_settings/",
 };
 
 // Production
@@ -46,6 +45,8 @@ function Reader() {
 					
 					category = null;
 					$(json.objects).each(function(i, cat) {
+
+						console.log(cat);
 						
 						category = new Category();
 						category.articles = [];
@@ -63,7 +64,7 @@ function Reader() {
 							article.title = art.title;
 							article.text = art.text;
 							article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
-							article.picture = art.picture;
+							article.picture = art.media;
 							article.datetime = art.datetime;
 							article.author = art.author;
 
@@ -71,13 +72,12 @@ function Reader() {
 							category.articles_ids.push(article.id);
 						});
 
-						console.log(category);
 						app.reader.pushCategory(category);
 						category.saveLocal();
 						category.showArticles();
 					});
 
-
+					$.jStorage.set('categories', app.reader.categories);
 					that.rebuildMenu();
 				},
 				error: function() {
@@ -130,16 +130,22 @@ function Reader() {
 			this.updateCategoriesMenu();
 			$('.categoryBtn').remove();
 
+			var categories = $.jStorage.get('categories');
+
 			// @todo : Sort by weight
-			$(this.categories).each(function (i, cat) {
+			$(categories).each(function (i, cat) {
 				// Add each category to the navbar
+				var $li = $('<li>');
 				var $link = $('<a>', {
 					href: "read.html?category="+cat.name,
 					class: "categoryBtn",
 					text: cat.name,
 				});
 				$link.attr('data-ajax', 'false');
-				$link.appendTo('#categories_menu');
+				$link.appendTo($li);
+				$li.appendTo('#categories_menu');
+
+				$('#categories_menu:visible').listview('refresh');
 			});
 		};
 
@@ -149,17 +155,12 @@ function Reader() {
 
 		// Update the list of categories
 		Reader.prototype.updateCategoriesMenu = function () {
-			if(this.categories.size == 0) {
-				this.categories = $.jStorage.get('categories');
-			}
-			$.jStorage.set('categories', this.categories);
+			this.categories = $.jStorage.get('categories');
 		};
 
 		/*
 				MAIN for Reader
 		*/
-
-		this.loadOnline();
 
 		/*var weight = 0;
 		var _this = this;
@@ -315,7 +316,7 @@ function Article(){
 	var id;
 	var title = "";
 	var subhead = "";
-	var picture;
+	var picture = "";
 	var datetime;
 	var author;
 	var text = "";
@@ -346,7 +347,7 @@ function Article(){
 			if(article = $.jStorage.get('articles['+id+']')) {
 				this.id = id;
 				this.title = article.title;
-				this.picture = article.picture;
+				this.picture = article.media;
 				this.author = article.author;
 				this.subhead = article.subhead;
 				this.datetime = article.datetime;
@@ -360,18 +361,23 @@ function Article(){
 		};
 
 		// Print article in html
-		Article.prototype.show = function () {
-			if(!this.picture) {
-				$('#article .article_img').parent().hide();
-			} else {
-				$('#article .article_img').attr('href', this.picture);
+		Article.prototype.show = function (id) {
+			var article = $.jStorage.get('articles['+id+']');
+			console.log(article.picture);
+			if(!!article.picture) {	
+				var $img = $('<img>', {
+					src: "http://localhost:8000/media/"+article.picture,
+					alt: article.title,
+				});
+				$img.appendTo('#img-article');
 			}
-			$('#article .article_body').html(this.subhead);
-			$('#article .article_title').text(this.title);
-			$('#article .article_author').text(this.author);
+
+			$('#article .article_body').html(article.subhead);
+			$('#article .article_title').text(article.title);
+			$('#article .article_author').text(article.author);
 
 			var $link_write = $('<a>', {
-					href: "write-comment.html?id="+this.id,
+					href: "write-comment.html?id="+article.id,
 					text: "Ecrire un commentaire",
 			});
 			$link_write.attr('data-ajax', 'false');
@@ -379,7 +385,7 @@ function Article(){
 			$link_write.appendTo('#comment');
 
 			var $link_read = $('<a>', {
-					href: "read-comment.html?id="+this.id,
+					href: "read-comment.html?id="+article.id,
 					text: "Lire les commentaires",
 			});
 			$link_read.attr('data-ajax', 'false');
@@ -388,6 +394,9 @@ function Article(){
 		};
 
 		Article.prototype.showItem = function(category) {
+
+			var article = $.jStorage.get('articles['+this.id+']');
+
 			$li = $('<li>');
 			$a = $('<a>', {
 				href: "article.html?id="+this.id+"&category=" + category.id,
@@ -400,9 +409,10 @@ function Article(){
 			$div = $('<div>', {
 				text: this.subhead
 			});
-			if(!!this.picture) {
+
+			if(!!article.picture) { 
 				$img = $('<img>', {
-					src: this.picture
+					src: "http://localhost:8000/media/"+article.picture
 				});
 				$img.appendTo($a);
 			}
@@ -606,25 +616,29 @@ function Settings(){
 				var maxArticle = $("#selectmenu1").val();
 
 				var data = JSON.stringify({
-					"autoShare": autoShare, // login is either username or email // @todo : make login
+					"autoShare": autoShare,
 					"geoloc": geoloc,
-					"maxArticle": maxArticle
+					"maxArticle": maxArticle,
+					"facebook": $.jStorage.get('current_user').facebook,
+					"gplus": $.jStorage.get('current_user').gplus,
+					"twitter": $.jStorage.get('current_user').twitter,
+					"pays": $.jStorage.get('current_user').country,
+					"ville": $.jStorage.get('current_user').city,
 				});
 
 				//@TODO : send preferences to server
-				/*$.ajax({
-					url: api_paths.preferences,
+				$.ajax({
+					url: api_paths.settings,
 					type: 'POST',
 					contentType: 'application/json',
 					data: data,
 					dataType: 'json',
 					success: function(json) {
-						console.info(json);
+						console.log("ok");
 					},
 					error: function(ts) {
-
 					}
-				});	*/
+				});
 
 				return false;
 			});
@@ -641,7 +655,7 @@ function updateFont(fontSize){
 	var currentFontSize = parseInt(fontSize.replace(/px/, ""));
 	if(currentFontSize == 23){
 		fontSize = 14;
-	}else{
+	} else {
 		fontSize = currentFontSize + 3;
 	}		
 	return fontSize;
@@ -673,8 +687,10 @@ var app = {
 
 		switch(page) {
 			case 'read' :
+				this.reader = new Reader();
 				if(getQuerystring('category') == "") {
-					this.reader = new Reader();
+					//this.reader = new Reader();
+					this.reader.loadOnline();
 				}
 				else {
 					var current_cat = new Category();
@@ -693,7 +709,7 @@ var app = {
 						article.title = art.title;
 						article.text = art.text;
 						article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
-						article.picture = art.picture;
+						article.picture = art.media;
 						article.datetime = art.datetime;
 						article.author = art.author;
 
@@ -702,7 +718,12 @@ var app = {
 					});
 
 					current_cat.showArticles();
+					this.reader.rebuildMenu();
+
+					$('#header h3').text("Bottlenews - " + current_cat_name);
+
 				}
+
 				break;
 			case 'article':
 				var index = 0;
@@ -719,7 +740,7 @@ var app = {
 						index = i;
 				});
 				// Displays it in html
-				article.show();
+				article.show(article.id);
 
 				var nb_comment = 0;
 				$.ajax(api_paths.comment,{
@@ -763,6 +784,8 @@ var app = {
 					var size = $("#article.ui-page").css("font-size");
 					var newSize = updateFont(size);
 					$("#article.ui-page").css("font-size", newSize + "px");
+					$('#popupBasic').css("font-size", "14px");
+					$('#popupBasic2').css("font-size", "14px");
 				});
 
 				break;
