@@ -885,16 +885,20 @@ var app = {
 						var current_user = $.jStorage.get('current_user');
             var article_title = $("#article_title").val();
             var article_content = $("#article_content").val();
+            var article_content = $("#article_content").val();
+						var article_category = $("#select_category").val();
+
             var picture = $.jStorage.get('picture');
 
             var data = JSON.stringify({
                 "title" : article_title,
-                "memberId": current_user.id,
                 "text" : article_content,
+                "memberId": current_user.id,
+                "category" : article_category,
                 "media" : picture
             });
 
-            //console.log(data);
+            console.log(data);
             //Need to add the category data
             $.ajax({
                 url: api_paths.postarticle,
