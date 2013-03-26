@@ -22,6 +22,12 @@ var api_paths = {
 	Reader application will show a list of articles and categories in tabs and manage the interactions and updates	
 */
 
+
+function onDeviceReady() {
+        // Empty
+}
+
+
 function Reader() {
 	this.current_category;
 	this.categories = [];
@@ -427,6 +433,10 @@ function Article(){
 	}
 }
 
+$(document).bind('deviceready', function(){
+        onDeviceReady();
+});
+
 // Definition of an user
 function User() {
 	var username = "anonymous";
@@ -440,6 +450,10 @@ function User() {
 	var twitter;
 	var country;
 	var city;
+
+	$(document).bind('deviceready', function(){
+        onDeviceReady();
+    });
 
 	if (typeof User.initialized == "undefined") {
 		// Save current user in storage.
@@ -533,12 +547,19 @@ function User() {
 						window.location.replace("settings.html");
 					}
 				},
-				error: function(ts) {
-					console.debug(ts.responseText);
+				error: function() {
+					/*console.debug(ts.responseText);
 					var error = jQuery.parseJSON(ts.responseText);
 					if(error.reason == "incorrect") {
-						$('p.error').text("Le nom d'utilisateur ou le mot de passe est incorrect");
-					}
+						$('p.error').text("Le nom d'utilisateur ou le mot de passe est incorrect");*/
+						//document.addEventListener("deviceready", onDeviceReady, false);
+							navigator.notification.alert(
+								'Le nom d utilisateur ou le mot de passe est incorrect!',  // message
+		 						null,         // callback
+								'Attention',            // title
+								'OK'                  // buttonName
+							);
+						//}
 
 					$("#login_user").val('');
 					$("#login_password").val('');

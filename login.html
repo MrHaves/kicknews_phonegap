@@ -67,6 +67,10 @@
 	<script src="js/jstorage.min.js"></script>
 	<script src="js/script.js"></script>
 	<script type="text/javascript">
+		$(document).bind('deviceready', function(){
+        	onDeviceReady();
+    	});
+
 		$(document).bind("mobileinit", function(){
 			app.initialize('login');
 		});
