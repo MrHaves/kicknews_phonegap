@@ -634,7 +634,7 @@ function Settings(){
 
 				var autoShare = $("#flip-1").val();
 				var geoloc = $("#flip-2").val();
-				var maxArticle = $("#selectmenu1").val();
+				var maxArticle = parseInt($("#selectmenu1").val());
 
 				var data = JSON.stringify({
 					"autoShare": autoShare,
@@ -645,6 +645,7 @@ function Settings(){
 					"twitter": $.jStorage.get('current_user').twitter,
 					"pays": $.jStorage.get('current_user').country,
 					"ville": $.jStorage.get('current_user').city,
+					"userId": $.jStorage.get('current_user').id,
 				});
 
 				//@TODO : send preferences to server
@@ -655,9 +656,10 @@ function Settings(){
 					data: data,
 					dataType: 'json',
 					success: function(json) {
-						console.log("ok");
+						$("#confirm").popup( "open", {} );
 					},
 					error: function(ts) {
+						$("#error").popup( "open", {} );
 					}
 				});
 
@@ -668,8 +670,12 @@ function Settings(){
 		Settings.initialized = true;
 	}
 
-	this.loadLocal();
-	this.setListeners();
+	var current_user = $.jStorage.get('current_user');
+	if(current_user != null){
+		this.loadLocal();
+		this.setListeners();	
+	}
+
 }
 
 function updateFont(fontSize){
@@ -705,6 +711,19 @@ var app = {
 		// load User session from storage
 		// load Settings
 		// fetch config data from storage
+
+		var current_user = $.jStorage.get('current_user');
+		if(current_user != null){
+			console.log("loggué");
+			$('#login').text("Se déconnecter");
+			$('#login').attr('href', 'logout.html');
+			$('#login').attr('data-icon', 'app-');
+		}
+		else{
+			console.log("pas loggué");
+			$('#write').addClass('ui-disabled');
+
+		}
 
 		switch(page) {
 			case 'read' :

@@ -15,6 +15,9 @@
     //test Function about the run of Phonegap
     function onDeviceReady(){
       //alert("PhoneGap is working on settings!!");
+      if ($.jStorage.get('current_user').auto_share == true){
+        navigator.geolocation.getCurrentPosition(onGeoSuccess, onError);
+      }
     }
 
     //If Geoloc btn is 'on', set the geolocalisation
@@ -22,12 +25,19 @@
       if (Objet.value=="on") {
         navigator.geolocation.getCurrentPosition(onGeoSuccess, onError);
       }
+      else{
+        var element = document.getElementById('geolocalisation');
+        element.innerHTML = '';
+      }
     }
     //callback of geolocalisation btn
     function onGeoSuccess(position){
       //navigator.notification.alert("navigator alert settings");
       var element = document.getElementById('geolocalisation');
-      element.innerHTML = 'Latitude: ' + position.coords.latitude + '<br/>' + 'Altitude: '+ position.coords.longitude;
+      element.innerHTML = 'Latitude: ' + position.coords.latitude + '<br/>' + 'Longitude: '+ position.coords.longitude;
+
+      $.jStorage.set('latitude', position.coords.latitude);
+      $.jStorage.set('longitude', position.coords.longitude);
     }
     function onError(error) {
       alert('code: '+ error.code + '\n' + 'message: ' + error.message + '\n');
@@ -45,8 +55,21 @@
       </div>
 
       <div data-role="content">
-        <!--Geolocalisation-->
-        <p id="geolocalisation"></p>
+        <div data-role="popup" data-overlay-theme="a" data-position-to="window" id="confirm">
+          <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          <div>
+            <h3>Oui!</h3>
+            <p>Vos préférences ont bien été enregistrées</p>
+          </div>
+        </div>
+
+        <div data-role="popup" data-overlay-theme="a" data-position-to="window" id="error">
+          <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          <div>
+            <h3>Oups!</h3>
+            <p>Une erreur est survenue, retentez plus tard</p>
+          </div>
+        </div>
 
         <form id="settingsForm" action="#" method="post">
           <div data-role="fieldcontain">
@@ -59,10 +82,12 @@
 
           <div data-role="fieldcontain">
             <label for="flip-2">Géolocalisation :</label>
-            <select name="flip-2" id="flip-2" data-role="slider"  onchange="setGeoloc(this)">
+            <select name="flip-2" id="flip-2" data-role="slider" onchange="setGeoloc(this)">
               <option value="off">Off</option>
               <option value="on">On</option>
             </select> 
+            <!--Geolocalisation-->
+            <p id="geolocalisation"></p>
           </div>  
 
           <div data-role="fieldcontain">
@@ -84,27 +109,27 @@
               <ul>
                   <li>
                       <a href="index.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
-                        Home
+                        Bottlenews
                       </a>
                   </li>
                   <li>
-                      <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-categories">
-                          Catégories
+                      <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-search">
+                          Recherche
                       </a>
                   </li>
                   <li>
-                      <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write">
-                          Write
+                      <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write" id="write">
+                          Ecrire
                       </a>
                   </li>
                   <li>
-                      <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
-                          Login
+                      <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login" id="login">
+                          Se connecter
                       </a>
                   </li>
                   <li>
                       <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings" class="ui-btn-active">
-                          Settings
+                          Préférences
                       </a>
                   </li>
               </ul>
