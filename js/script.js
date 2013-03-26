@@ -54,7 +54,7 @@ function Reader() {
 						
 						category.id = cat.name;
 						category.name = cat.name;
-						category.fetch_url = "http://localhost:8000/api/v1/category/?format=json&name="+cat.name;
+						category.fetch_url = api_paths.categories+"&name="+cat.name;
 
 						article = null;
 						$(cat.articles).each(function(i, art) {
@@ -76,6 +76,15 @@ function Reader() {
 						category.saveLocal();
 						category.showArticles();
 					});
+
+					var cat  = new Category();
+					cat.id = "aroundme";
+					cat.name = "aroundme";
+					//cat.fetch_url = api_paths.categories+"&lat="+latitude+"&long="+longitude;
+					cat.fetch_url = api_paths.categories+"&name="+cat.name;
+					app.reader.pushCategory(cat);
+					cat.saveLocal();
+					//category.showArticles();
 
 					$.jStorage.set('categories', app.reader.categories);
 					that.rebuildMenu();
@@ -286,7 +295,6 @@ function Category(){
 			$(this.articles).each(function (i, art) {
 				art.save();
 			});
-
 			$.jStorage.set('categories['+this.id+']', this);
 		};
 
@@ -379,6 +387,7 @@ function Article(){
 			var $link_write = $('<a>', {
 					href: "write-comment.html?id="+article.id,
 					text: "Ecrire un commentaire",
+					id: "write-comment-button"
 			});
 			$link_write.attr('data-ajax', 'false');
 			$link_write.attr('data-role', 'button');
@@ -387,10 +396,17 @@ function Article(){
 			var $link_read = $('<a>', {
 					href: "read-comment.html?id="+article.id,
 					text: "Lire les commentaires",
+					id: "read-comment-button"
 			});
 			$link_read.attr('data-ajax', 'false');
 			$link_read.attr('data-role', 'button');
 			$link_read.appendTo('#comment');
+
+			var current_user = $.jStorage.get('current_user');
+			if(current_user == null){
+				$('#write-comment-button').addClass('ui-disabled');
+			}
+
 		};
 
 		Article.prototype.showItem = function(category) {
@@ -403,6 +419,7 @@ function Article(){
 				rel: "external",
 				class: "articleBtn"
 			});
+
 			$h3 = $('<h3>', {
 				text: this.title,
 			});
@@ -410,14 +427,31 @@ function Article(){
 				text: this.subhead
 			});
 
+
+
 			if(!!article.picture) { 
+				$div = $('<div>', {
+					class: "thumb"
+				});	
+
 				$img = $('<img>', {
 					src: "http://localhost:8000/media/"+article.picture
 				});
-				$img.appendTo($a);
 			}
+			else {
+				$div = $('<div>', {
+					class: "no-thumb"
+				});
+
+				$img = $('<img>', {
+					src: "css/icons/42-photos.png"
+				});
+			}
+
+			$img.appendTo($div);
+			$div.appendTo($a);
+
 			$h3.appendTo($a);
-			//$div.appendTo($a);
 			$a.appendTo($li);
 			$li.appendTo('#reader #articles');
 
@@ -580,6 +614,7 @@ function User() {
 			$.jStorage.deleteKey('current_user');
 			// Update current_user
 			app.current_user = new User();
+			window.location.replace("login.html");
 		};
 		
 		User.prototype.is_logged_in = function() {
@@ -716,14 +751,14 @@ var app = {
 		var current_user = $.jStorage.get('current_user');
 		if(current_user != null){
 			console.log("loggué");
-			$('#login').text("Se déconnecter");
-			$('#login').attr('href', 'logout.html');
-			$('#login').attr('data-icon', 'app-');
+			$('#login-button').text("Se déconnecter");
+			$('#login-button').attr('href', 'logout.html');
+			$('#login-button').attr('data-icon', 'app-deconnect');
 		}
 		else{
 			console.log("pas loggué");
-			$('#write').addClass('ui-disabled');
-
+			$('#write-button').addClass('ui-disabled');
+			$('#settings-button').addClass('ui-disabled');
 		}
 
 		switch(page) {
@@ -742,23 +777,31 @@ var app = {
 					current_cat.name = cat.name;
 					current_cat.fetch_url = cat.fetch_url;
 
-					article = null;
-					$(cat.articles).each(function(i, art) {
+					if(current_cat.name == "aroundme"){
+						var latitude = $.jStorage.get('latitude');
+						var longitude = $.jStorage.get('longitude');
+						$("#geolocalisation").html('Latitude: ' + latitude + '<br/>' + 'Longitude: '+ longitude);
+					}
+					else {
+						article = null;
+						$(cat.articles).each(function(i, art) {
 
-						article = new Article();
-						article.id = art.id;
-						article.title = art.title;
-						article.text = art.text;
-						article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
-						article.picture = art.media;
-						article.datetime = art.datetime;
-						article.author = art.author;
+							article = new Article();
+							article.id = art.id;
+							article.title = art.title;
+							article.text = art.text;
+							article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
+							article.picture = art.media;
+							article.datetime = art.datetime;
+							article.author = art.author;
 
-						current_cat.articles.push(article);
-						current_cat.articles_ids.push(article.id);
-					});
+							current_cat.articles.push(article);
+							current_cat.articles_ids.push(article.id);
+						});
 
-					current_cat.showArticles();
+						current_cat.showArticles();
+					}
+
 					this.reader.rebuildMenu();
 
 					$('#header h3').text("Bottlenews - " + current_cat_name);
@@ -794,11 +837,15 @@ var app = {
 							var article_id = getQuerystring('id');
 							if(comment.articleId.id == parseInt(article_id)){
 								++nb_comment;
-							};
-
-							$('#nb_comment').text(nb_comment);
+							}
 
 						});	
+
+						$('#nb_comment').text(nb_comment);
+
+						if(nb_comment == 0){
+							$('#read-comment-button').addClass('ui-disabled');
+						}
 					},
 					error: function(ts) {
 					}
@@ -849,7 +896,7 @@ var app = {
 						data: data,
 						dataType: 'json',
 						success: function(json) {
-							console.info(json);
+							window.location.replace("read-comment.html");
 						},
 						error: function(ts) {
 
@@ -894,46 +941,45 @@ var app = {
 
 					},
 					error: function(ts) {
-
 					}
 				});	
 				break;
 			case 'write' : 
-        //console.log('page rechargée');
-        $('#writeform').submit(function(event){
-            //event.preventDefault();
-						var current_user = $.jStorage.get('current_user');
-            var article_title = $("#article_title").val();
-            var article_content = $("#article_content").val();
-            var article_content = $("#article_content").val();
-						var article_category = $("#select_category").val();
+		        //console.log('page rechargée');
+		        $('#writeform').submit(function(event){
+		            //event.preventDefault();
+					var current_user = $.jStorage.get('current_user');
+		            var article_title = $("#article_title").val();
+		            var article_content = $("#article_content").val();
+		            var article_content = $("#article_content").val();
+					var article_category = $("#select_category").val();
 
-            var picture = $.jStorage.get('picture');
+		            var picture = $.jStorage.get('picture');
 
-            var data = JSON.stringify({
-                "title" : article_title,
-                "text" : article_content,
-                "memberId": current_user.id,
-                "category" : article_category,
-                "media" : picture
-            });
+		            var data = JSON.stringify({
+		                "title" : article_title,
+		                "text" : article_content,
+		                "memberId": current_user.id,
+		                "category" : article_category,
+		                "media" : picture
+		            });
 
-            console.log(data);
-            //Need to add the category data
-            $.ajax({
-                url: api_paths.postarticle,
-                type:"POST", 
-                contentType: 'application/json',
-                data: data, 
-                dataType: 'json',
-                success: function(json) {
-                    console.info(json);
-                },
-                error: function(ts) {
-									console.log('erreur');
-                }
-            });
-        });
+		            console.log(data);
+		            //Need to add the category data
+		            $.ajax({
+		                url: api_paths.postarticle,
+		                type:"POST", 
+		                contentType: 'application/json',
+		                data: data, 
+		                dataType: 'json',
+		                success: function(json) {
+		                    console.info(json);
+		                },
+		                error: function(ts) {
+							console.log('erreur');
+		                }
+		            });
+		        });
 				break;
 			case 'share' :
 				break;

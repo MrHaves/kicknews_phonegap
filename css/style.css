@@ -71,3 +71,17 @@
 #img-article img {
 	width:100%;
 }
+
+.no-thumb {
+	background-color:#e1e1e1;
+	border:1px solid #ccc;
+	float:left;
+    margin: 0 12px 0 0;
+    padding: 10px 28px;
+}
+
+.thumb img {
+    float: left;
+    margin: 0 12px 0 0;
+    width: 80px;
+}
