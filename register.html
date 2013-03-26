@@ -16,6 +16,63 @@
 	        </h3>
 	    </div>
 	    <div data-role="content">
+	    	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="error_password">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Les mots de passe ne correspondent pas.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="error_user">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Ce nom d'utlisateur est déjà pris.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="error_email">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Cette adresse est déjà utilisée.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="email_null">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Vous n'avez pas entré d'email.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="password_null">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Vous n'avez pas entré de mot de passe.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="email_not_valid">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Votre adresse mail n'est pas valide.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="username_null">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Vous n'avez pas entré de pseudo.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="member_register">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Félicitation !</h3>
+            		<p>Vous êtes bien enregistré.</p>
+          		</div>
+          		<a href="login.html" data-role="button" data-theme="a">Loguez-vous</a>
+        	</div>
 	    	<h3>Créer un compte</h3>
 	    	<p class="error"></p>
 	    	<form id="registerForm" action="#" method="post">

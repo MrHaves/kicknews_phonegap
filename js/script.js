@@ -22,12 +22,6 @@ var api_paths = {
 	Reader application will show a list of articles and categories in tabs and manage the interactions and updates	
 */
 
-
-function onDeviceReady() {
-        // Empty
-}
-
-
 function Reader() {
 	this.current_category;
 	this.categories = [];
@@ -433,9 +427,6 @@ function Article(){
 	}
 }
 
-$(document).bind('deviceready', function(){
-        onDeviceReady();
-});
 
 // Definition of an user
 function User() {
@@ -491,7 +482,6 @@ function User() {
 						app.current_user.api_key = json.member.api_key;
 						app.current_user.auto_share = json.member.autoShare;
 						app.current_user.geoloc = json.member.geoloc;
-						app.current_user.max_article_number = json.member.maxArticle;
 						app.current_user.facebook = json.member.facebook;
 						app.current_user.gplus = json.member.gplus;
 						app.current_user.twitter = json.member.twitter;
@@ -499,14 +489,32 @@ function User() {
 						app.current_user.city = json.member.ville;
 
 						app.current_user.save();
+						
+						$("#member_register").popup( "open", {});
+						
+					}
+					else{
+						if(json.reason == "username is empty") {
+							$("#username_null").popup( "open", {});
+						}else if(json.reason == "email is empty"){
+							$("#email_null").popup( "open", {});
+						}else if(json.reason == "user already exist"){
+							$("#error_user").popup( "open", {});
+						}else if(json.reason == "email already in use"){
+							$("#error_email").popup( "open", {});
+						}else if(json.reason == "passwords don't match"){
+							$("#error_password").popup( "open", {});
+						}else if(json.reason == "passwords don't exist"){
+							$("#password_null").popup( "open", {});
+						}else if(json.reason == "email empty"){
+							$("#email_null").popup( "open", {});
+						}else if(json.reason == "email not valid"){
+							$("#email_not_valid").popup( "open", {});
+						}
 					}
 				},
 				error: function(ts) {
-					console.debug(ts.status);
-					var error = jQuery.parseJSON(ts.responseText);
-					if(error.reason == "passwords don't match") {
-						$('p.error').text("Les mots de passe ne correspondent pas");
-					}
+					console.debug(ts.responseText);
 				}
 			});
 		};
@@ -547,19 +555,12 @@ function User() {
 						window.location.replace("settings.html");
 					}
 				},
-				error: function() {
-					/*console.debug(ts.responseText);
+				error: function(ts) {
+					//console.debug(ts.responseText);
 					var error = jQuery.parseJSON(ts.responseText);
 					if(error.reason == "incorrect") {
-						$('p.error').text("Le nom d'utilisateur ou le mot de passe est incorrect");*/
-						//document.addEventListener("deviceready", onDeviceReady, false);
-							navigator.notification.alert(
-								'Le nom d utilisateur ou le mot de passe est incorrect!',  // message
-		 						null,         // callback
-								'Attention',            // title
-								'OK'                  // buttonName
-							);
-						//}
+						$("#error_identification").popup( "open", {});
+					}
 
 					$("#login_user").val('');
 					$("#login_password").val('');
