@@ -65,7 +65,7 @@ function Reader() {
 							article.text = art.text;
 							article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
 							article.picture = art.media;
-							article.datetime = art.datetime;
+							article.date = art.date;
 							article.author = art.author;
 
 							category.articles.push(article);
@@ -111,6 +111,7 @@ function Reader() {
 		};
 
 		Reader.prototype.full_refresh = function () {
+			console.log('full_refresh');
 			this.loadLocal();
 			if(app.is_connected()) {
 				this.loadOnline();
@@ -159,7 +160,8 @@ function Reader() {
 		};
 
 		Reader.prototype.setListeners = function () {
-			$('#read .fetchBtn').click(this.refresh);
+			console.log('setListeners');
+			$('#reader .fetchBtn').click(this.full_refresh);
 		};
 
 		// Update the list of categories
@@ -243,7 +245,7 @@ function Category(){
 								article.text = art.text;
 								article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
 								article.picture = art.picture;
-								article.datetime = art.datetime;
+								article.date = art.date;
 								article.author = art.author;
 							}
 
@@ -325,7 +327,7 @@ function Article(){
 	var title = "";
 	var subhead = "";
 	var picture = "";
-	var datetime;
+	var date;
 	var author;
 	var text = "";
 	var is_read = false;
@@ -358,7 +360,7 @@ function Article(){
 				this.picture = article.media;
 				this.author = article.author;
 				this.subhead = article.subhead;
-				this.datetime = article.datetime;
+				this.date = article.date;
 			}
 			return this;
 		};
@@ -415,11 +417,33 @@ function Article(){
 
 			var article = $.jStorage.get('articles['+this.id+']');
 
+			var timestamp = article.date;
+			var date = new Date(timestamp * 1000);
+			var datevalues = [
+			         date.getFullYear()
+			        ,date.getMonth()+1
+			        ,date.getDate()
+			        ,date.getHours()
+			        ,date.getMinutes()
+			        ,date.getSeconds()
+			     ];
+
+			if(datevalues[1]<10){
+				month = '0' + datevalues[1];
+				datevalues[1] = month;
+			}
+			console.log(datevalues);
+
 			$li = $('<li>');
 			$a = $('<a>', {
 				href: "article.html?id="+this.id+"&category=" + category.id,
 				rel: "external",
 				class: "articleBtn"
+			});
+
+			$p = $('<p>', {
+				text: 'écrit le '+datevalues[2]+' / '+datevalues[1]+' / '+datevalues[0],
+				class: 'ui-li-aside',
 			});
 
 			$h3 = $('<h3>', {
@@ -451,6 +475,7 @@ function Article(){
 			$img.appendTo($div);
 			$div.appendTo($a);
 
+			$p.appendTo($a);
 			$h3.appendTo($a);
 			$a.appendTo($li);
 			$li.appendTo('#reader #articles');
@@ -750,9 +775,15 @@ var app = {
 
 		var current_user = $.jStorage.get('current_user');
 		if(current_user != null){
-			$('#login-button').text("Se déconnecter");
-			$('#login-button').attr('href', 'logout.html');
-			$('#login-button').attr('data-icon', 'app-logout');
+			if(page == 'read'){
+				$('#login-button').empty();
+				$('#login-button').html('<span class="ui-btn-inner"><span class="ui-btn-text">Se déconnecter</span><span class="ui-icon ui-icon-app-logout ui-icon-shadow">&nbsp;</span></span>');
+			}
+			else{
+				$('#login-button').text("Se déconnecter");
+				$('#login-button').attr('href', 'logout.html');
+				$('#login-button').attr('data-icon', 'app-logout');
+			}
 		}
 		else{
 			$('#write-button').addClass('ui-disabled');
@@ -765,6 +796,7 @@ var app = {
 				if(getQuerystring('category') == "") {
 					//this.reader = new Reader();
 					this.reader.loadOnline();
+					this.reader.setListeners();
 				}
 				else {
 					var current_cat = new Category();
@@ -790,7 +822,7 @@ var app = {
 							article.text = art.text;
 							article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
 							article.picture = art.media;
-							article.datetime = art.datetime;
+							article.date = art.date;
 							article.author = art.author;
 
 							current_cat.articles.push(article);
@@ -904,7 +936,6 @@ var app = {
 				});
 				break;
 			case 'read-comment' : 
-
 				$.ajax(api_paths.comment,{
 					dataType: 'json', // data will be parsed in json automagically
 					type: "GET",
@@ -913,14 +944,17 @@ var app = {
 						console.log(json);
 
 						$(json.objects).each(function(i, comment) {
-							console.log(comment);
 
 							var article_id = getQuerystring('id');
 
 							if(comment.articleId.id == parseInt(article_id)){
+
+								var date = comment.date.split('T');
+								var date_elements = date[0].split('-');
+
 								$li = $('<li>');
 								$p1 = $('<p>', {
-									text: comment.date,
+									text: 'écrit le '+date_elements[2]+' / '+date_elements[1] +' / '+date_elements[0] ,
 									class: 'ui-li-aside',
 								});
 								$h3 = $('<h3>', {
