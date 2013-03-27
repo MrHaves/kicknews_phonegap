@@ -2,6 +2,7 @@
 body.ui-mobile-viewport {
   background-color: #eee !important;
 }
+
 /* header navbar */
 .ui-header.ui-bar-a.ui-header-fixed.slidedown {
   background-color: #474747;
@@ -16,6 +17,10 @@ body.ui-mobile-viewport {
   background-image: url("images/logo_mobile_blank.png");
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.categoryBtn, #header .ui-title {
+	text-transform:capitalize;
 }
 
 /* footer navbar*/
@@ -37,20 +42,33 @@ body.ui-mobile-viewport {
 }
 
 /* navbar App icon */
-.nav-glyphish .ui-btn .ui-icon {
+.nav-glyphish .ui-btn .ui-icon, #header .ui-btn .ui-icon {
 	height:30px;
 	width:30px;
 	border-radius: 0 0 0 0 !important;
-  box-shadow: none;
+  	box-shadow: none;
+}
+
+#header .ui-btn {
+	height:32px;
+	margin: 0 0 0 10px;
+}
+
+#header .ui-btn-inner {
+	height:30px;
+}
+
+#header.ui-header .ui-btn-icon-left .ui-icon {
+    left: 12px;
+    top: 12px;
 }
 
 .ui-icon-app-home {
 	background: url("icons/blank_icons/53-house.png") no-repeat !important;
 }
 
-
 .ui-icon-app-categories {
-	background: url("icons/blank_icons/33-cabinet.png") no-repeat !important;
+	background: url("icons/44-shoebox.png") no-repeat !important;
 }
 
 .ui-icon-app-search {
@@ -65,13 +83,17 @@ body.ui-mobile-viewport {
 	background: url("icons/blank_icons/111-user.png") no-repeat !important;
 }
 
+.ui-icon-app-logout {
+	background: url("icons/blank_icons/201-logout.png") no-repeat !important;
+}
+
 .ui-icon-app-settings {
 	background: url("icons/blank_icons/20-gear2.png") no-repeat !important;
 }
 
 /* navbar Article icon */
 .ui-icon-app-police {
-	background: url("icons/blank_icons/33-cabinet.png") no-repeat !important;
+	background: url("icons/blank_icons/202-police.png") no-repeat !important;
 }
 
 .ui-icon-app-vote {
@@ -198,10 +220,12 @@ form#writeComment div.ui-submit {
 #left-panel.ui-panel-position-left.ui-panel-closed,
 #left-panel.ui-panel-position-left.ui-panel-animate {
   background: #474747;
+  background-image: url("http://beta.bottlenews.cc/assets/css/../img/noise.png") !important;
 }
 
 #left-panel .ui-listview > .ui-li.ui-btn {
   background: #474747;
+  background-image: url("http://beta.bottlenews.cc/assets/css/../img/noise.png") !important;
   border-top: none;
 }
 
@@ -231,5 +255,37 @@ form#writeComment div.ui-submit {
     float: left;
     margin: 0 12px 0 0;
     width: 80px;
+}
+
+.ui-bar-a {
+	text-shadow:none !important;
+	background: #474747;
+	background-image: url("http://beta.bottlenews.cc/assets/css/../img/noise.png") !important;
+}
+
+.ui-footer .ui-navbar li .ui-btn {
+	background: #474747;
+	background-image: url("http://beta.bottlenews.cc/assets/css/../img/noise.png") !important;
+}
+
+.ui-btn-up-d {
+	background:none;
+}
+
+.ui-body-d, .ui-overlay-d {
+	background:#EEEEEE;
+}
+
+.icon img {
+    margin: 0 5px;
+    width: 1.1em;
+}
+
+.article_author, .date {
+	font-size:0.9em;
+}
+
+.popup-content {
+	padding: 0 15px;
 }
 

@@ -5,16 +5,22 @@
     <title>Bottlenews</title>
     <link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
     <link rel="stylesheet" href="css/themes/theme.min.css" />
+    <link rel="stylesheet" href="css/jsShare.css" type="text/css" />
     <link rel="stylesheet" href="css/style.css" />
   </head>
 
   <body>
     <!-- Write an article -->
     <div data-role="page" id="write">
-        <div data-theme="a" data-role="header" data-position="fixed" class="logo">
-            <a href="#" data-role="button" data-rel="back" data-icon="arrow-l">Back</a>
+        <div data-theme="a" data-role="header" data-position="fixed">
+            <a href="#" data-role="button" data-rel="back" data-icon="arrow-l">Retour</a>
             <h3>
+                Commentaires
             </h3>
+        </div>
+        <div data-role="popup" data-overlay-theme="a" data-position-to="window" id="popupBasic">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+            <p id="buttons-expanded"></p>
         </div>
         <div data-role="content">
             <h3>Ecrire un commentaire</h3>
@@ -31,7 +37,7 @@
                 <ul>
                     <li>
                         <a href="index.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
-                            Home
+                            Bottlenews
                         </a>
                     </li>
                     <li>
@@ -39,18 +45,18 @@
                             Police
                         </a>
                     </li>
-                    <li>
+                    <!--<li>
                         <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-vote">
                             Voter
                         </a>
-                    </li>
+                    </li>-->
                     <li>
                         <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-comment" class="ui-btn-active">
-                            Commenter
+                            Commentaires
                         </a>
                     </li>
                     <li>
-                        <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-share">
+                        <a href="#popupBasic" data-theme="a" data-role="button" data-icon="app-share" data-rel="popup">
                             Partager
                         </a>
                     </li>
@@ -64,7 +70,15 @@
     <script src="js/jquery-latest.min.js"></script>
     <script src="js/jquery.json-2.4.min.js"></script>
     <script src="js/jstorage.min.js"></script>
+    <script src="js/jsShare.js"></script>
     <script src="js/script.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#buttons').jsShare({ maxwidth: 360 });
+            $('#buttons-expanded').jsShare({ initialdisplay: 'expanded', maxwidth: 240, maxheight:70 });
+            $('.inner').hide();
+        });
+    </script>
     <script type="text/javascript">
         $(document).bind("mobileinit", function(){
             app.initialize('write-comment');
