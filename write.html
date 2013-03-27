@@ -66,40 +66,23 @@
     <div data-role="page" id="write">
         <div data-theme="a" data-role="header" data-position="fixed">
             <h3>
-                Bottlenews
+                Ecrire
             </h3>
         </div>
         <div data-role="content">
             <form id="writeform" action="#" method="post">
-                <ul data-role="listview" data-divider-theme="a" data-inset="true">
-                    <li data-theme="c">
-                        <a href="#" data-transition="slide">
-                            Write
-                        </a>
-                    </li>
-                </ul>
 
                 <!-- Title container-->
-                <label for="article_title">Titre
-                </label>
-                <input type="text" name="title" id="article_title" placeholder="">
-
-                <!-- Title container-->
-                <label for="article_category">Category
-                </label>
-                <select name="category_menu" id="select_category">
-                  <option value="economie">économie</option>
-                  <option value="sante">santé</option>
-                  <option value="sciences">sciences</option>
-                  <option value="sport">sport</option>
-                </select>
+                <input type="text" name="title" id="article_title" placeholder="Titre">
 
                 <!-- Text Area container-->
-                <label for="article_content">Corps du message
-                </label>
-                <textarea name="content" id="article_content" placeholder="">
-                </textarea>
-                
+                <textarea name="content" id="article_content" placeholder="Texte"></textarea>
+
+                <!-- Title container-->
+                <select name="category_menu" id="select_category">
+                    <option>Cat&eacute;gorie</option>
+                </select>
+
                 <!-- Photo -->
                 <div id="camera">
                     <a  data-role="button" class="camera-control" onclick="capturePhoto();" href="#">Capture Photo</a>
@@ -111,9 +94,9 @@
                 <!--Publish button-->
                 <input type="submit" id="submit" value="Publier" />
 
-                <a data-role="button" data-inline="true" href="#page1">
+                <!--<a data-role="button" data-inline="true" href="#page1">
                     Brouillon
-                </a>
+                </a>-->
             </form>
         </div>
 
@@ -142,7 +125,7 @@
                     </li>
                     <li>
                         <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings" id="settings-button">
-                            Préférences
+                            Pr&eacute;f&eacute;rences
                         </a>
                     </li>
                 </ul>

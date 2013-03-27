@@ -427,8 +427,6 @@ function Article(){
 				text: this.subhead
 			});
 
-
-
 			if(!!article.picture) { 
 				$div = $('<div>', {
 					class: "thumb"
@@ -750,13 +748,11 @@ var app = {
 
 		var current_user = $.jStorage.get('current_user');
 		if(current_user != null){
-			console.log("loggué");
 			$('#login-button').text("Se déconnecter");
 			$('#login-button').attr('href', 'logout.html');
-			$('#login-button').attr('data-icon', 'app-deconnect');
+			$('#login-button').attr('data-icon', 'app-logout');
 		}
 		else{
-			console.log("pas loggué");
 			$('#write-button').addClass('ui-disabled');
 			$('#settings-button').addClass('ui-disabled');
 		}
@@ -804,7 +800,7 @@ var app = {
 
 					this.reader.rebuildMenu();
 
-					$('#header h3').text("Bottlenews - " + current_cat_name);
+					$('#header h3').text(current_cat_name);
 
 				}
 
@@ -896,7 +892,7 @@ var app = {
 						data: data,
 						dataType: 'json',
 						success: function(json) {
-							window.location.replace("read-comment.html");
+							window.location.replace("read-comment.html?id="+article_id);
 						},
 						error: function(ts) {
 
@@ -906,6 +902,7 @@ var app = {
 				});
 				break;
 			case 'read-comment' : 
+
 				$.ajax(api_paths.comment,{
 					dataType: 'json', // data will be parsed in json automagically
 					type: "GET",
@@ -945,7 +942,21 @@ var app = {
 				});	
 				break;
 			case 'write' : 
-		        //console.log('page rechargée');
+
+				var categories = $.jStorage.get('categories');
+
+				for(var i=0; i<categories.length; ++i){
+
+					if(categories[i].name != "aroundme") {
+						$option = $('<option>', {
+							value: categories[i].name,
+							text: categories[i].name
+						});
+
+						$option.appendTo('#select_category');
+					}
+				}
+
 		        $('#writeform').submit(function(event){
 		            //event.preventDefault();
 					var current_user = $.jStorage.get('current_user');

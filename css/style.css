@@ -23,6 +23,10 @@
 	background: url("icons/111-user.png") no-repeat !important;
 }
 
+.ui-icon-app-logout {
+	background: url("icons/201-logout.png") no-repeat !important;
+}
+
 .ui-icon-app-settings {
 	background: url("icons/20-gear2.png") no-repeat !important;
 }
@@ -72,6 +76,7 @@
 	width:100%;
 }
 
+/* Article list */
 .no-thumb {
 	background-color:#e1e1e1;
 	border:1px solid #ccc;
