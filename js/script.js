@@ -15,6 +15,7 @@ var api_paths = {
 	postarticle : DOMAIN_WEBSITE + "api/v1/articles/post_article/",
 	preferences : DOMAIN_WEBSITE + "api/v1/preferences/?format=json",
 	settings : DOMAIN_WEBSITE + "api/v1/user/save_settings/",
+	aroundme : DOMAIN_WEBSITE + "api/v1/aroundme/?format=json";
 };
 
 // Production
@@ -84,7 +85,6 @@ function Reader() {
 					var cat  = new Category();
 					cat.id = "aroundme";
 					cat.name = "aroundme";
-					//cat.fetch_url = api_paths.categories+"&lat="+latitude+"&long="+longitude;
 					cat.fetch_url = api_paths.categories+"&name="+cat.name;
 					app.reader.pushCategory(cat);
 					cat.saveLocal();
@@ -803,6 +803,40 @@ var app = {
 						var latitude = $.jStorage.get('latitude');
 						var longitude = $.jStorage.get('longitude');
 						$("#geolocalisation").html('Latitude: ' + latitude + '<br/>' + 'Longitude: '+ longitude);
+
+						var url = api_paths.aroundme + "&lat="+latitude+"&long="+longitude;
+
+
+						$.ajax(api_paths.aroundme, {
+							dataType: 'json', // data will be parsed in json automagically
+							type: "GET",
+							cache: false,
+							success: function(json) {
+
+								category = null;
+								$(json.objects).each(function(i, art) {
+
+									article = new Article();
+									article.id = art.id;
+									article.title = art.title;
+									article.text = art.text;
+									article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
+									article.picture = art.media;
+									article.date = art.date;
+									article.author = art.author;
+									//article.quality = art.quality;
+									//article.fiability = art.fiability;
+
+									category.showItem();
+								});
+							},
+							error: function() {
+								app.errorOrNoInternet();
+							}
+						});
+
+						
+
 					}
 					else {
 						article = null;
