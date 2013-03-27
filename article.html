@@ -11,25 +11,23 @@
 <body>
 	<div data-role="page" id="article" data-add-back-btn="true">
 	    <div data-theme="a" data-role="header" data-position="fixed">
-			<a href="#" data-role="button" data-rel="back" data-icon="arrow-l">Back</a>
+			<a href="#" data-role="button" data-rel="back" data-icon="arrow-l">Retour</a>
 	        <h3 id="article_id">
 	            Bottlenews
 	        </h3>
 	    </div>
 	    <div data-role="popup" data-overlay-theme="a" data-position-to="window" id="popupBasic">
-				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-				<p id="buttons-expanded"></p>
-			</div>
-            <div data-role="popup" data-overlay-theme="a" data-position-to="window" id="popupBasic2">
-            	<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-            	<p>Ici sont les votes.</p>
-           </div>
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+			<p id="buttons-expanded"></p>
+		</div>
+        <div data-role="popup" data-overlay-theme="a" data-position-to="window" id="popupBasic2">
+        	<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+        	<p>Ici sont les votes.</p>
+        </div>
 	    <div data-role="content" id="article-content">
 	    	
-
 	    	<div id="img-article">
 	    	</div>
-	    	
 
 	    	<div id="article">
 		    	<h2 class="article_title">n/a</h2><span> by </span><em class="article_author">n/a</em>
@@ -45,8 +43,8 @@
 	        <div data-role="navbar">
 	            <ul>
 	                <li>
-	                    <a href="read.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
-	                    	Home
+	                    <a href="index.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home" class="ui-btn-active">
+	                    	Bottlenews
 	                    </a>
 	                </li>
 	                <li>
@@ -55,7 +53,7 @@
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="#popupBasic2" data-transition="pop" data-rel="popup" data-theme="a" data-role="button" data-icon="app-vote">
+	                    <a href="#popupBasic2" data-theme="a" data-role="button" data-icon="app-vote" data-rel="popup" >
 	                        Voter
 	                    </a>
 	                </li>
@@ -65,7 +63,7 @@
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="#popupBasic" data-transition="pop" data-rel="popup" data-theme="a" data-role="button" data-icon="app-share">
+	                    <a href="#popupBasic" data-theme="a" data-role="button" data-icon="app-share" data-rel="popup">
 	                        Partager
 	                    </a>
 	                </li>
@@ -83,7 +81,7 @@
 	<script type="text/javascript">
         $(document).ready(function() {
             $('#buttons').jsShare({ maxwidth: 360 });
-            $('#buttons-expanded').jsShare({ initialdisplay: 'expanded', maxwidth: 360 });
+            $('#buttons-expanded').jsShare({ initialdisplay: 'expanded', maxwidth: 85, maxheight:200 });
         });
     </script>
 	<script type="text/javascript">

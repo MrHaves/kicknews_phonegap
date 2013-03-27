@@ -58,32 +58,21 @@
     <div data-role="page" id="write">
         <div data-theme="a" data-role="header" data-position="fixed">
             <h3>
-                Bottlenews
+                Ecrire
             </h3>
         </div>
         <div data-role="content">
             <form id="writeform" action="#" method="post">
-                <ul data-role="listview" data-divider-theme="a" data-inset="true">
-                    <li data-theme="c">
-                        <a href="#" data-transition="slide">
-                            Write
-                        </a>
-                    </li>
-                </ul>
 
                 <!-- Title container-->
-                <label for="article_title">Titre
-                </label>
-                <input type="text" name="title" id="article_title" placeholder="">
+                <input type="text" name="title" id="article_title" placeholder="Titre">
+
+                <!-- Text Area container-->
+                <textarea name="content" id="article_content" placeholder="Texte"></textarea>
 
                 <!-- Title container-->
-                <label for="article_category">Category
-                </label>
                 <select name="category_menu" id="select_category">
-                  <option value="economie">économie</option>
-                  <option value="sante">santé</option>
-                  <option value="sciences">sciences</option>
-                  <option value="sport">sport</option>
+                    <option>Cat&eacute;gorie</option>
                 </select>
 
                 <!-- Text Area container-->
@@ -102,9 +91,9 @@
                 <!--Publish button-->
                 <input type="submit" id="submit" value="Publier" />
 
-                <a data-role="button" data-inline="true" href="#page1">
+                <!--<a data-role="button" data-inline="true" href="#page1">
                     Brouillon
-                </a>
+                </a>-->
             </form>
         </div>
 
@@ -112,28 +101,28 @@
             <div data-role="navbar">
                 <ul>
                     <li>
-                        <a href="read.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
-                            Home
+                        <a href="index.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
+                            Bottlenews
                         </a>
                     </li>
                     <li>
-                        <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-categories">
-                            Catégories
+                        <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-search">
+                            Recherche
                         </a>
                     </li>
                     <li>
                         <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write" class="ui-btn-active">
-                            Write
+                            Ecrire
                         </a>
                     </li>
                     <li>
-                        <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login">
-                            Login
+                        <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login" id="login-button">
+                            Se connecter
                         </a>
                     </li>
                     <li>
-                        <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings">
-                            Settings
+                        <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings" id="settings-button">
+                            Pr&eacute;f&eacute;rences
                         </a>
                     </li>
                 </ul>
@@ -146,6 +135,15 @@
         <script type="text/javascript">
             $(document).bind("mobileinit", function(){
                 app.initialize('write');
+            });
+             var initialScreenSize = window.innerHeight;
+            window.addEventListener("resize", function() {
+                if(window.innerHeight < initialScreenSize){
+                    $("[data-role=footer]").hide();
+                }
+                else{
+                    $("[data-role=footer]").show();
+                }
             });
         </script>
         <script src="js/jquery.mobile-1.2.0.min.js"></script>

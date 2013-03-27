@@ -11,12 +11,68 @@
 	<!-- Login -->
 	<div data-role="page" id="register">
 	    <div data-theme="a" data-role="header" data-position="fixed">
-	        <h3>
-	            Bottlenews
-	        </h3>
+	    	<a href="#" data-role="button" data-rel="back" data-icon="arrow-l">Retour</a>
+	    	<h3>
+	    		Créer un compte
+	    	</h3>
 	    </div>
 	    <div data-role="content">
-	    	<h3>Créer un compte</h3>
+	    	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="error_password">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Les mots de passe ne correspondent pas.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="error_user">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Ce nom d'utlisateur est déjà pris.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="error_email">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Cette adresse est déjà utilisée.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="email_null">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Vous n'avez pas entré d'email.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="password_null">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Vous n'avez pas entré de mot de passe.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="email_not_valid">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Votre adresse mail n'est pas valide.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="username_null">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Attention !</h3>
+            		<p>Vous n'avez pas entré de pseudo.</p>
+          		</div>
+        	</div>
+        	<div data-role="popup" data-overlay-theme="a" data-position-to="window" id="member_register">
+          		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+          		<div>
+            		<h3>Félicitation !</h3>
+            		<p>Vous êtes bien enregistré.</p>
+          		</div>
+        	</div>
 	    	<p class="error"></p>
 	    	<form id="registerForm" action="#" method="post">
     			<input type="text" name="register_user" id="register_user" placeholder="Nom d'utilisateur" />
@@ -32,27 +88,27 @@
 	            <ul>
 	                <li>
 	                    <a href="index.html" data-theme="a" data-role="button" data-ajax="false" data-icon="app-home">
-	                    	Home
+	                    	Bottlenews
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-categories">
-	                        Catégories
+	                    <a href="#" data-theme="a" data-ajax="false" data-role="button" data-icon="app-search">
+	                        Recherche
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write">
-	                        Write
+	                    <a href="write.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-write" id="write-button">
+	                        Ecrire
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login" class="ui-btn-active">
-	                        Login
+	                    <a href="login.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-login" class="ui-btn-active" id="login-button">
+	                        Se connecter
 	                    </a>
 	                </li>
 	                <li>
-	                    <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings">
-	                        Settings
+	                    <a href="settings.html" data-theme="a" data-ajax="false" data-role="button" data-icon="app-settings" id="settings-button">
+	                        Préférences
 	                    </a>
 	                </li>
 	            </ul>
@@ -70,6 +126,15 @@
 		$(document).bind("mobileinit", function(){
 			app.initialize('register');
 		});
+		var initialScreenSize = window.innerHeight;
+        window.addEventListener("resize", function() {
+            if(window.innerHeight < initialScreenSize){
+                $("[data-role=footer]").hide();
+            }
+            else{
+                $("[data-role=footer]").show();
+            }
+        });
 	</script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>
 	<script src="js/phonegap.js"></script>

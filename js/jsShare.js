@@ -4,7 +4,9 @@
             var settings = $.extend({
                 minwidth: 40,
                 maxwidth: 250,
-                animate: true,
+                minheight: 40,
+                maxheight: 250,
+                animate: false,
                 speed: 1000,
                 initialdisplay: 'compact',
                 facebook: true,
@@ -49,12 +51,11 @@
                                                 .replace('{BLOGNAME}', encodeURIComponent(settings.yoursitename));
 
                     return $('<li/>').append($('<a/>')
-                                                    .attr('href', link)
-                                                    .attr('title', title)
+                                                    .attr('href', link)                            
                                                     .attr('target', '_blank')
                                                     .append($('<img/>')
-                                                    .attr('src', 'css/images/' + button + '.png')
-                                                    .attr('alt', '').css({ width: 16, height: 16, marginTop: 8 })).hover(function() {
+                                                    .attr('src', './css/images/' + button + '.png')
+                                                    .attr('alt', '').css({ width: 50, height: 50, marginTop: 8 })).hover(function() {
                                                         var dummy = $('<div/>').html(title).css('display', 'none');
                                                         container.append(dummy);
                                                         var left = Math.round($(this).offset().left - dummy.width() / 2);
@@ -78,9 +79,9 @@
                 $.each(mediaSource, function(index, media) {
                     switch (index) {
                         case 0:
-                            if (settings.facebook) buttons.append(getButton(index, 'facebook', 'Share with Facebook')); break;
+                            if (settings.facebook) buttons.append(getButton(index, 'facebook2', 'Share with Facebook')); break;
                         case 1:
-                            if (settings.twitter) buttons.append(getButton(index, 'twitter', 'Share with Twitter')); break;
+                            if (settings.twitter) buttons.append(getButton(index, 'twitter2', 'Share with Twitter')); break;
                         case 2:
                             if (settings.delicious) buttons.append(getButton(index, 'delicious', 'Share with Delicious')); break;
                         case 3:
@@ -88,7 +89,7 @@
                         case 4:
                             if (settings.digg) buttons.append(getButton(index, 'digg', 'Share with Digg')); break;
                         case 5:
-                            if (settings.reddit) buttons.append(getButton(index, 'reddit', 'Share with Reddit')); break;
+                            if (settings.reddit) buttons.append(getButton(index, 'reddit2', 'Share with Reddit')); break;
                         case 6:
                             if (settings.googlebuzz) buttons.append(getButton(index, 'buzz', 'Share with Gooble Buzz')); break;
                         case 7:
@@ -98,7 +99,7 @@
                     }
                 });
                 if (settings.initialdisplay == 'expanded') {
-                    container.css({ width: settings.maxwidth });
+                    container.css({ width: settings.maxwidth, height: settings.maxheight });
                     inner.toggle(function() { container.stop().animate({ width: settings.minwidth }, settings.speed); }, function() { container.stop().animate({ width: settings.maxwidth }, settings.speed); });
                 }
                 else {

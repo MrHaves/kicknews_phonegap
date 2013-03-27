@@ -41,8 +41,13 @@ body.ui-mobile-viewport {
 	background: url("icons/blank_icons/53-house.png") no-repeat !important;
 }
 
+
 .ui-icon-app-categories {
 	background: url("icons/blank_icons/33-cabinet.png") no-repeat !important;
+}
+
+.ui-icon-app-search {
+	background: url("icons/blank_icons/06-magnify.png") no-repeat !important;
 }
 
 .ui-icon-app-write {
@@ -51,6 +56,10 @@ body.ui-mobile-viewport {
 
 .ui-icon-app-login {
 	background: url("icons/blank_icons/111-user.png") no-repeat !important;
+}
+
+.ui-icon-app-logout {
+	background: url("icons/201-logout.png") no-repeat !important;
 }
 
 .ui-icon-app-settings {
@@ -94,9 +103,6 @@ body.ui-mobile-viewport {
 	font-size: 14px;
 }
 
-#buttons-expanded{
-	width:120px !important;
-}
 
 #img-article img {
 	width:100%;
@@ -205,17 +211,18 @@ form#writeComment div.ui-submit {
   text-shadow:none;
 }
 
-/*
-  --category panel--
-  Set border bottom color on each category button
+/* Article list */
+.no-thumb {
+	background-color:#e1e1e1;
+	border:1px solid #ccc;
+	float:left;
+    margin: 0 12px 0 0;
+    padding: 10px 28px;
+}
 
-  -- Header --
-  Set police to logo
+.thumb img {
+    float: left;
+    margin: 0 12px 0 0;
+    width: 80px;
+}
 
-  -- Boutons généraux--
-  Mettre des boutons en avant (log me, écrire un commentaire)
-  f2f6f7
-
-  -- Liens --
-  Mettre au couleur de bottle news #2FB1BE
-*/

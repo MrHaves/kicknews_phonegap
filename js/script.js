@@ -54,7 +54,7 @@ function Reader() {
 						
 						category.id = cat.name;
 						category.name = cat.name;
-						category.fetch_url = "http://localhost:8000/api/v1/category/?format=json&name="+cat.name;
+						category.fetch_url = api_paths.categories+"&name="+cat.name;
 
 						article = null;
 						$(cat.articles).each(function(i, art) {
@@ -76,6 +76,15 @@ function Reader() {
 						category.saveLocal();
 						category.showArticles();
 					});
+
+					var cat  = new Category();
+					cat.id = "aroundme";
+					cat.name = "aroundme";
+					//cat.fetch_url = api_paths.categories+"&lat="+latitude+"&long="+longitude;
+					cat.fetch_url = api_paths.categories+"&name="+cat.name;
+					app.reader.pushCategory(cat);
+					cat.saveLocal();
+					//category.showArticles();
 
 					$.jStorage.set('categories', app.reader.categories);
 					that.rebuildMenu();
@@ -286,7 +295,6 @@ function Category(){
 			$(this.articles).each(function (i, art) {
 				art.save();
 			});
-
 			$.jStorage.set('categories['+this.id+']', this);
 		};
 
@@ -380,6 +388,7 @@ function Article(){
 					href: "write-comment.html?id="+article.id,
 					id: "write-comment-button",
 					text: "Ecrire un commentaire",
+					id: "write-comment-button"
 			});
 			$link_write.attr('data-ajax', 'false');
 			$link_write.attr('data-role', 'button');
@@ -389,10 +398,17 @@ function Article(){
 					href: "read-comment.html?id="+article.id,
 					id: "read-comment-button",
 					text: "Lire les commentaires",
+					id: "read-comment-button"
 			});
 			$link_read.attr('data-ajax', 'false');
 			$link_read.attr('data-role', 'button');
 			$link_read.appendTo('#comment');
+
+			var current_user = $.jStorage.get('current_user');
+			if(current_user == null){
+				$('#write-comment-button').addClass('ui-disabled');
+			}
+
 		};
 
 		Article.prototype.showItem = function(category) {
@@ -405,6 +421,7 @@ function Article(){
 				rel: "external",
 				class: "articleBtn"
 			});
+
 			$h3 = $('<h3>', {
 				text: this.title,
 			});
@@ -413,13 +430,28 @@ function Article(){
 			});
 
 			if(!!article.picture) { 
+				$div = $('<div>', {
+					class: "thumb"
+				});	
+
 				$img = $('<img>', {
 					src: "http://localhost:8000/media/"+article.picture
 				});
-				$img.appendTo($a);
 			}
+			else {
+				$div = $('<div>', {
+					class: "no-thumb"
+				});
+
+				$img = $('<img>', {
+					src: "css/icons/42-photos.png"
+				});
+			}
+
+			$img.appendTo($div);
+			$div.appendTo($a);
+
 			$h3.appendTo($a);
-			//$div.appendTo($a);
 			$a.appendTo($li);
 			$li.appendTo('#reader #articles');
 
@@ -428,6 +460,7 @@ function Article(){
 
 	}
 }
+
 
 // Definition of an user
 function User() {
@@ -442,6 +475,10 @@ function User() {
 	var twitter;
 	var country;
 	var city;
+
+	$(document).bind('deviceready', function(){
+        onDeviceReady();
+    });
 
 	if (typeof User.initialized == "undefined") {
 		// Save current user in storage.
@@ -479,7 +516,6 @@ function User() {
 						app.current_user.api_key = json.member.api_key;
 						app.current_user.auto_share = json.member.autoShare;
 						app.current_user.geoloc = json.member.geoloc;
-						app.current_user.max_article_number = json.member.maxArticle;
 						app.current_user.facebook = json.member.facebook;
 						app.current_user.gplus = json.member.gplus;
 						app.current_user.twitter = json.member.twitter;
@@ -487,14 +523,32 @@ function User() {
 						app.current_user.city = json.member.ville;
 
 						app.current_user.save();
+						
+						$("#member_register").popup( "open", {});
+						
+					}
+					else{
+						if(json.reason == "username is empty") {
+							$("#username_null").popup( "open", {});
+						}else if(json.reason == "email is empty"){
+							$("#email_null").popup( "open", {});
+						}else if(json.reason == "user already exist"){
+							$("#error_user").popup( "open", {});
+						}else if(json.reason == "email already in use"){
+							$("#error_email").popup( "open", {});
+						}else if(json.reason == "passwords don't match"){
+							$("#error_password").popup( "open", {});
+						}else if(json.reason == "passwords don't exist"){
+							$("#password_null").popup( "open", {});
+						}else if(json.reason == "email empty"){
+							$("#email_null").popup( "open", {});
+						}else if(json.reason == "email not valid"){
+							$("#email_not_valid").popup( "open", {});
+						}
 					}
 				},
 				error: function(ts) {
-					console.debug(ts.status);
-					var error = jQuery.parseJSON(ts.responseText);
-					if(error.reason == "passwords don't match") {
-						$('p.error').text("Les mots de passe ne correspondent pas");
-					}
+					console.debug(ts.responseText);
 				}
 			});
 		};
@@ -536,10 +590,10 @@ function User() {
 					}
 				},
 				error: function(ts) {
-					console.debug(ts.responseText);
+					//console.debug(ts.responseText);
 					var error = jQuery.parseJSON(ts.responseText);
 					if(error.reason == "incorrect") {
-						$('p.error').text("Le nom d'utilisateur ou le mot de passe est incorrect");
+						$("#error_identification").popup( "open", {});
 					}
 
 					$("#login_user").val('');
@@ -560,6 +614,7 @@ function User() {
 			$.jStorage.deleteKey('current_user');
 			// Update current_user
 			app.current_user = new User();
+			window.location.replace("login.html");
 		};
 		
 		User.prototype.is_logged_in = function() {
@@ -615,7 +670,7 @@ function Settings(){
 
 				var autoShare = $("#flip-1").val();
 				var geoloc = $("#flip-2").val();
-				var maxArticle = $("#selectmenu1").val();
+				var maxArticle = parseInt($("#selectmenu1").val());
 
 				var data = JSON.stringify({
 					"autoShare": autoShare,
@@ -626,6 +681,7 @@ function Settings(){
 					"twitter": $.jStorage.get('current_user').twitter,
 					"pays": $.jStorage.get('current_user').country,
 					"ville": $.jStorage.get('current_user').city,
+					"userId": $.jStorage.get('current_user').id,
 				});
 
 				//@TODO : send preferences to server
@@ -636,9 +692,10 @@ function Settings(){
 					data: data,
 					dataType: 'json',
 					success: function(json) {
-						console.log("ok");
+						$("#confirm").popup( "open", {} );
 					},
 					error: function(ts) {
+						$("#error").popup( "open", {} );
 					}
 				});
 
@@ -649,8 +706,12 @@ function Settings(){
 		Settings.initialized = true;
 	}
 
-	this.loadLocal();
-	this.setListeners();
+	var current_user = $.jStorage.get('current_user');
+	if(current_user != null){
+		this.loadLocal();
+		this.setListeners();	
+	}
+
 }
 
 function updateFont(fontSize){
@@ -687,6 +748,17 @@ var app = {
 		// load Settings
 		// fetch config data from storage
 
+		var current_user = $.jStorage.get('current_user');
+		if(current_user != null){
+			$('#login-button').text("Se déconnecter");
+			$('#login-button').attr('href', 'logout.html');
+			$('#login-button').attr('data-icon', 'app-logout');
+		}
+		else{
+			$('#write-button').addClass('ui-disabled');
+			$('#settings-button').addClass('ui-disabled');
+		}
+
 		switch(page) {
 			case 'read' :
 				this.reader = new Reader();
@@ -703,26 +775,34 @@ var app = {
 					current_cat.name = cat.name;
 					current_cat.fetch_url = cat.fetch_url;
 
-					article = null;
-					$(cat.articles).each(function(i, art) {
+					if(current_cat.name == "aroundme"){
+						var latitude = $.jStorage.get('latitude');
+						var longitude = $.jStorage.get('longitude');
+						$("#geolocalisation").html('Latitude: ' + latitude + '<br/>' + 'Longitude: '+ longitude);
+					}
+					else {
+						article = null;
+						$(cat.articles).each(function(i, art) {
 
-						article = new Article();
-						article.id = art.id;
-						article.title = art.title;
-						article.text = art.text;
-						article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
-						article.picture = art.media;
-						article.datetime = art.datetime;
-						article.author = art.author;
+							article = new Article();
+							article.id = art.id;
+							article.title = art.title;
+							article.text = art.text;
+							article.subhead = art.text; // @todo FIXME : Should be corrected immediately after reading this
+							article.picture = art.media;
+							article.datetime = art.datetime;
+							article.author = art.author;
 
-						current_cat.articles.push(article);
-						current_cat.articles_ids.push(article.id);
-					});
+							current_cat.articles.push(article);
+							current_cat.articles_ids.push(article.id);
+						});
 
-					current_cat.showArticles();
+						current_cat.showArticles();
+					}
+
 					this.reader.rebuildMenu();
 
-					$('#header h3').text("Bottlenews - " + current_cat_name);
+					$('#header h3').text(current_cat_name);
 
 				}
 
@@ -755,11 +835,15 @@ var app = {
 							var article_id = getQuerystring('id');
 							if(comment.articleId.id == parseInt(article_id)){
 								++nb_comment;
-							};
-
-							$('#nb_comment').text(nb_comment);
+							}
 
 						});	
+
+						$('#nb_comment').text(nb_comment);
+
+						if(nb_comment == 0){
+							$('#read-comment-button').addClass('ui-disabled');
+						}
 					},
 					error: function(ts) {
 					}
@@ -810,7 +894,7 @@ var app = {
 						data: data,
 						dataType: 'json',
 						success: function(json) {
-							console.info(json);
+							window.location.replace("read-comment.html?id="+article_id);
 						},
 						error: function(ts) {
 
@@ -820,6 +904,7 @@ var app = {
 				});
 				break;
 			case 'read-comment' : 
+
 				$.ajax(api_paths.comment,{
 					dataType: 'json', // data will be parsed in json automagically
 					type: "GET",
@@ -855,46 +940,59 @@ var app = {
 
 					},
 					error: function(ts) {
-
 					}
 				});	
 				break;
 			case 'write' : 
-        //console.log('page rechargée');
-        $('#writeform').submit(function(event){
-            //event.preventDefault();
-						var current_user = $.jStorage.get('current_user');
-            var article_title = $("#article_title").val();
-            var article_content = $("#article_content").val();
-            var article_content = $("#article_content").val();
-						var article_category = $("#select_category").val();
 
-            var picture = $.jStorage.get('picture');
+				var categories = $.jStorage.get('categories');
 
-            var data = JSON.stringify({
-                "title" : article_title,
-                "text" : article_content,
-                "memberId": current_user.id,
-                "category" : article_category,
-                "media" : picture
-            });
+				for(var i=0; i<categories.length; ++i){
 
-            console.log(data);
-            //Need to add the category data
-            $.ajax({
-                url: api_paths.postarticle,
-                type:"POST", 
-                contentType: 'application/json',
-                data: data, 
-                dataType: 'json',
-                success: function(json) {
-                    console.info(json);
-                },
-                error: function(ts) {
-									console.log('erreur');
-                }
-            });
-        });
+					if(categories[i].name != "aroundme") {
+						$option = $('<option>', {
+							value: categories[i].name,
+							text: categories[i].name
+						});
+
+						$option.appendTo('#select_category');
+					}
+				}
+
+		        $('#writeform').submit(function(event){
+		            //event.preventDefault();
+					var current_user = $.jStorage.get('current_user');
+		            var article_title = $("#article_title").val();
+		            var article_content = $("#article_content").val();
+		            var article_content = $("#article_content").val();
+					var article_category = $("#select_category").val();
+
+		            var picture = $.jStorage.get('picture');
+
+		            var data = JSON.stringify({
+		                "title" : article_title,
+		                "text" : article_content,
+		                "memberId": current_user.id,
+		                "category" : article_category,
+		                "media" : picture
+		            });
+
+		            console.log(data);
+		            //Need to add the category data
+		            $.ajax({
+		                url: api_paths.postarticle,
+		                type:"POST", 
+		                contentType: 'application/json',
+		                data: data, 
+		                dataType: 'json',
+		                success: function(json) {
+		                    console.info(json);
+		                },
+		                error: function(ts) {
+							console.log('erreur');
+		                }
+		            });
+		        });
 				break;
 			case 'share' :
 				break;
