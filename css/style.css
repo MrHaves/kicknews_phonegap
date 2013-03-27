@@ -58,10 +58,6 @@ body.ui-mobile-viewport {
 	background: url("icons/blank_icons/111-user.png") no-repeat !important;
 }
 
-.ui-icon-app-logout {
-	background: url("icons/201-logout.png") no-repeat !important;
-}
-
 .ui-icon-app-settings {
 	background: url("icons/blank_icons/20-gear2.png") no-repeat !important;
 }
@@ -140,14 +136,14 @@ body.ui-mobile-viewport {
 }
 
 /* login view */
-#loginForm > div {
+#loginForm div.ui-submit {
   margin: 50px 0 50px 0;
   background: #2FB1BE;
   color:white;
   text-shadow:none;
 }
 
-#loginForm > div:hover {
+#loginForm div.ui-submit:hover {
   margin: 50px 0 50px 0;
   color:white;
   background-color: #2FB1BE;
