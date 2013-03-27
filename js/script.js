@@ -378,6 +378,7 @@ function Article(){
 
 			var $link_write = $('<a>', {
 					href: "write-comment.html?id="+article.id,
+					id: "write-comment-button",
 					text: "Ecrire un commentaire",
 			});
 			$link_write.attr('data-ajax', 'false');
@@ -386,6 +387,7 @@ function Article(){
 
 			var $link_read = $('<a>', {
 					href: "read-comment.html?id="+article.id,
+					id: "read-comment-button",
 					text: "Lire les commentaires",
 			});
 			$link_read.attr('data-ajax', 'false');

@@ -1,47 +1,77 @@
 /*custom css for jqueryMobile*/
+body.ui-mobile-viewport {
+  background-color: #eee !important;
+}
+/* header navbar */
+.ui-header.ui-bar-a.ui-header-fixed.slidedown {
+  background: #474747;
+}
+
+.ui-header .ui-title {
+  color:white;
+}
+
+/* footer navbar*/
+.ui-footer .ui-navbar li .ui-btn {
+    background: #474747;
+}
+
+.ui-grid-d li.ui-block-e .ui-btn.ui-btn-active {
+
+}
+
+.ui-footer .ui-navbar li .ui-btn.ui-btn-active {
+  background: #2FB1BE;
+}
+
+.ui-footer .ui-navbar li .ui-btn .ui-btn-inner span.ui-btn-text {
+    color:white;
+    text-shadow:none;
+}
 
 /* navbar App icon */
 .nav-glyphish .ui-btn .ui-icon {
 	height:30px;
 	width:30px;
 	border-radius: 0 0 0 0 !important;
+  box-shadow: none;
 }
 
 .ui-icon-app-home {
-	background: url("icons/53-house.png") no-repeat !important;
+	background: url("icons/blank_icons/53-house.png") no-repeat !important;
 }
 
 .ui-icon-app-categories {
-	background: url("icons/33-cabinet.png") no-repeat !important;
+	background: url("icons/blank_icons/33-cabinet.png") no-repeat !important;
 }
 
 .ui-icon-app-write {
-	background: url("icons/187-pencil.png") no-repeat !important;
+	background: url("icons/blank_icons/187-pencil.png") no-repeat !important;
 }
 
 .ui-icon-app-login {
-	background: url("icons/111-user.png") no-repeat !important;
+	background: url("icons/blank_icons/111-user.png") no-repeat !important;
 }
 
 .ui-icon-app-settings {
-	background: url("icons/20-gear2.png") no-repeat !important;
+	background: url("icons/blank_icons/20-gear2.png") no-repeat !important;
 }
 
 /* navbar Article icon */
 .ui-icon-app-police {
-	background: url("icons/33-cabinet.png") no-repeat !important;
+	background: url("icons/blank_icons/33-cabinet.png") no-repeat !important;
 }
 
 .ui-icon-app-vote {
-	background: url("icons/81-dashboard.png") no-repeat !important;
+	background: url("icons/blank_icons/81-dashboard.png") no-repeat !important;
 }
 
 .ui-icon-app-comment {
-	background: url("icons/09-chat-2.png") no-repeat !important;
+	background: url("icons/blank_icons/09-chat-2.png") no-repeat !important;
 }
 
 .ui-icon-app-share {
-	background: url("icons/189-plant.png") no-repeat !important;
+	background: url("icons/blank_icons/189-plant.png") no-repeat !important;
 }
 
 /* popupPanel */
@@ -71,3 +101,121 @@
 #img-article img {
 	width:100%;
 }
+
+/* reader view */
+
+#reader ul#articles.ui-listview li.ui-li.ui-btn.ui-btn-down-d {
+  background: #2FB1BE;
+}
+
+/* read view */
+#read-comment-button {
+  margin-top: 50px; 
+}
+
+#write-comment-button {
+  margin-top: 20px;
+  background: #2FB1BE;
+  color:white;
+  text-shadow:none;
+}
+
+/* settings view */
+#settingsForm div:last-child.ui-submit {
+  margin-top: 30px;
+}
+
+#settingsForm > div[data-role="fieldcontain"] {
+  padding-bottom: 10px;
+}
+
+.ui-field-contain label.ui-slider {
+  width: 30%;
+}
+
+/* login view */
+#loginForm > div {
+  margin: 50px 0 50px 0;
+  background: #2FB1BE;
+  color:white;
+  text-shadow:none;
+}
+
+#loginForm > div:hover {
+  margin: 50px 0 50px 0;
+  color:white;
+  background-color: #2FB1BE;
+  text-shadow:none;
+}
+
+#login.ui-page .ui-content a.ui-btn {
+  margin: 50px 0 50px 0;
+  background-color: #f2f6f7;
+  background-image: -webkit-linear-gradient(top, rgb(255, 255, 255), rgb(241, 241, 241));
+}
+
+#login.ui-page .ui-content a.ui-btn:hover {
+  margin: 50px 0 50px 0;
+  background-color: #f2f6f7;
+  background-image: -webkit-linear-gradient(top, rgb(246, 246, 246), rgb(224, 224, 224));
+}
+
+/* write view*/
+#cameraPreview {
+  text-align:center;
+  margin:20px;
+}
+
+#cameraPreview > img#cameraPic {
+  width:auto;
+  max-height:120px;
+}
+
+form#writeform > div.ui-submit {
+  margin-top: 50px;
+}
+
+/* write comment */
+form#writeComment div.ui-submit {
+  margin-top: 50px;
+}
+
+/* category panel */
+#left-panel .ui-panel-position-left.ui-panel-display-reveal, .ui-panel-position-left.ui-panel-open,
+#left-panel.ui-panel-position-left.ui-panel-closed,
+#left-panel.ui-panel-position-left.ui-panel-animate {
+  background: #474747;
+}
+
+#left-panel .ui-listview > .ui-li.ui-btn {
+  background: #474747;
+  border-top: none;
+}
+
+#left-panel .ui-btn-up-d:visited,
+#left-panel .ui-btn-up-d a.ui-link-inherit {
+  color:white;
+  text-shadow:none;
+}
+
+#left-panel .ui-btn-hover-d:hover,
+#left-panel .ui-btn-hover-d:visited,
+#left-panel .ui-btn-hover-d a.ui-link-inherit {
+  color: #2FB1BE;
+  text-shadow:none;
+}
+
+/*
+  --category panel--
+  Set border bottom color on each category button
+
+  -- Header --
+  Set police to logo
+
+  -- Boutons généraux--
+  Mettre des boutons en avant (log me, écrire un commentaire)
+  f2f6f7
+
+  -- Liens --
+  Mettre au couleur de bottle news #2FB1BE
+*/
