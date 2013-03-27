@@ -274,3 +274,7 @@ form#writeComment div.ui-submit {
 	font-size:0.9em;
 }
 
+.popup-content {
+	padding: 0 15px;
+}
+
