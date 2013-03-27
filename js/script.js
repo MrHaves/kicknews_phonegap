@@ -15,7 +15,7 @@ var api_paths = {
 	postarticle : DOMAIN_WEBSITE + "api/v1/articles/post_article/",
 	preferences : DOMAIN_WEBSITE + "api/v1/preferences/?format=json",
 	settings : DOMAIN_WEBSITE + "api/v1/user/save_settings/",
-	aroundme : DOMAIN_WEBSITE + "api/v1/aroundme/?format=json";
+	aroundme : DOMAIN_WEBSITE + "api/v1/articles/getAroundMe/",
 };
 
 // Production
@@ -804,8 +804,7 @@ var app = {
 						var longitude = $.jStorage.get('longitude');
 						$("#geolocalisation").html('Latitude: ' + latitude + '<br/>' + 'Longitude: '+ longitude);
 
-						var url = api_paths.aroundme + "&lat="+latitude+"&long="+longitude;
-
+						var url = api_paths.aroundme + "?latitude="+latitude+"&longitude="+longitude+"&format=json";
 
 						$.ajax(api_paths.aroundme, {
 							dataType: 'json', // data will be parsed in json automagically
