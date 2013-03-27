@@ -753,6 +753,7 @@ var app = {
 			$('#login-button').text("Se déconnecter");
 			$('#login-button').attr('href', 'logout.html');
 			$('#login-button').attr('data-icon', 'app-logout');
+			$('#login-button').html('<span class="ui-btn-inner"><span class="ui-btn-text">Se déconnecter</span><span class="ui-icon ui-icon-app-logout ui-icon-shadow">&nbsp;</span></span>');
 		}
 		else{
 			$('#write-button').addClass('ui-disabled');
@@ -944,7 +945,9 @@ var app = {
 				});	
 				break;
 			case 'write' : 
-
+				//Set the login button form
+				$('#login-button').html('Se déconnecter');
+				
 				var categories = $.jStorage.get('categories');
 
 				for(var i=0; i<categories.length; ++i){
@@ -1005,6 +1008,8 @@ var app = {
 				break;
 			case 'settings' :
 				var settings = new Settings();
+				//Set the login button form
+				$('#login-button').html('Se déconnecter');
 				break;
 			default: alert('no page initialized'); break;
 		}
