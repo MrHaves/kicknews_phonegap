@@ -126,6 +126,15 @@
 		$(document).bind("mobileinit", function(){
 			app.initialize('register');
 		});
+		var initialScreenSize = window.innerHeight;
+        window.addEventListener("resize", function() {
+            if(window.innerHeight < initialScreenSize){
+                $("[data-role=footer]").hide();
+            }
+            else{
+                $("[data-role=footer]").show();
+            }
+        });
 	</script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>
 	<script src="js/phonegap.js"></script>
