@@ -2,17 +2,19 @@
 	API connexion configuration
 */
 
+var DOMAIN_WEBSITE = "http://localhost:8000/";
+
 // Development
 var api_paths = {
-	login : "http://localhost:8000/api/v1/user/login/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
-	register : "http://localhost:8000/api/v1/user/register/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
-	logout : "http://localhost:8000/api/v1/user/logout/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
-	comment : "http://localhost:8000/api/v1/comment/?format=json",
-	writecomment : "http://localhost:8000/api/v1/comment/post_comment/",
-	categories : "http://localhost:8000/api/v1/category/?format=json",
-	postarticle : "http://localhost:8000/api/v1/articles/post_article/",
-	preferences : "http://localhost:8000/api/v1/preferences/?format=json",
-	settings : "http://localhost:8000/api/v1/user/save_settings/",
+	login : DOMAIN_WEBSITE + "api/v1/user/login/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
+	register : DOMAIN_WEBSITE + "api/v1/user/register/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
+	logout : DOMAIN_WEBSITE + "api/v1/user/logout/", // don't forget the last "/"" here to avoid the 301 http response code and useless request
+	comment : DOMAIN_WEBSITE + "api/v1/comment/?format=json",
+	writecomment : DOMAIN_WEBSITE + "api/v1/comment/post_comment/",
+	categories : DOMAIN_WEBSITE + "api/v1/category/?format=json",
+	postarticle : DOMAIN_WEBSITE + "api/v1/articles/post_article/",
+	preferences : DOMAIN_WEBSITE + "api/v1/preferences/?format=json",
+	settings : DOMAIN_WEBSITE + "api/v1/user/save_settings/",
 };
 
 // Production
@@ -42,11 +44,9 @@ function Reader() {
 				type: "GET",
 				cache: false,
 				success: function(json) {
-					
+
 					category = null;
 					$(json.objects).each(function(i, cat) {
-
-						console.log(cat);
 						
 						category = new Category();
 						category.articles = [];
@@ -59,6 +59,8 @@ function Reader() {
 						article = null;
 						$(cat.articles).each(function(i, art) {
 
+							console.log(cat);
+
 							article = new Article();
 							article.id = art.id;
 							article.title = art.title;
@@ -67,6 +69,8 @@ function Reader() {
 							article.picture = art.media;
 							article.date = art.date;
 							article.author = art.author;
+							article.quality = art.quality;
+							article.fiability = art.fiability;
 
 							category.articles.push(article);
 							category.articles_ids.push(article.id);
@@ -121,19 +125,6 @@ function Reader() {
 
 		Reader.prototype.rebuildPage = function () {
 			$('.article').remove();
-
-			// @todo : Sort by weight
-			/*$(this.categories).each(function (i, cat) {
-			// @todo : FIXME : Normally we should loop on $(this.categories)
-			// $(this.categories).each(function (i, cat) {
-				// Add each category to the navbar
-				var $link = $('<a>', {
-					href: "read.html?category="+cat,
-					class: "categoryBtn",
-					text: cat
-				});
-				$link.appendTo('#categories_menu');
-			});*/
 		};
 
 		Reader.prototype.rebuildMenu = function () {
@@ -168,25 +159,6 @@ function Reader() {
 		Reader.prototype.updateCategoriesMenu = function () {
 			this.categories = $.jStorage.get('categories');
 		};
-
-		/*
-				MAIN for Reader
-		*/
-
-		/*var weight = 0;
-		var _this = this;
-		$(this.categories_menu).each(function(i, cat_key) {
-			var category = new Category();
-			category.id = cat_key;
-			category.weight = ++weight;
-			category.refresh();
-			_this.rebuildMenu();
-		});*/
-		// Fetch categories name
-		// Call buildCategoriesMenu
-		// Refresh
-
-		//@todo : Show Category (title + link seleted in menu + show articles)
 
 		//this.rebuildCategories();
 		this.setListeners();
@@ -232,7 +204,6 @@ function Category(){
 						// add current_category.* = *
 						that.id = json.name; // @todo : Fix naming conventions for human-readable title (translated) and fixed id/name
 						that.last_update = json.timestamp;
-						//console.log(that);
 
 						$(json.articles).each(function(i, art) {
 							article = new Article();
@@ -272,22 +243,17 @@ function Category(){
 
 		// Storage fetch
 		Category.prototype.loadLocal = function(id) {
-			/*if (this.id == "home") {
-				this.name = "Home";
+			var category = $.jStorage.get('categories['+id+']');
+			if(category) {
+				this.name = category.name;
 				this.articles = [];
-			} else {*/
-				var category = $.jStorage.get('categories['+id+']');
-				if(category) {
-					this.name = category.name;
-					this.articles = [];
-					$(category.articles_ids).each(function(i, article_id) {
-						article = new Article();
-						article.load(article_id);
-						this.articles.push(article);
-						this.articles_ids.push(article.id);
-					});
-				}
-			//}
+				$(category.articles_ids).each(function(i, article_id) {
+					article = new Article();
+					article.load(article_id);
+					this.articles.push(article);
+					this.articles_ids.push(article.id);
+				});
+			}
 			return this;
 		};
 
@@ -329,6 +295,8 @@ function Article(){
 	var picture = "";
 	var date;
 	var author;
+	var fiability;
+	var quality;
 	var text = "";
 	var is_read = false;
 	var status = "draft";
@@ -361,6 +329,8 @@ function Article(){
 				this.author = article.author;
 				this.subhead = article.subhead;
 				this.date = article.date;
+				this.quality = article.quality;
+				this.fiability = article.fiability;
 			}
 			return this;
 		};
@@ -376,7 +346,7 @@ function Article(){
 			console.log(article.picture);
 			if(!!article.picture) {	
 				var $img = $('<img>', {
-					src: "http://localhost:8000/media/"+article.picture,
+					src: DOMAIN_WEBSITE + "media/" + article.picture,
 					alt: article.title,
 				});
 				$img.appendTo('#img-article');
@@ -385,6 +355,27 @@ function Article(){
 			$('#article .article_body').html(article.subhead);
 			$('#article .article_title').text(article.title);
 			$('#article .article_author').text(article.author);
+
+			var timestamp = article.date;
+			var date = new Date(timestamp * 1000);
+			var datevalues = [
+			         date.getFullYear()
+			        ,date.getMonth()+1
+			        ,date.getDate()
+			        ,date.getHours()
+			        ,date.getMinutes()
+			        ,date.getSeconds()
+			     ];
+
+			if(datevalues[1]<10){
+				month = '0' + datevalues[1];
+				datevalues[1] = month;
+			}
+
+			$('#article .date').text(datevalues[2]+'/'+datevalues[1]+'/'+datevalues[0]);
+
+			$('#article .fiability').html("<b>Fiabilité</b> : " + article.fiability);
+			$('#article .quality').html("<b>Qualité</b> : " + article.quality);
 
 			var $link_write = $('<a>', {
 					href: "write-comment.html?id="+article.id,
@@ -432,7 +423,6 @@ function Article(){
 				month = '0' + datevalues[1];
 				datevalues[1] = month;
 			}
-			console.log(datevalues);
 
 			$li = $('<li>');
 			$a = $('<a>', {
@@ -443,7 +433,6 @@ function Article(){
 
 			$p = $('<p>', {
 				text: 'écrit le '+datevalues[2]+' / '+datevalues[1]+' / '+datevalues[0],
-				class: 'ui-li-aside',
 			});
 
 			$h3 = $('<h3>', {
@@ -459,7 +448,7 @@ function Article(){
 				});	
 
 				$img = $('<img>', {
-					src: "http://localhost:8000/media/"+article.picture
+					src: DOMAIN_WEBSITE + "media/" + article.picture
 				});
 			}
 			else {
@@ -472,12 +461,15 @@ function Article(){
 				});
 			}
 
-			$img.appendTo($div);
-			$div.appendTo($a);
 
-			$p.appendTo($a);
+			$img.appendTo($div);
+
+			$div.appendTo($a);
 			$h3.appendTo($a);
+			$p.appendTo($a);
+
 			$a.appendTo($li);
+
 			$li.appendTo('#reader #articles');
 
 			$('#reader #articles:visible').listview('refresh');
