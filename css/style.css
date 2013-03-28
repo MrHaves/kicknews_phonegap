@@ -14,7 +14,8 @@ body.ui-mobile-viewport {
 }
 
 .ui-header.ui-bar-a.ui-header-fixed.slidedown.logo {
-  background-image: url("images/logo_mobile_blank.png");
+  background-color: #474747;
+  background-image: url("images/logo_mobile_blank.png") !important;
   background-repeat: no-repeat;
   background-position: center;
 }
